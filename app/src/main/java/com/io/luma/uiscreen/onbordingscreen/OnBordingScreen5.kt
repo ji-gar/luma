@@ -66,11 +66,16 @@ import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.runtime.DisposableEffect
@@ -79,8 +84,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.shadow
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.io.luma.utils.TokenManager
 import kotlinx.coroutines.CoroutineScope
@@ -121,6 +129,11 @@ fun OnBordingScreen5(navController: NavController) {
         micPermissionGranted.value = granted
     }
 
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isRecording) Color.Red else Color.Gray,
+        animationSpec = tween(durationMillis = 300)
+    )
+
     LaunchedEffect(Unit) {
         if (!micPermissionGranted.value) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
@@ -140,15 +153,13 @@ fun OnBordingScreen5(navController: NavController) {
                 val engine = rememberEngine()
                 val modelLoader = rememberModelLoader(engine)
                 val cameraNode = rememberCameraNode(engine).apply {
-                    position = io.github.sceneview.math.Position(0f, 0f, 3f) // Camera back a bit
-                    lookAt(io.github.sceneview.math.Position(0f, 0f, 0f)) // Look at origin
+                    position = io.github.sceneview.math.Position(0f, 1f, 4f) // back and slightly up
+                    lookAt(io.github.sceneview.math.Position(0f, 1f, 0f))  // look at middle
                 }
-                LaunchedEffect(engine) {
 
-                }
 
                 Scene(
-                    modifier = Modifier.fillMaxSize().background(Color.White),
+                    modifier = Modifier.fillMaxSize().background(color = Color.White),
                     engine = engine,
                     modelLoader = modelLoader,
                     cameraNode = cameraNode,
@@ -156,13 +167,9 @@ fun OnBordingScreen5(navController: NavController) {
                         ModelNode(
                             modelInstance = modelLoader.createModelInstance("models/marcel.glb"),
                             scaleToUnits = 1.25f,
-
                         )
-                    ),
-
-                ){
-
-                }
+                    )
+                )
             }
 
             // --- Card UI Box ---
@@ -222,23 +229,48 @@ fun OnBordingScreen5(navController: NavController) {
                         )
                         com.io.luma.customcompose.height(10)
 
-                        // --- Mic Button ---
                         Box(
                             modifier = Modifier
-                                .size(30.dp)
-                                .background(if (isRecording) Color.Red else Color.Gray)
-                                .clickable {
-                                    if (micPermissionGranted.value) {
-                                        isRecording = !isRecording
+                                .size(45.dp)
+                                .shadow(4.dp, CircleShape)
+                                .background(if (isRecording) Color.Red else Color.Gray, shape = CircleShape)
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = {
+                                        if (micPermissionGranted.value) {
+                                            isRecording = !isRecording
+                                        }
                                     }
-                                },
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                if (isRecording) "Stop" else "Start",
-                                color = Color.White
+                                text = if (isRecording) "Stop" else "Start",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
+
+                        // --- Mic Button ---
+//                        Box(
+//                            modifier = Modifier
+//                                .size(30.dp)
+//                                .background(if (isRecording) Color.Red else Color.Gray)
+//                                .clickable {
+//                                    if (micPermissionGranted.value) {
+//                                        isRecording = !isRecording
+//                                    }
+//                                },
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Text(
+//                                if (isRecording) "Stop" else "Start",
+//                                color = Color.White
+//                            )
+//                        }
+
+
 
                         Spacer(modifier = Modifier.height(20.dp))
 

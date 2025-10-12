@@ -73,7 +73,7 @@ fun NavHost() {
     var navController= rememberNavController()
     val registermyself: RegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.OnBordingScreen) {
+    NavHost(navController, startDestination = NavRoute.SignupСarer) {
 
         composable<NavRoute.SignupСarer> {
 
