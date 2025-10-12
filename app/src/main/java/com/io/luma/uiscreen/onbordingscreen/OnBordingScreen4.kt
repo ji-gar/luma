@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CardDefaults
@@ -56,9 +57,7 @@ fun OnBordingScreen4(navController: NavController) {
                 Column(modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painter = painterResource(R.drawable.img),
-                        modifier = Modifier.height(150.dp),
-                        contentScale = ContentScale.Crop,
+                    Image(painter = painterResource(R.drawable.lumaperson),
                         contentDescription = "")
 
                 }
@@ -84,9 +83,32 @@ fun OnBordingScreen4(navController: NavController) {
                     border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                     )
                 ) {
-                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 30.sdp),
+                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         com.io.luma.customcompose.height(10)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Hello! I am Luma!",
+                                style = TextStyle(
+                                    color = textColor,
+                                    fontSize = 22.ssp
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                fontFamily = manropebold,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Image(
+                                painter = painterResource(R.drawable.cancle),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
+                            )
+                        }
                         Text("Chose who you want\nto talk with",
                             style = TextStyle(
                                 color = textColor,

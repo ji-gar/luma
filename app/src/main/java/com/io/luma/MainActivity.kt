@@ -12,31 +12,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.CustomOutlineButton
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.LumaTheme
@@ -61,6 +48,7 @@ import com.io.luma.uiscreen.someoneelsesignup.SignupStep3
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep4
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep5
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep6
+import com.io.luma.viewmodel.RegisterViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,9 +71,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavHost() {
     var navController= rememberNavController()
+    val registermyself: RegisterViewModel = viewModel()
 
-
-    NavHost(navController, startDestination = NavRoute.SignupСarer) {
+    NavHost(navController, startDestination = NavRoute.OnBordingScreen) {
 
         composable<NavRoute.SignupСarer> {
 
@@ -126,19 +114,19 @@ fun NavHost() {
         }
 
         composable<NavRoute.MyselfStep1> {
-            MySelfStep1(navController)
+            MySelfStep1(navController,registermyself)
 
         }
         composable<NavRoute.MyselfStep2> {
-            MySelfStep2(navController)
+            MySelfStep2(navController,registermyself)
 
         }
         composable<NavRoute.MyselfStep3> {
-            MySelfStep3(navController)
+            MySelfStep3(navController,registermyself)
 
         }
         composable<NavRoute.OnBordingScreen> {
-            OnBordingScreen(navController)
+            OnBordingScreen(navController,)
 
         }
         composable<NavRoute.OnBordingScreen2> {

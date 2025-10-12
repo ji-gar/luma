@@ -31,11 +31,12 @@ import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
+import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun MySelfStep1(navController: NavController) {
+fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel) {
 
     var firstName=remember { mutableStateOf("") }
     var lasttName=remember { mutableStateOf("") }
@@ -182,6 +183,9 @@ fun MySelfStep1(navController: NavController) {
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
                 "Next") {
 
+                registermyself.updateName(name = firstName.value+""+lasttName.value)
+                registermyself.updateEmail(email=email.value)
+                registermyself.updatePhone(phone = phone.value)
 
                 navController.navigate(NavRoute.MyselfStep2)
             }

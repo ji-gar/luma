@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CardDefaults
@@ -82,10 +83,16 @@ fun OnBordingScreen2(navController: NavController) {
                     border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                     )
                 ) {
-                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 30.sdp),
+                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         com.io.luma.customcompose.height(10)
-                        Text("Hello! I am Luma!",
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Hello! I am Luma!",
                             style = TextStyle(
                                 color = textColor,
                                 fontSize = 22.ssp
@@ -94,6 +101,17 @@ fun OnBordingScreen2(navController: NavController) {
                             fontFamily = manropebold,
                             textAlign = TextAlign.Center
                         )
+
+                            Image(
+                                painter = painterResource(R.drawable.cancle),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
+                            )
+                        }
+
+
                         com.io.luma.customcompose.height(20)
 
                         Text("I’m your helper, here\nto make things easier\nand guide you through each day.",

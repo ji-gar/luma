@@ -101,7 +101,7 @@ fun OnBordingScreen7(navController: NavController) {
                     border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                     )
                 ) {
-                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 30.sdp),
+                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         com.io.luma.customcompose.height(10)
                         Text("Choose Your Carer",

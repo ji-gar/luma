@@ -45,11 +45,12 @@ import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
+import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun MySelfStep2(navController: NavController) {
+fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel) {
 
     var language=remember { mutableStateOf("") }
 
@@ -193,7 +194,8 @@ fun MySelfStep2(navController: NavController) {
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
                 "Set Profile") {
 
-
+                  registermyself.updatePassword(password.value,confirmPassword.value)
+                  registermyself.updateLanguage(language = "en")
                 navController.navigate(NavRoute.MyselfStep3)
             }
 

@@ -6,12 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -19,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -73,7 +77,8 @@ fun OnBordingScreen(navController: NavController) {
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .weight(1f)
-            ) {
+            )
+            {
                 // Top shadow layer
 
 
@@ -87,18 +92,33 @@ fun OnBordingScreen(navController: NavController) {
                     border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                     )
                 ) {
-                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 30.sdp),
+                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         com.io.luma.customcompose.height(10)
-                        Text("Welcome",
-                            style = TextStyle(
-                                color = textColor,
-                                fontSize = 24.ssp
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            fontFamily = manropebold,
-                            textAlign = TextAlign.Center
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "Welcome",
+                                style = TextStyle(
+                                    color = textColor,
+                                    fontSize = 24.ssp,
+                                    fontFamily = manropebold
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Image(
+                                painter = painterResource(R.drawable.cancle),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
+                            )
+                        }
+
                         com.io.luma.customcompose.height(20)
 
                         Text("Do you want to\njoin?",

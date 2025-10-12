@@ -82,6 +82,7 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.io.luma.utils.TokenManager
 import kotlinx.coroutines.CoroutineScope
 
 import okio.ByteString
@@ -129,7 +130,6 @@ fun OnBordingScreen5(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         Column(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
 
-            // --- 3D Model Box ---
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,6 +142,9 @@ fun OnBordingScreen5(navController: NavController) {
                 val cameraNode = rememberCameraNode(engine).apply {
                     position = io.github.sceneview.math.Position(0f, 0f, 3f) // Camera back a bit
                     lookAt(io.github.sceneview.math.Position(0f, 0f, 0f)) // Look at origin
+                }
+                LaunchedEffect(engine) {
+
                 }
 
                 Scene(
@@ -178,19 +181,34 @@ fun OnBordingScreen5(navController: NavController) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 30.dp),
+                            .padding(horizontal = 13.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                                                 com.io.luma.customcompose.height(10)
-                        Text("Personal\nInformation",
-                            style = TextStyle(
-                                color = textColor,
-                                fontSize = 22.ssp
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            fontFamily = manropebold,
-                            textAlign = TextAlign.Center
-                        )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Personal\nInformation",
+                                style = TextStyle(
+                                    color = textColor,
+                                    fontSize = 22.ssp
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                fontFamily = manropebold,
+                                textAlign = TextAlign.Center
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.cancle),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
+                            )
+                        }
+
                         com.io.luma.customcompose.height(20)
 
                         Text("Let’s fill\nyour Personal\ninformation",
@@ -238,7 +256,10 @@ fun OnBordingScreen5(navController: NavController) {
         if (!micPermissionGranted.value) return@LaunchedEffect
 
         val client = OkHttpClient.Builder().readTimeout(0, java.util.concurrent.TimeUnit.MILLISECONDS).build()
-        val request = Request.Builder().url("wss://api-mvp.lumalife.de/ws/agents/$agentId").build()
+        var token= TokenManager.getInstance(context)
+
+        Log.d("Xccc","wss://api-mvp.lumalife.de/ws/agents/${token.getId()}")
+        val request = Request.Builder().url("wss://api-mvp.lumalife.de/ws/agents/${token.getId()}").build()
         val wsListener = object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, response: Response) {
                 webSocket = ws
