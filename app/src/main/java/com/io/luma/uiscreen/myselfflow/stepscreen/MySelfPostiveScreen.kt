@@ -1,0 +1,195 @@
+package com.io.luma.uiscreen.myselfflow.stepscreen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
+import com.io.luma.customcompose.CustomButton
+import com.io.luma.customcompose.height
+import com.io.luma.navroute.NavRoute
+import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.textColor
+import com.io.luma.uiscreen.someoneelsesignup.rowHeader
+import ir.kaaveh.sdpcompose.sdp
+import ir.kaaveh.sdpcompose.ssp
+
+@Composable
+fun MySelfStep1(navController: NavController) {
+
+    var firstName=remember { mutableStateOf("") }
+    var lasttName=remember { mutableStateOf("") }
+    var email=remember { mutableStateOf("") }
+    var phone=remember { mutableStateOf("") }
+    Box(modifier = Modifier.fillMaxSize().background(color = Color.White))
+    {
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center) {
+
+            Text("Luma",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    color = textColor,
+                    fontSize = 20.ssp
+                ))
+
+            height(20)
+
+            Column(modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 24.sdp)
+                .verticalScroll(rememberScrollState()).imePadding(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start)
+            {
+
+                Text("Set up your profile",
+                    style = TextStyle(
+                        color = textColor,
+                        fontSize = 20.ssp
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    fontFamily = manropebold,
+                    textAlign = TextAlign.Center
+                )
+                com.io.luma.customcompose.height(20)
+                rowHeader("Please Enter Name")
+                com.io.luma.customcompose.height(6)
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value =firstName.value,
+                    onValueChange = {
+                        firstName.value=it
+                    },
+                    placeholder = {
+                        Text("Enter your First Name",
+                            style = TextStyle(
+                                color = Color(0xff56575D),
+                                fontSize = 15.ssp
+                            ))
+                    },
+                    shape = RoundedCornerShape(6.sdp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = Color(0xff93969B),
+                        unfocusedBorderColor = Color(0xff93969B)
+                    )
+                )
+                com.io.luma.customcompose.height(13)
+                rowHeader("Your Last Name")
+                com.io.luma.customcompose.height(6)
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value =lasttName.value,
+                    onValueChange = {
+                        lasttName.value=it
+                    },
+                    placeholder = {
+                        Text("Enter Your Last Name",
+                            style = TextStyle(
+                                color = Color(0xff56575D),
+                                fontSize = 15.ssp
+                            ))
+                    },
+                    shape = RoundedCornerShape(6.sdp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = Color(0xff93969B),
+                        unfocusedBorderColor = Color(0xff93969B)
+                    )
+                )
+                com.io.luma.customcompose.height(13)
+                rowHeader("Your Email")
+                com.io.luma.customcompose.height(6)
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value =email.value,
+                    onValueChange = {
+                        email.value=it
+                    },
+                    placeholder = {
+                        Text("Enter Your Email",
+                            style = TextStyle(
+                                color = Color(0xff56575D),
+                                fontSize = 15.ssp
+                            ))
+                    },
+                    shape = RoundedCornerShape(6.sdp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = Color(0xff93969B),
+                        unfocusedBorderColor = Color(0xff93969B)
+                    )
+                )
+
+                com.io.luma.customcompose.height(13)
+                rowHeader("User Phone number")
+                com.io.luma.customcompose.height(6)
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value =phone.value,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    onValueChange = {
+                        phone.value=it
+                    },
+
+                    placeholder = {
+                        Text("Your Phone Number",
+                            style = TextStyle(
+                                color = Color(0xff56575D),
+                                fontSize = 15.ssp
+                            ))
+                    },
+                    shape = RoundedCornerShape(6.sdp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = Color(0xff93969B),
+                        unfocusedBorderColor = Color(0xff93969B)
+                    )
+                )
+                com.io.luma.customcompose.height(13)
+
+
+
+
+
+            }
+            height(20)
+            CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
+                "Next") {
+
+
+                navController.navigate(NavRoute.MyselfStep2)
+            }
+
+
+        }
+    }
+
+
+
+}
