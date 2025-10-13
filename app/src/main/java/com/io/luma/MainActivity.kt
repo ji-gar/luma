@@ -42,12 +42,14 @@ import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen4
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen5
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen6
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen7
+import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen8
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep1
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep2
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep3
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep4
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep5
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep6
+import com.io.luma.viewmodel.CarerRegisterViewModel
 import com.io.luma.viewmodel.RegisterViewModel
 
 class MainActivity : ComponentActivity() {
@@ -73,6 +75,8 @@ fun NavHost() {
     var navController= rememberNavController()
     val registermyself: RegisterViewModel = viewModel()
 
+    val carerViewModel: CarerRegisterViewModel = viewModel()
+
     NavHost(navController, startDestination = NavRoute.SignupСarer) {
 
         composable<NavRoute.SignupСarer> {
@@ -88,24 +92,24 @@ fun NavHost() {
 
         }
         composable<NavRoute.SignupOptionStep2> {
-            SignupStep2(navController)
+            SignupStep2(navController,carerViewModel)
 
         }
         composable<NavRoute.SignupOptionStep3> {
-            SignupStep3(navController)
+            SignupStep3(navController,carerViewModel)
 
         }
         composable<NavRoute.SignupOptionStep4> {
-            SignupStep4(navController)
+            SignupStep4(navController,carerViewModel)
 
         }
 
         composable<NavRoute.SignupOptionStep5> {
-            SignupStep5(navController)
+            SignupStep5(navController,carerViewModel)
 
         }
         composable<NavRoute.SignupOptionStep6> {
-            SignupStep6(navController)
+            SignupStep6(navController,carerViewModel)
 
         }
         composable<NavRoute.Myself> {
@@ -153,6 +157,10 @@ fun NavHost() {
         }
         composable<NavRoute.OnBordingScreen7> {
             OnBordingScreen7(navController)
+
+        }
+        composable<NavRoute.OnBordingScreen8> {
+            OnBordingScreen8(navController)
 
         }
     }

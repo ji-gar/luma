@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,13 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
-import com.io.luma.customcompose.CustomOutlineButton
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.manropesemibold
@@ -51,6 +45,7 @@ import com.io.luma.ui.theme.skyblue
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
 import com.io.luma.ui.theme.verandaRegular
+import com.io.luma.viewmodel.CarerRegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -63,17 +58,17 @@ data class CheckBoxUI(
 )
 
 @Composable
-fun SignupStep6(navController: NavController) {
+fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewModel) {
     var checkBoxList= remember {
 
         mutableStateListOf(CheckBoxUI(
             title = "Send with Phone Number",
-            dec = "+12 345 678 90 12",
+            dec = "${carerViewModel.user.patientPhoneNumber}",
             isChecked = false
         ),
             CheckBoxUI(
                 title = "Send with Email",
-                dec = "arminemail@gmail.com",
+                dec = "${carerViewModel.user.email}",
                 isChecked = false
             )
             )

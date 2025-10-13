@@ -57,6 +57,9 @@ sealed class NavRoute {
     @Serializable
     data object OnBordingScreen7 : NavRoute()
 
+    @Serializable
+    data object OnBordingScreen8 : NavRoute()
+
 
     //SignupStep4
 }

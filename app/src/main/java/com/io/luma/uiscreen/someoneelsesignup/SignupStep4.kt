@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -58,11 +57,12 @@ import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.skyblue
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaRegular
+import com.io.luma.viewmodel.CarerRegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun SignupStep4(navController: NavController) {
+fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewModel) {
 
     var firstName=remember { mutableStateOf("") }
     var lasttName=remember { mutableStateOf("") }
@@ -311,6 +311,10 @@ fun SignupStep4(navController: NavController) {
 
                 CustomButton(modifier = Modifier.fillMaxWidth(),
                     "Save") {
+                    carerViewModel.updatePatientName(firstName.value+""+lasttName.value)
+                    carerViewModel.updatePatientLanguage("en")
+                    carerViewModel.updatePatientPhone(patientPhone = phone.value)
+                    carerViewModel.updatePatientEmail(patientEmail = email.value)
 
 
                    navController.navigate(NavRoute.SignupOptionStep5)

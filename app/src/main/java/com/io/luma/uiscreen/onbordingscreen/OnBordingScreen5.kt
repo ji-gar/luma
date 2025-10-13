@@ -276,7 +276,11 @@ fun OnBordingScreen5(navController: NavController) {
 
                        CustomButton(
                            modifier = Modifier.fillMaxWidth()
-                           ,text = "Next") { }
+                           ,text = "Next") {
+
+                           navController.navigate(NavRoute.OnBordingScreen6)
+
+                       }
                     }
                 }
             }
