@@ -64,19 +64,29 @@ import android.media.MediaRecorder
 import android.media.audiofx.AcousticEchoCanceler
 import android.media.audiofx.NoiseSuppressor
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -90,11 +100,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.io.luma.model.CalendarItem
+import com.io.luma.model.CalendarResponse
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.utils.TokenManager
 import kotlinx.coroutines.CoroutineScope
 
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import org.json.JSONObject
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.math.abs
 
@@ -107,6 +123,7 @@ fun OnBordingScreen5(navController: NavController) {
 
     // --- Mic / WebSocket State ---
     var isRecording by remember { mutableStateOf(false) }
+    var isCalander by remember { mutableStateOf(false) }
     var isSpeaking by remember { mutableStateOf(false) }
     var canSendMic by remember { mutableStateOf(true) }
     val audioQueue = remember { LinkedBlockingQueue<ByteArray>() }
@@ -114,6 +131,7 @@ fun OnBordingScreen5(navController: NavController) {
     var audioTrack by remember { mutableStateOf<AudioTrack?>(null) }
     var audioRecord by remember { mutableStateOf<AudioRecord?>(null) }
     var webSocket by remember { mutableStateOf<WebSocket?>(null) }
+    var information by remember { mutableStateOf("") }
 
     // --- Permission Handling ---
     val micPermissionGranted = remember {
@@ -139,9 +157,17 @@ fun OnBordingScreen5(navController: NavController) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
-
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        Column(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
+    BackHandler(){
+        webSocket?.close(1000, "User closed connection")
+        webSocket = null
+        navController.navigate(NavRoute.OnBordingScreen4)
+    }
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)) {
 
             Box(
                 modifier = Modifier
@@ -159,7 +185,9 @@ fun OnBordingScreen5(navController: NavController) {
 
 
                 Scene(
-                    modifier = Modifier.fillMaxSize().background(color = Color.White),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.White),
                     engine = engine,
                     modelLoader = modelLoader,
                     cameraNode = cameraNode,
@@ -173,86 +201,167 @@ fun OnBordingScreen5(navController: NavController) {
             }
 
             // --- Card UI Box ---
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset(y = (-10).dp)
-                    .weight(1f)
-            ) {
-                OutlinedCard(
-                    modifier = Modifier.fillMaxSize(),
-                    elevation = CardDefaults.elevatedCardElevation(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 13.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                                                com.io.luma.customcompose.height(10)
+            if (isCalander)
+            {
+                val gson = Gson()
+                val response = remember {
+                    try {
+                        gson.fromJson(information, CalendarResponse::class.java)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                val calendarList = response?.calendar_items ?: emptyList()
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .weight(1f)
+                )
+                {
+                    // Top shadow layer
 
-                        Box(
+
+                    // Card content
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxSize(),
+                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        ),
+                        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+                        )
+                    ) {
+
+                        DailyRoutineColumnArray(information)
+//                        Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+//                            horizontalAlignment = Alignment.CenterHorizontally)
+//                        {
+//                            com.io.luma.customcompose.height(10)
+//                            Text("Daily Routing",
+//                                style = TextStyle(
+//                                    color = textColor,
+//                                    fontSize = 22.ssp
+//                                ),
+//                                modifier = Modifier.fillMaxWidth(),
+//                                fontFamily = manropebold,
+//                                textAlign = TextAlign.Center
+//                            )
+//
+//                            com.io.luma.customcompose.height(20)
+//                             Text(information, style = TextStyle(
+//                                 color = textColor,
+//                                 fontSize = 16.ssp
+//                             ),
+//                                 modifier = Modifier.fillMaxWidth(),
+//                                 fontFamily = manropebold,
+//                                 textAlign = TextAlign.Center)
+//                            com.io.luma.customcompose.height(20)
+//
+//                            CustomButton(modifier = Modifier.fillMaxWidth(),
+//                                "Yes") {
+//
+//                                navController.navigate(NavRoute.OnBordingScreen8)
+//                            }
+//
+//
+//
+//
+//
+//
+//
+//
+//                        }
+                    }
+                }
+            }
+            else {
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(y = (-10).dp)
+                        .weight(1f)
+                )
+                {
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxSize(),
+                        elevation = CardDefaults.elevatedCardElevation(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f))
+                    ) {
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
+                                .fillMaxSize()
+                                .padding(horizontal = 13.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("Personal\nInformation",
+                            com.io.luma.customcompose.height(10)
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Personal\nInformation",
+                                    style = TextStyle(
+                                        color = textColor,
+                                        fontSize = 22.ssp
+                                    ),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fontFamily = manropebold,
+                                    textAlign = TextAlign.Center
+                                )
+                                Image(
+                                    painter = painterResource(R.drawable.cancle),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .size(30.sdp) // align image to the right
+
+                                )
+                            }
+
+                            com.io.luma.customcompose.height(20)
+
+                            Text("Let’s fill\nyour Personal\ninformation",
                                 style = TextStyle(
                                     color = textColor,
-                                    fontSize = 22.ssp
+                                    fontSize = 26.ssp
                                 ),
                                 modifier = Modifier.fillMaxWidth(),
                                 fontFamily = manropebold,
                                 textAlign = TextAlign.Center
                             )
-                            Image(
-                                painter = painterResource(R.drawable.cancle),
-                                contentDescription = "",
+                            com.io.luma.customcompose.height(10)
+
+                            Box(
                                 modifier = Modifier
-                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
-
-                            )
-                        }
-
-                        com.io.luma.customcompose.height(20)
-
-                        Text("Let’s fill\nyour Personal\ninformation",
-                            style = TextStyle(
-                                color = textColor,
-                                fontSize = 26.ssp
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            fontFamily = manropebold,
-                            textAlign = TextAlign.Center
-                        )
-                        com.io.luma.customcompose.height(10)
-
-                        Box(
-                            modifier = Modifier
-                                .size(45.dp)
-                                .shadow(4.dp, CircleShape)
-                                .background(if (isRecording) Color.Red else Color.Gray, shape = CircleShape)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = {
-                                        if (micPermissionGranted.value) {
-                                            isRecording = !isRecording
+                                    .size(45.dp)
+                                    .shadow(4.dp, CircleShape)
+                                    .background(
+                                        if (isRecording) Color.Red else Color.Gray,
+                                        shape = CircleShape
+                                    )
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        onClick = {
+                                            if (micPermissionGranted.value) {
+                                                isRecording = !isRecording
+                                            }
                                         }
-                                    }
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = if (isRecording) "Stop" else "Start",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = if (isRecording) "Stop" else "Start",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
 
-                        // --- Mic Button ---
+                            // --- Mic Button ---
 //                        Box(
 //                            modifier = Modifier
 //                                .size(30.dp)
@@ -272,15 +381,16 @@ fun OnBordingScreen5(navController: NavController) {
 
 
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                       CustomButton(
-                           modifier = Modifier.fillMaxWidth()
-                           ,text = "Next") {
+                            CustomButton(
+                                modifier = Modifier.fillMaxWidth()
+                                ,text = "Next") {
 
-                           navController.navigate(NavRoute.OnBordingScreen6)
+                                navController.navigate(NavRoute.OnBordingScreen6)
 
-                       }
+                            }
+                        }
                     }
                 }
             }
@@ -291,7 +401,9 @@ fun OnBordingScreen5(navController: NavController) {
     LaunchedEffect(agentId) {
         if (!micPermissionGranted.value) return@LaunchedEffect
 
-        val client = OkHttpClient.Builder().readTimeout(0, java.util.concurrent.TimeUnit.MILLISECONDS).build()
+        val client = OkHttpClient.Builder().readTimeout(0, java.util.concurrent.TimeUnit.MILLISECONDS)
+            .retryOnConnectionFailure(true)
+            .build()
         var token= TokenManager.getInstance(context)
 
         Log.d("Xccc","wss://api-mvp.lumalife.de/ws/agents/${token.getId()}")
@@ -310,8 +422,8 @@ fun OnBordingScreen5(navController: NavController) {
                         audioTrack = AudioTrack.Builder()
                             .setAudioAttributes(
                                 AudioAttributes.Builder()
-                                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                                     .build()
                             )
                             .setAudioFormat(
@@ -326,6 +438,31 @@ fun OnBordingScreen5(navController: NavController) {
                             .build()
                         audioTrack?.play()
                     }
+//                    if (audioTrack == null) {
+//                        val minBuffer = AudioTrack.getMinBufferSize(
+//                            sampleRate,
+//                            AudioFormat.CHANNEL_OUT_MONO,
+//                            AudioFormat.ENCODING_PCM_16BIT
+//                        ) * 6
+//                        audioTrack = AudioTrack.Builder()
+//                            .setAudioAttributes(
+//                                AudioAttributes.Builder()
+//                                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+//                                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+//                                    .build()
+//                            )
+//                            .setAudioFormat(
+//                                AudioFormat.Builder()
+//                                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+//                                    .setSampleRate(sampleRate)
+//                                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+//                                    .build()
+//                            )
+//                            .setBufferSizeInBytes(minBuffer)
+//                            .setTransferMode(AudioTrack.MODE_STREAM)
+//                            .build()
+//                        audioTrack?.play()
+//                    }
 
                     val tempBuffer = ByteArray(2048)
                     while (isActive) {
@@ -362,6 +499,28 @@ fun OnBordingScreen5(navController: NavController) {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
                 Log.d("WS", text)
+                val jsonObject = JSONObject(text)
+                val type = jsonObject.optString("type")
+
+                if(type.equals("calendar_update"))
+                {
+                    val json= jsonObject.getJSONArray("calendar_items")
+                    CoroutineScope(Dispatchers.Main).launch{
+                      if(json.length()>0)
+                      {
+                          isCalander=true
+                          information=json.toString()
+                      }
+                    }
+                }
+                else if(type.equals("calendar_show")) {
+
+
+                    CoroutineScope(Dispatchers.Main).launch{
+                      //  isCalander=true
+                    }
+                   // navController.navigate(NavRoute.OnBordingScreen7)
+                }
             }
 
             override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
@@ -442,6 +601,59 @@ fun OnBordingScreen5(navController: NavController) {
             onDispose { }
         }
     }
+}
+@Composable
+fun DailyRoutineColumnArray(information: String) {
+    val calendarList = try {
+        Gson().fromJson(
+            information,
+            object : TypeToken<List<CalendarItem>>() {}.type
+        ) as List<CalendarItem>
+    } catch (e: Exception) {
+        e.printStackTrace()
+        emptyList()
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
+        Text(
+            "Daily Routine",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        calendarList.forEach { item ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Text(text = "Title: ${item.title}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Description: ${item.description}", fontSize = 14.sp)
+                Text(text = "Start Time: ${item.start_time ?: "--:--"}", fontSize = 14.sp)
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun calander() {
+
+
+
 }
 
 

@@ -77,7 +77,7 @@ fun NavHost() {
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.SignupСarer) {
+    NavHost(navController, startDestination = NavRoute.OnBordingScreen5) {
 
         composable<NavRoute.SignupСarer> {
 

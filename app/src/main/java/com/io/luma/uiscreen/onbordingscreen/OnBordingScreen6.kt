@@ -66,7 +66,8 @@ fun OnBordingScreen6(navController: NavController) {
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .weight(1f)
-            ) {
+            )
+            {
                 // Top shadow layer
 
 
