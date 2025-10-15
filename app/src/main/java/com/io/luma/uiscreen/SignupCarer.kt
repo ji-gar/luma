@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,11 +30,21 @@ import com.io.luma.customcompose.CustomButton
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
+import com.io.luma.utils.TokenManager
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun SignupCarer(navController: NavController) {
+
+    LaunchedEffect(true) {
+
+        if(TokenManager.getInstance().getAccessToken()!=null)
+        {
+            navController.navigate(NavRoute.OnBordingScreen)
+
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize().background(color = Color.White),
         contentAlignment = Alignment.Center) {

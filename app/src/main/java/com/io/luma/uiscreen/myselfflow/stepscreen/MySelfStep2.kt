@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -33,14 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
+import com.io.luma.customcompose.width
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
@@ -63,17 +67,20 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
 
             height(20)
          Row(horizontalArrangement = Arrangement.Start,
-             modifier = Modifier.padding(horizontal = 20.sdp)) {
+             modifier = Modifier.padding(horizontal = 20.sdp).width(95.sdp))
+         {
              Box(modifier = Modifier.border(width = 2.dp, color = Color.Black,
-                 shape = RoundedCornerShape(13.sdp)).clip(RoundedCornerShape(13.sdp)).clickable {
+                 shape = RoundedCornerShape(13.sdp)).clip(RoundedCornerShape(16.sdp)).clickable {
                  navController.popBackStack()
              }.padding(horizontal = 20.sdp).wrapContentSize()) {
 
-                 Row(modifier = Modifier.wrapContentSize().padding(horizontal = 1.sdp, vertical = 5.sdp),
-                     horizontalArrangement = Arrangement.Center) {
+                 Row(modifier = Modifier.wrapContentSize().padding(vertical = 15.sdp),
+                     verticalAlignment = Alignment.CenterVertically) {
 
-                     Icon(imageVector = Icons.Default.ArrowBack,
+                     Icon(painter = painterResource(R.drawable.backarrow),
                          contentDescription = "")
+
+                     width(3)
 
                      Text("Back",
                          style = TextStyle(

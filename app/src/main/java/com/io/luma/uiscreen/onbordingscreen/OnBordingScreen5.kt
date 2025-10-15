@@ -1,65 +1,11 @@
 package com.io.luma.uiscreen.onbordingscreen
 
-import android.media.AudioAttributes
-import android.media.AudioFormat
-import android.media.AudioTrack
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavController
-import androidx.xr.scenecore.GltfModel
-import com.io.luma.R
-import com.io.luma.customcompose.CustomButton
-import com.io.luma.customcompose.CustomOutlineButton
-import com.io.luma.navroute.NavRoute
-import com.io.luma.ui.theme.manropebold
-import com.io.luma.ui.theme.textColor
-import io.github.sceneview.Scene
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.rememberCameraNode
-import io.github.sceneview.rememberEngine
-import io.github.sceneview.rememberModelLoader
-
-import ir.kaaveh.sdpcompose.sdp
-import ir.kaaveh.sdpcompose.ssp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
-import java.util.concurrent.TimeUnit
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.AudioFormat
 import android.media.AudioRecord
-
+import android.media.AudioTrack
 import android.media.MediaRecorder
 import android.media.audiofx.AcousticEchoCanceler
 import android.media.audiofx.NoiseSuppressor
@@ -69,53 +15,88 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.io.luma.R
+import com.io.luma.customcompose.CustomButton
 import com.io.luma.model.CalendarItem
 import com.io.luma.model.CalendarResponse
-import com.io.luma.ui.theme.verandaBold
+import com.io.luma.navroute.NavRoute
+import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.textColor
 import com.io.luma.utils.TokenManager
+import io.github.sceneview.Scene
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.rememberCameraNode
+import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberModelLoader
+import ir.kaaveh.sdpcompose.sdp
+import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.CoroutineScope
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.json.JSONObject
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 @Composable
 fun OnBordingScreen5(navController: NavController) {
+
     val context = LocalContext.current
     val sampleRate = 16000
     val maxQueueSize = 100
@@ -124,6 +105,7 @@ fun OnBordingScreen5(navController: NavController) {
     // --- Mic / WebSocket State ---
     var isRecording by remember { mutableStateOf(false) }
     var isCalander by remember { mutableStateOf(false) }
+    var isContactList by remember { mutableStateOf(false) }
     var isSpeaking by remember { mutableStateOf(false) }
     var canSendMic by remember { mutableStateOf(true) }
     val audioQueue = remember { LinkedBlockingQueue<ByteArray>() }
@@ -132,6 +114,7 @@ fun OnBordingScreen5(navController: NavController) {
     var audioRecord by remember { mutableStateOf<AudioRecord?>(null) }
     var webSocket by remember { mutableStateOf<WebSocket?>(null) }
     var information by remember { mutableStateOf("") }
+    var contact by remember { mutableStateOf("") }
 
     // --- Permission Handling ---
     val micPermissionGranted = remember {
@@ -275,6 +258,24 @@ fun OnBordingScreen5(navController: NavController) {
                     }
                 }
             }
+            else if(isContactList)
+            {
+                Box(  modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-10).dp)
+                    .weight(1f)) {
+
+
+                   Column(horizontalAlignment = Alignment.CenterHorizontally,
+                       modifier = Modifier.fillMaxSize(),
+                       verticalArrangement = Arrangement.Center) {
+
+                       Text("Contact_List"+contact.toString(), style = TextStyle(
+                           fontSize = 12.ssp
+                       ))
+                   }
+                }
+            }
             else {
 
                 Box(
@@ -381,11 +382,11 @@ fun OnBordingScreen5(navController: NavController) {
 
 
 
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(20.sdp))
 
                             CustomButton(
                                 modifier = Modifier.fillMaxWidth()
-                                ,text = "Next") {
+                                ,text = "Repeat Question") {
 
                                 navController.navigate(NavRoute.OnBordingScreen6)
 
@@ -406,8 +407,8 @@ fun OnBordingScreen5(navController: NavController) {
             .build()
         var token= TokenManager.getInstance(context)
 
-        Log.d("Xccc","wss://api-mvp.lumalife.de/ws/agents/${token.getId()}")
-        val request = Request.Builder().url("wss://api-mvp.lumalife.de/ws/agents/${token.getId()}").build()
+        Log.d("Xccc","wss://api-mvp.lumalife.de/ws/agents/${TokenManager.getInstance().getId()}")
+        val request = Request.Builder().url("wss://api-mvp.lumalife.de/ws/agents/${TokenManager.getInstance().getId()}").build()
         val wsListener = object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, response: Response) {
                 webSocket = ws
@@ -438,55 +439,133 @@ fun OnBordingScreen5(navController: NavController) {
                             .build()
                         audioTrack?.play()
                     }
-//                    if (audioTrack == null) {
-//                        val minBuffer = AudioTrack.getMinBufferSize(
-//                            sampleRate,
-//                            AudioFormat.CHANNEL_OUT_MONO,
-//                            AudioFormat.ENCODING_PCM_16BIT
-//                        ) * 6
-//                        audioTrack = AudioTrack.Builder()
-//                            .setAudioAttributes(
-//                                AudioAttributes.Builder()
-//                                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-//                                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-//                                    .build()
-//                            )
-//                            .setAudioFormat(
-//                                AudioFormat.Builder()
-//                                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-//                                    .setSampleRate(sampleRate)
-//                                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-//                                    .build()
-//                            )
-//                            .setBufferSizeInBytes(minBuffer)
-//                            .setTransferMode(AudioTrack.MODE_STREAM)
-//                            .build()
-//                        audioTrack?.play()
-//                    }
 
-                    val tempBuffer = ByteArray(2048)
+                    val tempBuffer = ByteArray(4087)
+                    val silenceThreshold = 500 // Adjust to your mic sensitivity
+                    var isVoiceDetected = false
+                    var silenceCounter = 0
+                    val silenceLimit = 15  // More tolerance before marking silence (e.g. ~1s)
+                    var lastSpeechTime = System.currentTimeMillis()
+                    val gracePeriodMs = 1200L // Keep "talking" state alive for 1.2 sec after last speech
+
                     while (isActive) {
                         val audioData = audioQueue.take()
                         var offset = 0
                         val chunkSize = 1024
-                        while (offset < audioData.size) {
-                            val len = minOf(chunkSize, audioData.size - offset)
-                            if (isSpeaking) {
-                                for (i in 0 until len step 2) {
-                                    val sample = (audioData[offset + i + 1].toInt() shl 8) or
-                                            (audioData[offset + i].toInt() and 0xFF)
-                                    val ducked = (sample * 0.3).toInt()
-                                    tempBuffer[i] = (ducked and 0xFF).toByte()
-                                    tempBuffer[i + 1] = ((ducked shr 8) and 0xFF).toByte()
-                                }
-                                audioTrack?.write(tempBuffer, 0, len)
-                            } else {
-                                audioTrack?.write(audioData, offset, len)
+
+                        // --- VAD: measure RMS energy ---
+                        val energy = calculateEnergy(audioData)
+                        val currentTime = System.currentTimeMillis()
+
+                        if (energy > silenceThreshold) {
+                            isVoiceDetected = true
+                            silenceCounter = 0
+                            lastSpeechTime = currentTime
+                        } else {
+                            silenceCounter++
+                            // Switch to silence only if grace period passed
+                            if (currentTime - lastSpeechTime > gracePeriodMs) {
+                                isVoiceDetected = false
                             }
-                            offset += len
                         }
+
+                        // --- send/play audio only if currently in speech or within grace period ---
+                        if (isVoiceDetected) {
+                            while (offset < audioData.size) {
+                                val len = minOf(chunkSize, audioData.size - offset)
+                                if (isSpeaking) {
+                                    for (i in 0 until len step 2) {
+                                        val sample = (audioData[offset + i + 1].toInt() shl 8) or
+                                                (audioData[offset + i].toInt() and 0xFF)
+                                        val ducked = (sample * 0.3).toInt()
+                                        tempBuffer[i] = (ducked and 0xFF).toByte()
+                                        tempBuffer[i + 1] = ((ducked shr 8) and 0xFF).toByte()
+                                    }
+                                    audioTrack?.write(tempBuffer, 0, len)
+                                } else {
+                                    audioTrack?.write(audioData, offset, len)
+                                }
+                                offset += len
+                            }
+                        }
+
                         if (audioQueue.isEmpty()) canSendMic = true
                     }
+
+
+                    //second
+
+//                    val tempBuffer = ByteArray(4087)
+//                    val silenceThreshold = 500 // Adjust based on your mic sensitivity
+//                    var isVoiceDetected = false
+//                    var silenceCounter = 0
+//                    val silenceLimit = 10 // Number of silent chunks before pausing send
+//
+//                    while (isActive) {
+//                        val audioData = audioQueue.take()
+//                        var offset = 0
+//                        val chunkSize = 1024
+//
+//                        // --- VAD step ---
+//                        val energy = calculateEnergy(audioData)
+//                        if (energy > silenceThreshold) {
+//                            isVoiceDetected = true
+//                            silenceCounter = 0
+//                        } else {
+//                            silenceCounter++
+//                            if (silenceCounter > silenceLimit) {
+//                                isVoiceDetected = false
+//                            }
+//                        }
+//
+//                        // --- send only if voice detected ---
+//                        if (isVoiceDetected) {
+//                            while (offset < audioData.size) {
+//                                val len = minOf(chunkSize, audioData.size - offset)
+//                                if (isSpeaking) {
+//                                    for (i in 0 until len step 2) {
+//                                        val sample = (audioData[offset + i + 1].toInt() shl 8) or
+//                                                (audioData[offset + i].toInt() and 0xFF)
+//                                        val ducked = (sample * 0.3).toInt()
+//                                        tempBuffer[i] = (ducked and 0xFF).toByte()
+//                                        tempBuffer[i + 1] = ((ducked shr 8) and 0xFF).toByte()
+//                                    }
+//                                    audioTrack?.write(tempBuffer, 0, len)
+//                                } else {
+//                                    audioTrack?.write(audioData, offset, len)
+//                                }
+//                                offset += len
+//                            }
+//                        }
+//
+//                        if (audioQueue.isEmpty()) canSendMic = true
+//                    }
+
+
+
+//                    val tempBuffer = ByteArray(4087)
+//                    while (isActive) {
+//                        val audioData = audioQueue.take()
+//                        var offset = 0
+//                        val chunkSize = 1024
+//                        while (offset < audioData.size) {
+//                            val len = minOf(chunkSize, audioData.size - offset)
+//                            if (isSpeaking) {
+//                                for (i in 0 until len step 2) {
+//                                    val sample = (audioData[offset + i + 1].toInt() shl 8) or
+//                                            (audioData[offset + i].toInt() and 0xFF)
+//                                    val ducked = (sample * 0.3).toInt()
+//                                    tempBuffer[i] = (ducked and 0xFF).toByte()
+//                                    tempBuffer[i + 1] = ((ducked shr 8) and 0xFF).toByte()
+//                                }
+//                                audioTrack?.write(tempBuffer, 0, len)
+//                            } else {
+//                                audioTrack?.write(audioData, offset, len)
+//                            }
+//                            offset += len
+//                        }
+//                        if (audioQueue.isEmpty()) canSendMic = true
+//                    }
                 }
             }
 
@@ -520,6 +599,19 @@ fun OnBordingScreen5(navController: NavController) {
                       //  isCalander=true
                     }
                    // navController.navigate(NavRoute.OnBordingScreen7)
+                }
+                else if(type.equals("contact_update"))
+                {
+                  val json= jsonObject.getJSONArray("contact_items")
+
+                    CoroutineScope(Dispatchers.Main).launch{
+                       if(json.length()>0)
+                       {
+                           isContactList=true
+                           contact=json.toString()
+                       }
+                    }
+
                 }
             }
 
@@ -602,6 +694,19 @@ fun OnBordingScreen5(navController: NavController) {
         }
     }
 }
+
+fun calculateEnergy(audioData: ByteArray): Int {
+    var sum = 0.0
+    for (i in audioData.indices step 2) {
+        val sample = (audioData[i + 1].toInt() shl 8) or (audioData[i].toInt() and 0xFF)
+        sum += sample * sample
+    }
+    val rms = sqrt(sum / (audioData.size / 2))
+    return rms.toInt()
+}
+
+
+
 @Composable
 fun DailyRoutineColumnArray(information: String) {
     val calendarList = try {

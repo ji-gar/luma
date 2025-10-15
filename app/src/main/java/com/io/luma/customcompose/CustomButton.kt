@@ -39,7 +39,7 @@ fun CustomButton(modifier: Modifier = Modifier,
             contentColor = textColor
         ),
         contentPadding = PaddingValues(
-            vertical = 11.sdp
+            vertical = 15.sdp
         ),
         onClick = {
 
@@ -84,7 +84,7 @@ fun CustomOutlineButton(modifier: Modifier = Modifier,
             containerColor = bgColor
         ),
         contentPadding = PaddingValues(
-            vertical = 10.sdp,
+            vertical = 15.sdp,
             horizontal = 5.sdp
         ),
         onClick = {

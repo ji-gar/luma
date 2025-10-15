@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
@@ -52,6 +53,7 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 textAlign = TextAlign.Center,
                 style = TextStyle(
                     color = textColor,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 20.ssp
                 ))
 
@@ -77,6 +79,7 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 rowHeader("Please Enter Name")
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
+
                     modifier = Modifier.fillMaxWidth(),
                     value =firstName.value,
                     onValueChange = {

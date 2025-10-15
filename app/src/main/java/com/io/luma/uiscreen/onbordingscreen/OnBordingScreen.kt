@@ -1,5 +1,11 @@
 package com.io.luma.uiscreen.onbordingscreen
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -28,6 +35,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,107 +61,210 @@ import ir.kaaveh.sdpcompose.ssp
 fun OnBordingScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val infiniteTransition = rememberInfiniteTransition(label = "move")
+
+    val offsetY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = -20f, // Move upward
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "offsetY"
+    )
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
+            contentAlignment = Alignment.Center) {
+
+            Image(painter = painterResource(R.drawable.luma),
+                modifier = Modifier.offset(y = offsetY.dp),
+                contentDescription = "")
+        }
 
 
-        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f)
+                .align(Alignment.BottomCenter)
+                .align(alignment = Alignment.BottomCenter)
+        )
+        {
+            // Top shadow layer
 
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f).background(color = Color.White),
-                contentAlignment = Alignment.Center) {
 
-                Column(modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
+            // Card content
+            OutlinedCard(
+                modifier = Modifier.fillMaxSize(),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                ),
+                border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+                )
+            ) {
+                Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painter = painterResource(R.drawable.lumaperson),
-                        contentDescription = "")
-
-                }
-            }
-
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .weight(1f)
-            )
-            {
-                // Top shadow layer
-
-
-                // Card content
-                OutlinedCard(
-                    modifier = Modifier.fillMaxSize(),
-                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                    ),
-                    border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
-                    )
-                ) {
-                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        com.io.luma.customcompose.height(10)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "Welcome",
-                                style = TextStyle(
-                                    color = textColor,
-                                    fontSize = 24.ssp,
-                                    fontFamily = manropebold
-                                ),
-                                textAlign = TextAlign.Center
-                            )
-
-                            Image(
-                                painter = painterResource(R.drawable.cancle),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
-
-                            )
-                        }
-
-                        com.io.luma.customcompose.height(20)
-
-                        Text("Do you want to\njoin?",
+                    com.io.luma.customcompose.height(10)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "Welcome",
                             style = TextStyle(
                                 color = textColor,
-                                fontSize = 27.ssp
+                                fontSize = 24.ssp,
+                                fontFamily = manropebold
                             ),
-                            modifier = Modifier.fillMaxWidth(),
-                            fontFamily = manropebold,
                             textAlign = TextAlign.Center
                         )
-                        com.io.luma.customcompose.height(20)
 
-                        CustomButton(modifier = Modifier.fillMaxWidth(),
-                            "Yes") {
+                        Image(
+                            painter = painterResource(R.drawable.cancle),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
 
-
-                            navController.navigate(NavRoute.OnBordingScreen2)
-                        }
-
-                        com.io.luma.customcompose.height(20)
-
-                        CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
-                            "No") {
-
-
-                           // navController.navigate(NavRoute.SignupOptionStep5)
-                        }
-
-
+                        )
                     }
+
+                    com.io.luma.customcompose.height(20)
+
+                    Text("Do you want to\njoin?",
+                        style = TextStyle(
+                            color = textColor,
+                            fontSize = 27.ssp
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        fontFamily = manropebold,
+                        textAlign = TextAlign.Center
+                    )
+                    com.io.luma.customcompose.height(20)
+
+                    CustomButton(modifier = Modifier.fillMaxWidth(),
+                        "Yes") {
+
+
+                        navController.navigate(NavRoute.OnBordingScreen2)
+                    }
+
+                    com.io.luma.customcompose.height(20)
+
+                    CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
+                        "No") {
+
+
+                        // navController.navigate(NavRoute.SignupOptionStep5)
+                    }
+
+
                 }
             }
-
         }
+
+
+
+//        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent)) {
+//
+//            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f).background(color = Color.White),
+//                contentAlignment = Alignment.Center) {
+//
+//                Column(modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally) {
+//                    Image(painter = painterResource(R.drawable.lumaperson),
+//                        contentDescription = "")
+//
+//                }
+//            }
+//
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .fillMaxHeight()
+//                    .weight(0.5f)
+//                    .align(alignment = Alignment.BottomCenter)
+//            )
+//            {
+//                // Top shadow layer
+//
+//
+//                // Card content
+//                OutlinedCard(
+//                    modifier = Modifier.fillMaxSize(),
+//                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
+//                    colors = CardDefaults.cardColors(
+//                        containerColor = Color.White,
+//                    ),
+//                    border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+//                    )
+//                ) {
+//                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+//                        horizontalAlignment = Alignment.CenterHorizontally) {
+//                        com.io.luma.customcompose.height(10)
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Text(
+//                                "Welcome",
+//                                style = TextStyle(
+//                                    color = textColor,
+//                                    fontSize = 24.ssp,
+//                                    fontFamily = manropebold
+//                                ),
+//                                textAlign = TextAlign.Center
+//                            )
+//
+//                            Image(
+//                                painter = painterResource(R.drawable.cancle),
+//                                contentDescription = "",
+//                                modifier = Modifier
+//                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+//
+//                            )
+//                        }
+//
+//                        com.io.luma.customcompose.height(20)
+//
+//                        Text("Do you want to\njoin?",
+//                            style = TextStyle(
+//                                color = textColor,
+//                                fontSize = 27.ssp
+//                            ),
+//                            modifier = Modifier.fillMaxWidth(),
+//                            fontFamily = manropebold,
+//                            textAlign = TextAlign.Center
+//                        )
+//                        com.io.luma.customcompose.height(20)
+//
+//                        CustomButton(modifier = Modifier.fillMaxWidth(),
+//                            "Yes") {
+//
+//
+//                            navController.navigate(NavRoute.OnBordingScreen2)
+//                        }
+//
+//                        com.io.luma.customcompose.height(20)
+//
+//                        CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
+//                            "No") {
+//
+//
+//                           // navController.navigate(NavRoute.SignupOptionStep5)
+//                        }
+//
+//
+//                    }
+//                }
+//            }
+//
+//        }
 
 
 

@@ -49,11 +49,13 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.CustomOutlineButton
 import com.io.luma.customcompose.height
@@ -94,46 +96,35 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
         ) { padding ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
+                    .fillMaxSize().background(color = Color.White)
+                    .padding(padding).background(Color.White)
             )
             {
 
                 height(20)
 
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.padding(horizontal = 20.sdp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .border(
-                                width = 2.dp, color = Color.Black,
-                                shape = RoundedCornerShape(13.sdp)
-                            )
-                            .clip(RoundedCornerShape(13.sdp))
-                            .clickable { navController.popBackStack() }
-                            .padding(horizontal = 20.sdp)
-                            .wrapContentSize()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(horizontal = 1.sdp, vertical = 5.sdp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = ""
-                            )
+                Row(horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.padding(horizontal = 20.sdp).width(95.sdp))
+                {
+                    Box(modifier = Modifier.border(width = 2.dp, color = Color.Black,
+                        shape = RoundedCornerShape(13.sdp)).clip(RoundedCornerShape(16.sdp)).clickable {
+                        navController.popBackStack()
+                    }.padding(horizontal = 20.sdp).wrapContentSize()) {
 
-                            Text(
-                                "Back",
+                        Row(modifier = Modifier.wrapContentSize().padding(vertical = 15.sdp),
+                            verticalAlignment = Alignment.CenterVertically) {
+
+                            Icon(painter = painterResource(R.drawable.backarrow),
+                                contentDescription = "")
+
+                            com.io.luma.customcompose.width(3)
+
+                            Text("Back",
                                 style = TextStyle(
                                     color = textColor,
                                     fontSize = 16.ssp
-                                )
-                            )
+                                ))
+
                         }
                     }
                 }
@@ -196,7 +187,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                         )
                     }
 
-                    height(20)
+                    height(24)
 
                     CustomButton(
                         modifier = Modifier
@@ -207,7 +198,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                         navController.navigate(NavRoute.MyselfStep2)
                     }
 
-                    height(20)
+                    height(24)
 
                     CustomOutlineButton(
                         modifier = Modifier
