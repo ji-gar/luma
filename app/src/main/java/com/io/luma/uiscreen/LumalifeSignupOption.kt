@@ -57,27 +57,28 @@ fun CarerSignupOption(navController: NavController) {
         )
         {
 
-            com.io.luma.customcompose.height(16)
+            Row(horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()) {
+                Image(painter = painterResource(R.drawable.lumalife_logo),
+                    contentDescription = "",
+                    modifier = Modifier.height(33.sdp))
+            }
 
-            Image(painter = painterResource(R.drawable.demo),
-                contentDescription = "Logo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.height(245.sdp))
+            com.io.luma.customcompose.height(30)
 
 
-
-            Text("Are you the person who will use Luma or are you getting it for someone else?",
+            Text("Are you the\nperson who will\nuse Luma\nor are\nyou getting it for someone\nelse?",
                 style = TextStyle(
                     color = textColor,
                     fontFamily = verandaBold,
-                    fontSize = 22.ssp,
+                    fontSize = 26.ssp,
                     fontWeight = FontWeight.W700
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
 
-            com.io.luma.customcompose.height(30)
+            com.io.luma.customcompose.height(40)
 
             Column(
                 Modifier.selectableGroup(),

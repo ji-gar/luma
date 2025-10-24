@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -77,7 +78,7 @@ fun OnBordingScreen(navController: NavController) {
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
             contentAlignment = Alignment.Center) {
 
-            Image(painter = painterResource(R.drawable.luma),
+            Image(painter = painterResource(R.drawable.onbordingluma),
                 modifier = Modifier.offset(y = offsetY.dp),
                 contentDescription = "")
         }
@@ -104,12 +105,12 @@ fun OnBordingScreen(navController: NavController) {
                 border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                 )
             ) {
-                Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+                Column(modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     com.io.luma.customcompose.height(10)
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth().padding(end = 13.sdp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -130,21 +131,26 @@ fun OnBordingScreen(navController: NavController) {
 
                         )
                     }
-
+                    com.io.luma.customcompose.height(13)
+                    HorizontalDivider(
+                        color = Color(0xFF4E73FF).copy(alpha = 0.2f),
+                        thickness = 1.dp
+                    )
                     com.io.luma.customcompose.height(20)
 
                     Text("Do you want to\njoin?",
                         style = TextStyle(
                             color = textColor,
-                            fontSize = 27.ssp
+                            fontSize = 27.ssp,
+                            fontWeight = FontWeight.W700
                         ),
                         modifier = Modifier.fillMaxWidth(),
-                        fontFamily = manropebold,
+
                         textAlign = TextAlign.Center
                     )
                     com.io.luma.customcompose.height(20)
 
-                    CustomButton(modifier = Modifier.fillMaxWidth(),
+                    CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
                         "Yes") {
 
 
@@ -153,7 +159,7 @@ fun OnBordingScreen(navController: NavController) {
 
                     com.io.luma.customcompose.height(20)
 
-                    CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
+                    CustomOutlineButton (modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
                         "No") {
 
 

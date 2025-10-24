@@ -43,6 +43,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -172,7 +173,7 @@ fun OnBordingScreen5(navController: NavController) {
                 .fillMaxWidth()
                 .background(Color.White),
 
-        )
+            )
         {
             val engine = rememberEngine()
             val modelLoader = rememberModelLoader(engine)
@@ -180,18 +181,21 @@ fun OnBordingScreen5(navController: NavController) {
                 position = io.github.sceneview.math.Position(0f, 1f, 4f)
                 lookAt(io.github.sceneview.math.Position(0f, 1f, 0f))
             }
-            Scene(
-                modifier = Modifier.fillMaxSize().background(Color.White),
-                engine = engine,
-                modelLoader = modelLoader,
-                cameraNode = cameraNode,
-                childNodes = listOf(
-                    ModelNode(
-                        modelInstance = modelLoader.createModelInstance("models/marcel.glb"),
-                        scaleToUnits = 1.25f,
-                    )
-                )
-            )
+
+            Image(painter = painterResource(R.drawable.onbordingluma),
+                contentDescription = "")
+//            Scene(
+//                modifier = Modifier.fillMaxSize().background(Color.White),
+//                engine = engine,
+//                modelLoader = modelLoader,
+//                cameraNode = cameraNode,
+//                childNodes = listOf(
+//                    ModelNode(
+//                        modelInstance = modelLoader.createModelInstance("models/marcel.glb"),
+//                        scaleToUnits = 1.25f,
+//                    )
+//                )
+//            )
         }
 
         // Show info / contacts / default UI
@@ -247,7 +251,7 @@ fun OnBordingScreen5(navController: NavController) {
                             Spacer(modifier = Modifier.height(12.dp))
 
                             CustomButton(
-                               onClick = {},
+                                onClick = {},
                                 modifier = Modifier.fillMaxWidth(),
                                 text = "See you Afternoon"
                             )
@@ -257,6 +261,7 @@ fun OnBordingScreen5(navController: NavController) {
             }
 
             isContactList -> {
+                Log.d("Contact",contact)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -275,15 +280,30 @@ fun OnBordingScreen5(navController: NavController) {
                             modifier = Modifier.fillMaxSize()
                                 .padding(horizontal = 13.dp),
                         ) {
-                            Text("Choose Your Carer",
-                                style = TextStyle(
-                                    color = textColor,
-                                    fontSize = 22.ssp
-                                ),
-                                modifier = Modifier.fillMaxWidth(),
-                                fontFamily = manropebold,
-                                textAlign = TextAlign.Center
-                            )
+                            com.io.luma.customcompose.height(10)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Choose Your\nCarer!",
+                                    style = TextStyle(
+                                        color = textColor,
+                                        fontSize = 22.ssp
+                                    ),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fontFamily = manropebold,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Image(
+                                    painter = painterResource(R.drawable.cancle),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
+                                )
+                            }
 
                             com.io.luma.customcompose.height(20)
                             optionList.forEachIndexed { index,text ->
@@ -334,7 +354,7 @@ fun OnBordingScreen5(navController: NavController) {
                             CustomButton(modifier = Modifier.fillMaxWidth(),
                                 "Yes") {
 
-                              //  navController.navigate(NavRoute.OnBordingScreen8)
+                                //  navController.navigate(NavRoute.OnBordingScreen8)
                             }
                         }
                     }
@@ -358,23 +378,51 @@ fun OnBordingScreen5(navController: NavController) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 13.dp),
+                                ,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.height(10.dp))
-
                             Box(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth().padding(end = 13.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    "Personal\nInformation",
-                                    style = TextStyle(color = Color.Black, fontSize = 22.sp),
+                                Text("Personal\nInformation",
+                                    style = TextStyle(
+                                        color = textColor,
+                                        fontSize = 22.ssp
+                                    ),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fontFamily = manropebold,
                                     textAlign = TextAlign.Center
+                                )
+
+                                Image(
+                                    painter = painterResource(R.drawable.cancle),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+
                                 )
                             }
 
-                            Spacer(modifier = Modifier.height(20.dp))
+                            com.io.luma.customcompose.height(13)
+                            HorizontalDivider(
+                                color = Color(0xFF4E73FF).copy(alpha = 0.2f),
+                                thickness = 1.dp
+                            )
+
+                            com.io.luma.customcompose.height(20)
+
+                            Text("Let’s fill\nyour Personal\ninformation",
+                                style = TextStyle(
+                                    color = textColor,
+                                    fontSize = 26.ssp
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                fontFamily = manropebold,
+                                textAlign = TextAlign.Center
+                            )
 
                             Box(
                                 modifier = Modifier
@@ -394,6 +442,9 @@ fun OnBordingScreen5(navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                             }
+                            Spacer(modifier = Modifier.height(20.dp))
+                            CustomButton(text = "Repeat Question",
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 13.dp)) { }
                         }
                     }
                 }
@@ -504,6 +555,7 @@ fun OnBordingScreen5(navController: NavController) {
                                 temp.forEachIndexed { index, item ->
                                     optionList.add(RadioGroup(item.name, item.phone!!))
                                 }
+                                Log.d("Contatc",temp.toString())
 
                             }
                         }

@@ -57,7 +57,7 @@ fun OnBordingScreen4(navController: NavController) {
                 Column(modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painter = painterResource(R.drawable.lumaperson),
+                    Image(painter = painterResource(R.drawable.onbordingluma),
                         contentDescription = "")
 
                 }

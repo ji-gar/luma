@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -71,7 +74,7 @@ fun OnBordingScreen3(navController: NavController) {
             Column(modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(R.drawable.luma),
+                Image(painter = painterResource(R.drawable.onbordingluma),
                     modifier = Modifier.offset(y = offsetY.dp),
                     contentDescription = "")
 
@@ -99,14 +102,23 @@ fun OnBordingScreen3(navController: NavController) {
                 border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                 )
             ) {
-                Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+                Column(modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     com.io.luma.customcompose.height(10)
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth().padding(end = 13.sdp),
                         contentAlignment = Alignment.Center
                     ) {
+                        Text(
+                            "Who to talk to?",
+                            style = TextStyle(
+                                color = textColor,
+                                fontSize = 24.ssp,
+                                fontFamily = manropebold
+                            ),
+                            textAlign = TextAlign.Center
+                        )
 
                         Image(
                             painter = painterResource(R.drawable.cancle),
@@ -116,29 +128,26 @@ fun OnBordingScreen3(navController: NavController) {
 
                         )
                     }
-                    Text("Chose who you want\nto talk with",
-                        style = TextStyle(
-                            color = textColor,
-                            fontSize = 22.ssp
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
-                        fontFamily = manropebold,
-                        textAlign = TextAlign.Center
+                    com.io.luma.customcompose.height(13)
+                    HorizontalDivider(
+                        color = Color(0xFF4E73FF).copy(alpha = 0.2f),
+                        thickness = 1.dp
                     )
+
                     com.io.luma.customcompose.height(20)
 
                     Text("Luma (Female)",
                         style = TextStyle(
                             color = Color(0xff4C4C50),
-                            fontSize = 26.ssp
+                            fontSize = 26.ssp,
+                            fontWeight= FontWeight.Bold
                         ),
                         modifier = Modifier.fillMaxWidth(),
-                        fontFamily = manropebold,
                         textAlign = TextAlign.Center
                     )
-                    com.io.luma.customcompose.height(20)
 
-                    CustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+                    com.io.luma.customcompose.height(30)
+                    CustomOutlineButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
                         "Male") {
 
                         navController.navigate(NavRoute.OnBordingScreen5)
@@ -146,8 +155,8 @@ fun OnBordingScreen3(navController: NavController) {
 
                     com.io.luma.customcompose.height(20)
 
-                    CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
-                        "Female") {
+                    CustomButton (modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
+                        "I want to talk with Female") {
 
 
                         navController.navigate(NavRoute.OnBordingScreen5)
