@@ -19,11 +19,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,16 +38,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -68,9 +74,11 @@ import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.model.CalendarItem
 import com.io.luma.model.CalendarResponse
+import com.io.luma.model.ContactItem
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.utils.TokenManager
 import io.github.sceneview.Scene
 import io.github.sceneview.node.ModelNode
@@ -118,6 +126,13 @@ fun OnBordingScreen5(navController: NavController) {
     var information by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }
 
+    val optionList = remember { mutableStateListOf<RadioGroup>() }
+    val calendarList = remember { mutableStateListOf<CalendarItem>() }
+
+
+    val (selectedIndex, onSelectedIndexChange) = remember { mutableStateOf(0) }
+
+
     val micPermissionGranted = remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
@@ -153,9 +168,10 @@ fun OnBordingScreen5(navController: NavController) {
 
         Box(
             modifier = Modifier
+                .fillMaxHeight()
                 .fillMaxWidth()
                 .background(Color.White),
-            contentAlignment = Alignment.Center
+
         )
         {
             val engine = rememberEngine()
@@ -181,9 +197,15 @@ fun OnBordingScreen5(navController: NavController) {
         // Show info / contacts / default UI
         when {
             isCalander -> {
+
+
+
+
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
                         .align(Alignment.BottomCenter)
                 ) {
                     OutlinedCard(
@@ -192,7 +214,44 @@ fun OnBordingScreen5(navController: NavController) {
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                         border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f))
                     ) {
-                        Text(information)
+                        Column(modifier = Modifier.padding(13.sdp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                text = "Your Normal Day",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            // 3️⃣ Show each item in list
+                            calendarList.forEach { item ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = item.start_time ?: "--:--",
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = item.title ?: "",
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            CustomButton(
+                               onClick = {},
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "See you Afternoon"
+                            )
+                        }
                     }
                 }
             }
@@ -201,14 +260,83 @@ fun OnBordingScreen5(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
                         .align(Alignment.BottomCenter)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
+
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxSize(),
+                        elevation = CardDefaults.elevatedCardElevation(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f))
                     ) {
-                        Text("Contact_List $contact", style = TextStyle(fontSize = 12.ssp))
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxSize()
+                                .padding(horizontal = 13.dp),
+                        ) {
+                            Text("Choose Your Carer",
+                                style = TextStyle(
+                                    color = textColor,
+                                    fontSize = 22.ssp
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                fontFamily = manropebold,
+                                textAlign = TextAlign.Center
+                            )
+
+                            com.io.luma.customcompose.height(20)
+                            optionList.forEachIndexed { index,text ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth().padding(bottom = 10.dp)
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(12.dp)
+                                        ) .selectable(
+                                            selected = (index == selectedIndex),
+                                            onClick = { onSelectedIndexChange(index) }
+                                        )
+                                        .border(width =if (index==selectedIndex)  2.dp else  1.dp, Color.Black, RoundedCornerShape(12.dp))
+                                        .height(56.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = (index == selectedIndex),
+                                        onClick = { onSelectedIndexChange(index) }, // click works now
+                                        colors = RadioButtonDefaults.colors(
+                                            selectedColor = Color.Black,
+                                            unselectedColor = Color.Black
+                                        )
+                                    )
+                                    Column {
+                                        Text(
+                                            text = text.tilte,
+                                            style = TextStyle(
+                                                fontFamily = verandaBold,
+                                                color = Color.Black,
+                                                fontSize = 18.ssp
+                                            )
+                                        )
+                                        Text(
+                                            text = text.dec,
+                                            style = TextStyle(
+                                                fontFamily = verandaBold,
+                                                color = Color(0xff4C4C50),
+                                                fontSize = 18.ssp
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                            com.io.luma.customcompose.height(20)
+
+                            CustomButton(modifier = Modifier.fillMaxWidth(),
+                                "Yes") {
+
+                              //  navController.navigate(NavRoute.OnBordingScreen8)
+                            }
+                        }
                     }
                 }
             }
@@ -217,7 +345,9 @@ fun OnBordingScreen5(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
                         .align(Alignment.BottomCenter)
+
                 ) {
                     OutlinedCard(
                         modifier = Modifier.fillMaxSize(),
@@ -353,6 +483,13 @@ fun OnBordingScreen5(navController: NavController) {
                             if (json.length() > 0) {
                                 isCalander = true
                                 information = json.toString()
+                                val parsed = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+                                calendarList.clear()
+                                calendarList.addAll(parsed)
+
+                                //calendarList.value = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+
+
                             }
                         }
                     }
@@ -363,6 +500,11 @@ fun OnBordingScreen5(navController: NavController) {
                             if (json.length() > 0) {
                                 isContactList = true
                                 contact = json.toString()
+                                var temp=Gson().fromJson(contact, Array<ContactItem>::class.java).toList()
+                                temp.forEachIndexed { index, item ->
+                                    optionList.add(RadioGroup(item.name, item.phone!!))
+                                }
+
                             }
                         }
                     }
