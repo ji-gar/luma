@@ -60,6 +60,19 @@ sealed class NavRoute {
     @Serializable
     data object OnBordingScreen8 : NavRoute()
 
+    @Serializable
+    data object SplaceScreen : NavRoute()
+
+    @Serializable
+    data object MobileScreen : NavRoute()
+
+    @Serializable
+    data object LoginOption : NavRoute()
+
+    @Serializable
+    data object LoginScreen : NavRoute()
+
+
 
     //SignupStep4
 }

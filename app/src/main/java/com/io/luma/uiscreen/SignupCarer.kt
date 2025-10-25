@@ -58,7 +58,7 @@ fun SignupCarer(navController: NavController) {
         )
         {
 
-            Image(painter = painterResource(R.drawable.demo),
+            Image(painter = painterResource(R.drawable.helloluma),
                 contentDescription = "Logo",
                 modifier = Modifier.size(245.sdp))
             com.io.luma.customcompose.height(16)

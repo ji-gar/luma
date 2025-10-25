@@ -31,6 +31,10 @@ import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.skyblue
 import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
+import com.io.luma.uiscreen.SplaceScreen
+import com.io.luma.uiscreen.loginscreen.LoginOption
+import com.io.luma.uiscreen.loginscreen.LoginScreen
+import com.io.luma.uiscreen.loginscreen.MobileNumberScreen
 import com.io.luma.uiscreen.myselfflow.MySelfFlow
 import com.io.luma.uiscreen.myselfflow.stepscreen.MySelfStep1
 import com.io.luma.uiscreen.myselfflow.stepscreen.MySelfStep2
@@ -77,14 +81,31 @@ fun NavHost() {
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.SignupСarer) {
+    NavHost(navController, startDestination = NavRoute.SplaceScreen) {
 
         composable<NavRoute.SignupСarer> {
 
             SignupCarer(navController)
         }
+
+        composable<NavRoute.MobileScreen> {
+            MobileNumberScreen(navController)
+        }
+
+        composable<NavRoute.SplaceScreen> {
+
+            SplaceScreen(navController)
+        }
         composable<NavRoute.SignupOption> {
             CarerSignupOption(navController)
+
+        }
+        composable<NavRoute.LoginOption> {
+            LoginOption(navController)
+
+        }
+        composable<NavRoute.LoginScreen> {
+            LoginScreen(navController)
 
         }
         composable<NavRoute.SignupOptionStep1> {

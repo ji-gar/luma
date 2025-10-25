@@ -127,6 +127,7 @@ fun CarerSignupOption(navController: NavController) {
                             )
                         )
                         Text(
+
                             text = text,
                             style = TextStyle(
                                 fontFamily = verandaRegular,
