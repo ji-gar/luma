@@ -90,6 +90,7 @@ import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -106,6 +107,13 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+
+enum class VoiceState {
+    IDLE,              // Ready to start
+    USER_SPEAKING,     // User is speaking
+    AI_SPEAKING,       // AI is responding
+    INTERRUPTED        // User interrupted AI
+}
 
 @Composable
 fun OnBordingScreen5(navController: NavController) {
@@ -125,7 +133,12 @@ fun OnBordingScreen5(navController: NavController) {
     var webSocket by remember { mutableStateOf<WebSocket?>(null) }
 
     var information by remember { mutableStateOf("") }
+    var lastAiSpeechEndTime by remember { mutableStateOf(0L) }
     var contact by remember { mutableStateOf("") }
+    var playbackJob by remember { mutableStateOf<Job?>(null) }
+    var shouldStopPlayback by remember { mutableStateOf(false) }
+    var voiceState by remember { mutableStateOf(VoiceState.IDLE) }
+    var userSpeechDetected by remember { mutableStateOf(false) }
 
     val optionList = remember { mutableStateListOf<RadioGroup>() }
     val calendarList = remember { mutableStateListOf<CalendarItem>() }
@@ -157,12 +170,38 @@ fun OnBordingScreen5(navController: NavController) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
-
     BackHandler {
+        // Clean up all resources before navigating back
+        Log.d("Lifecycle", "Back button pressed - cleaning up")
+
+        // Stop recording
+        isRecording = false
+
+        // Stop playback
+        shouldStopPlayback = true
+        playbackJob?.cancel()
+
+        // Clean up audio
+        audioRecord?.stop()
+        audioRecord?.release()
+        audioTrack?.stop()
+        audioTrack?.flush()
+        audioTrack?.release()
+        audioQueue.clear()
+
+        // Close WebSocket
         webSocket?.close(1000, "User closed connection")
         webSocket = null
+
+        // Reset state
+        voiceState = VoiceState.IDLE
+        userSpeechDetected = false
+        isServerSpeaking = false
+
         navController.navigate(NavRoute.OnBordingScreen4)
     }
+
+
 
     // ------------------ UI Start ------------------
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
@@ -432,14 +471,48 @@ fun OnBordingScreen5(navController: NavController) {
                                     .clickable {
                                         if (micPermissionGranted.value) {
                                             isRecording = !isRecording
+                                            if (!isRecording) {
+                                                // Reset state when stopping
+                                                voiceState = VoiceState.IDLE
+                                                userSpeechDetected = false
+                                            }
                                         }
                                     },
                                 contentAlignment = Alignment.Center
-                            ) {
+                            )
+                            {
                                 Text(
                                     text = if (isRecording) "Stop" else "Start",
                                     color = Color.White,
                                     fontWeight = FontWeight.Bold
+                                )
+                            }
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            )
+                            {
+                                val stateText = when (voiceState) {
+                                    VoiceState.IDLE -> "Ready to listen"
+                                    VoiceState.USER_SPEAKING -> "You are speaking..."
+                                    VoiceState.AI_SPEAKING -> "AI is responding..."
+                                    VoiceState.INTERRUPTED -> "Processing interruption..."
+                                }
+                                val stateColor = when (voiceState) {
+                                    VoiceState.IDLE -> Color.Gray
+                                    VoiceState.USER_SPEAKING -> Color(0xFF4CAF50)
+                                    VoiceState.AI_SPEAKING -> Color(0xFF2196F3)
+                                    VoiceState.INTERRUPTED -> Color(0xFFFF9800)
+                                }
+
+                                Text(
+                                    text = stateText,
+                                    style = TextStyle(
+                                        color = stateColor,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                             Spacer(modifier = Modifier.height(20.dp))
@@ -466,6 +539,172 @@ fun OnBordingScreen5(navController: NavController) {
     // ------------------ UI End ------------------
 
     // ------------------ WebSocket & Audio Handling ------------------
+//    LaunchedEffect(agentId) {
+//        if (!micPermissionGranted.value) return@LaunchedEffect
+//
+//        val client = OkHttpClient.Builder()
+//            .readTimeout(0, TimeUnit.MILLISECONDS)
+//            .retryOnConnectionFailure(true)
+//            .build()
+//
+//        val token = TokenManager.getInstance(context)
+//        val request = Request.Builder()
+//            .url("wss://api-mvp.lumalife.de/ws/agents/${token.getId()}")
+//            .build()
+//
+//        val wsListener = object : WebSocketListener() {
+//
+//            override fun onOpen(ws: WebSocket, response: Response) {
+//                webSocket = ws
+//
+//                // Initialize AudioTrack once
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    if (audioTrack == null) {
+//                        val minBuffer = AudioTrack.getMinBufferSize(
+//                            sampleRate,
+//                            AudioFormat.CHANNEL_OUT_MONO,
+//                            AudioFormat.ENCODING_PCM_16BIT
+//                        ) * 6
+//
+//                        audioTrack = AudioTrack.Builder()
+//                            .setAudioAttributes(
+//                                AudioAttributes.Builder()
+//                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+//                                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+//                                    .build()
+//                            )
+//                            .setAudioFormat(
+//                                AudioFormat.Builder()
+//                                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+//                                    .setSampleRate(sampleRate)
+//                                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+//                                    .build()
+//                            )
+//                            .setBufferSizeInBytes(minBuffer)
+//                            .setTransferMode(AudioTrack.MODE_STREAM)
+//                            .build()
+//
+//                        audioTrack?.play()
+//                    }
+//
+//                    // Playback loop for queued audio
+//                    while (isActive) {
+//                        val audioData = audioQueue.take()
+//                        isServerSpeaking = true
+//                        audioTrack?.write(audioData, 0, audioData.size)
+//                        isServerSpeaking = false
+//                    }
+//                }
+//            }
+//
+//            override fun onMessage(webSocket: WebSocket, text: String) {
+//                val jsonObject = JSONObject(text)
+//                Log.d("WS", text)
+//                when (jsonObject.optString("type")) {
+//                    "calendar_update" -> {
+//                        val json = jsonObject.getJSONArray("calendar_items")
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            if (json.length() > 0) {
+//                                isCalander = true
+//                                information = json.toString()
+//                                val parsed = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+//                                calendarList.clear()
+//                                calendarList.addAll(parsed)
+//
+//                                //calendarList.value = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+//
+//
+//                            }
+//                        }
+//                    }
+//
+//                    "contact_update" -> {
+//                        val json = jsonObject.getJSONArray("contact_items")
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            if (json.length() > 0) {
+//                                isContactList = true
+//                                contact = json.toString()
+//                                var temp=Gson().fromJson(contact, Array<ContactItem>::class.java).toList()
+//                                temp.forEachIndexed { index, item ->
+//                                    optionList.add(RadioGroup(item.name, item.phone!!))
+//                                }
+//                                Log.d("Contatc",temp.toString())
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+//                val audioData = bytes.toByteArray()
+//                if (audioData.isNotEmpty()) {
+//                    audioQueue.put(audioData)
+//                }
+//            }
+//
+//            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
+//                Log.e("WS", "Error: ${t.message}", t)
+//            }
+//        }
+//
+//        webSocket = client.newWebSocket(request, wsListener)
+//    }
+//
+//    // ------------------ Audio Recording ------------------
+//    DisposableEffect(isRecording) {
+//        if (isRecording && micPermissionGranted.value) {
+//            val bufferSize = AudioRecord.getMinBufferSize(
+//                sampleRate,
+//                AudioFormat.CHANNEL_IN_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT
+//            ).coerceAtLeast(sampleRate / 10)
+//
+//            audioRecord = AudioRecord(
+//                MediaRecorder.AudioSource.MIC,
+//                sampleRate,
+//                AudioFormat.CHANNEL_IN_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT,
+//                bufferSize
+//            ).apply {
+//                if (AcousticEchoCanceler.isAvailable())
+//                    AcousticEchoCanceler.create(audioSessionId)?.enabled = true
+//                if (NoiseSuppressor.isAvailable())
+//                    NoiseSuppressor.create(audioSessionId)?.enabled = true
+//                startRecording()
+//            }
+//
+//            val job = CoroutineScope(Dispatchers.IO).launch {
+//                val buffer = ByteArray(bufferSize)
+//                while (isActive && isRecording) {
+//                    if (isServerSpeaking) {
+//                        delay(50)
+//                        continue
+//                    }
+//                    val read = audioRecord?.read(buffer, 0, buffer.size) ?: 0
+//                    if (read > 0) {
+//                        webSocket?.send(buffer.toByteString(0, read))
+//                    }
+//                }
+//            }
+//
+//            onDispose {
+//                job.cancel()
+//                audioRecord?.stop()
+//                audioRecord?.release()
+//                audioRecord = null
+//                audioTrack?.stop()
+//                audioTrack?.release()
+//                audioTrack = null
+//                webSocket?.close(1000, "Disposed")
+//                isRecording = false
+//            }
+//        } else {
+//            onDispose { }
+//        }
+//    }
+
+
     LaunchedEffect(agentId) {
         if (!micPermissionGranted.value) return@LaunchedEffect
 
@@ -473,19 +712,23 @@ fun OnBordingScreen5(navController: NavController) {
             .readTimeout(0, TimeUnit.MILLISECONDS)
             .retryOnConnectionFailure(true)
             .build()
+//        ${token.getId()}
 
         val token = TokenManager.getInstance(context)
         val request = Request.Builder()
-            .url("wss://api-mvp.lumalife.de/ws/agents/${token.getId()}")
+            .url("wss://api-mvp.lumalife.de/ws/agents/123")
             .build()
 
         val wsListener = object : WebSocketListener() {
 
             override fun onOpen(ws: WebSocket, response: Response) {
                 webSocket = ws
+                Log.d("WebSocket", "Connection opened successfully")
 
-                // Initialize AudioTrack once
-                CoroutineScope(Dispatchers.IO).launch {
+                // ============================================================================
+                // AUDIO PLAYBACK SYSTEM - With Interruption Support
+                // ============================================================================
+                playbackJob = CoroutineScope(Dispatchers.IO).launch {
                     if (audioTrack == null) {
                         val minBuffer = AudioTrack.getMinBufferSize(
                             sampleRate,
@@ -496,7 +739,7 @@ fun OnBordingScreen5(navController: NavController) {
                         audioTrack = AudioTrack.Builder()
                             .setAudioAttributes(
                                 AudioAttributes.Builder()
-                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                                     .build()
                             )
@@ -512,73 +755,204 @@ fun OnBordingScreen5(navController: NavController) {
                             .build()
 
                         audioTrack?.play()
+                        Log.d("AudioSetup", "AudioTrack started with VOICE_COMMUNICATION")
                     }
 
-                    // Playback loop for queued audio
-                    while (isActive) {
-                        val audioData = audioQueue.take()
-                        isServerSpeaking = true
-                        audioTrack?.write(audioData, 0, audioData.size)
-                        isServerSpeaking = false
+                    // ============================================================================
+                    // SMART PLAYBACK LOOP - Handles Interruptions Properly
+                    // ============================================================================
+                    while (isActive && !shouldStopPlayback) {
+                        try {
+                            // ============================================================================
+                            // INTERRUPTION HANDLER - Stop AI immediately when user speaks
+                            // ============================================================================
+                            // Check if user interrupted (state changed to INTERRUPTED in VAD loop)
+                            if (voiceState == VoiceState.INTERRUPTED && isServerSpeaking) {
+                                // CRITICAL: User interrupted - stop AI playback immediately!
+                                Log.w("Interruption", "🔴 INTERRUPTION DETECTED - Stopping AI playback NOW!")
+
+                                // 1. Stop playback immediately
+                                audioTrack?.pause()
+                                audioTrack?.flush()
+                                Log.d("Interruption", "✅ Audio playback stopped")
+
+                                // 2. Clear the entire audio queue (discard remaining AI speech)
+                                val queueSize = audioQueue.size
+                                audioQueue.clear()
+                                Log.d("Interruption", "✅ Cleared $queueSize audio chunks from queue")
+
+                                // 3. Send interruption signal to backend
+                                val interruptMsg = JSONObject().apply {
+                                    put("type", "interruption")
+                                    put("timestamp", System.currentTimeMillis())
+                                }
+                                webSocket?.send(interruptMsg.toString())
+                                Log.d("Interruption", "✅ Sent interruption signal to backend")
+
+                                // 4. Update state
+                                isServerSpeaking = false
+                                Log.d("Interruption", "✅ Switched to user input mode - ready to receive user speech")
+
+                                // 5. Resume playback (ready for next AI response after user finishes)
+                                audioTrack?.play()
+
+                                // Wait a bit before checking queue again
+                                delay(50)
+                                continue
+                            }
+
+                            // Normal playback - poll with timeout instead of blocking take()
+                            val audioData = audioQueue.poll(50, TimeUnit.MILLISECONDS)
+
+                            if (audioData != null && audioData.isNotEmpty()) {
+                                // Mark that server is speaking
+                                if (!isServerSpeaking) {
+                                    isServerSpeaking = true
+                                    voiceState = VoiceState.AI_SPEAKING
+                                    Log.d("Playback", "AI started speaking")
+                                }
+
+                                // Amplify audio for louder playback (2.5x boost)
+                                val amplifiedAudio = amplifyAudio(audioData, 2.5f)
+
+                                // Write amplified audio data
+                                audioTrack?.write(amplifiedAudio, 0, amplifiedAudio.size)
+
+                                // Check if queue is empty (AI finished speaking)
+                                if (audioQueue.isEmpty()) {
+                                    delay(200) // Grace period to ensure all audio played
+                                    if (audioQueue.isEmpty()) {
+                                        isServerSpeaking = false
+                                        lastAiSpeechEndTime = System.currentTimeMillis() // Track when AI finished
+                                        voiceState = VoiceState.IDLE
+                                        Log.d("Playback", "AI finished speaking - waiting 500ms before listening")
+                                    }
+                                }
+                            } else {
+                                // No audio available - check if we should mark as finished
+                                if (isServerSpeaking && audioQueue.isEmpty()) {
+                                    delay(300) // Wait to confirm no more audio coming
+                                    if (audioQueue.isEmpty()) {
+                                        isServerSpeaking = false
+                                        lastAiSpeechEndTime = System.currentTimeMillis() // Track when AI finished
+                                        voiceState = VoiceState.IDLE
+                                        Log.d("Playback", "AI finished speaking (timeout) - waiting 500ms before listening")
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("Playback", "Error in playback loop", e)
+                            delay(100)
+                        }
                     }
                 }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                val jsonObject = JSONObject(text)
-                Log.d("WS", text)
-                when (jsonObject.optString("type")) {
-                    "calendar_update" -> {
-                        val json = jsonObject.getJSONArray("calendar_items")
-                        CoroutineScope(Dispatchers.Main).launch {
-                            if (json.length() > 0) {
-                                isCalander = true
-                                information = json.toString()
-                                val parsed = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
-                                calendarList.clear()
-                                calendarList.addAll(parsed)
+                try {
+                    val jsonObject = JSONObject(text)
+                    Log.d("WebSocket", "Received message: ${jsonObject.optString("type")}")
 
-                                //calendarList.value = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+                    when (jsonObject.optString("type")) {
+                        "calendar_update" -> {
+                            val json = jsonObject.getJSONArray("calendar_items")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                if (json.length() > 0) {
+                                    isCalander = true
+                                    information = json.toString()
+                                    val parsed = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
+                                    calendarList.clear()
+                                    calendarList.addAll(parsed)
+
+                                    //calendarList.value = Gson().fromJson(information, Array<CalendarItem>::class.java).toList()
 
 
-                            }
-                        }
-                    }
-
-                    "contact_update" -> {
-                        val json = jsonObject.getJSONArray("contact_items")
-                        CoroutineScope(Dispatchers.Main).launch {
-                            if (json.length() > 0) {
-                                isContactList = true
-                                contact = json.toString()
-                                var temp=Gson().fromJson(contact, Array<ContactItem>::class.java).toList()
-                                temp.forEachIndexed { index, item ->
-                                    optionList.add(RadioGroup(item.name, item.phone!!))
                                 }
-                                Log.d("Contatc",temp.toString())
+                            }
+                        }
 
+                        "contact_update" -> {
+                            val json = jsonObject.getJSONArray("contact_items")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                if (json.length() > 0) {
+                                    isContactList = true
+                                    contact = json.toString()
+                                    var temp=Gson().fromJson(contact, Array<ContactItem>::class.java).toList()
+                                    temp.forEachIndexed { index, item ->
+                                        optionList.add(RadioGroup(item.name, item.phone!!))
+                                    }
+                                    Log.d("Contatc",temp.toString())
+
+                                }
+                            }
+                        }
+
+                        "interruption_ack" -> {
+                            // Backend acknowledged interruption
+                            Log.d("Interruption", "Backend acknowledged interruption")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                voiceState = VoiceState.USER_SPEAKING
+                            }
+                        }
+
+                        "response_complete" -> {
+                            // Backend finished sending response
+                            Log.d("WebSocket", "Backend finished response")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                // Mark that no more audio is coming
+                                delay(500)
+                                if (audioQueue.isEmpty()) {
+                                    isServerSpeaking = false
+                                    voiceState = VoiceState.IDLE
+                                }
                             }
                         }
                     }
+                } catch (e: Exception) {
+                    Log.e("WebSocket", "Error processing text message", e)
                 }
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                val audioData = bytes.toByteArray()
-                if (audioData.isNotEmpty()) {
-                    audioQueue.put(audioData)
+                try {
+                    val audioData = bytes.toByteArray()
+                    if (audioData.isNotEmpty()) {
+                        // Only add to queue if not interrupted
+                        if (voiceState != VoiceState.INTERRUPTED && !userSpeechDetected) {
+                            audioQueue.offer(audioData)
+                            Log.d("WebSocket", "Audio chunk received: ${audioData.size} bytes, queue size: ${audioQueue.size}")
+                        } else {
+                            Log.d("Interruption", "Discarding audio chunk - user is speaking")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("WebSocket", "Error processing audio message", e)
                 }
             }
 
             override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
-                Log.e("WS", "Error: ${t.message}", t)
+                Log.e("WebSocket", "Connection error: ${t.message}", t)
+                CoroutineScope(Dispatchers.Main).launch {
+                    voiceState = VoiceState.IDLE
+                    isServerSpeaking = false
+                }
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Log.d("WebSocket", "Connection closed: $code - $reason")
+                CoroutineScope(Dispatchers.Main).launch {
+                    shouldStopPlayback = true
+                    playbackJob?.cancel()
+                }
             }
         }
 
         webSocket = client.newWebSocket(request, wsListener)
     }
 
-    // ------------------ Audio Recording ------------------
+    // ============================================================================
+    // AUDIO RECORDING - With Voice Activity Detection (VAD) for Interruption
+    // ============================================================================
     DisposableEffect(isRecording) {
         if (isRecording && micPermissionGranted.value) {
             val bufferSize = AudioRecord.getMinBufferSize(
@@ -588,48 +962,217 @@ fun OnBordingScreen5(navController: NavController) {
             ).coerceAtLeast(sampleRate / 10)
 
             audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.MIC,
+                MediaRecorder.AudioSource.VOICE_COMMUNICATION, // Better for voice calls (has built-in echo cancellation)
                 sampleRate,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
                 bufferSize
             ).apply {
-                if (AcousticEchoCanceler.isAvailable())
-                    AcousticEchoCanceler.create(audioSessionId)?.enabled = true
-                if (NoiseSuppressor.isAvailable())
-                    NoiseSuppressor.create(audioSessionId)?.enabled = true
+                // Enable acoustic echo cancellation if available
+                if (AcousticEchoCanceler.isAvailable()) {
+                    val echoCanceler = AcousticEchoCanceler.create(audioSessionId)
+                    echoCanceler?.enabled = true
+                    Log.d("AudioSetup", "Acoustic Echo Canceler enabled: ${echoCanceler?.enabled}")
+                } else {
+                    Log.w("AudioSetup", "Acoustic Echo Canceler NOT available on this device")
+                }
+
+                // Enable noise suppression if available
+                if (NoiseSuppressor.isAvailable()) {
+                    val noiseSuppressor = NoiseSuppressor.create(audioSessionId)
+                    noiseSuppressor?.enabled = true
+                    Log.d("AudioSetup", "Noise Suppressor enabled: ${noiseSuppressor?.enabled}")
+                } else {
+                    Log.w("AudioSetup", "Noise Suppressor NOT available on this device")
+                }
+
                 startRecording()
+                Log.d("AudioSetup", "AudioRecord started with VOICE_COMMUNICATION source")
             }
 
             val job = CoroutineScope(Dispatchers.IO).launch {
                 val buffer = ByteArray(bufferSize)
+                val energyThreshold = 500 // Threshold for voice detection
+                var consecutiveVoiceFrames = 0
+                var consecutiveSilenceFrames = 0
+
                 while (isActive && isRecording) {
-                    if (isServerSpeaking) {
-                        delay(50)
-                        continue
-                    }
+                    // ============================================================================
+                    // ALWAYS READ FROM MIC - To enable real-time interruption
+                    // ============================================================================
+                    // We MUST read from mic even when AI is speaking to detect interruptions
+                    // Echo prevention is handled by energy threshold checks below
+
                     val read = audioRecord?.read(buffer, 0, buffer.size) ?: 0
                     if (read > 0) {
-                        webSocket?.send(buffer.toByteString(0, read))
+                        // ============================================================================
+                        // VOICE ACTIVITY DETECTION (VAD) - Detect User Speech
+                        // ============================================================================
+                        val energy = calculateEnergy(buffer)
+                        val isVoiceDetected = energy > energyThreshold
+
+                        if (isVoiceDetected) {
+                            consecutiveVoiceFrames++
+                            consecutiveSilenceFrames = 0
+
+                            // ============================================================================
+                            // REAL-TIME INTERRUPTION DETECTION
+                            // ============================================================================
+                            // Handle different states with appropriate thresholds
+
+                            if (voiceState == VoiceState.AI_SPEAKING) {
+                                // *** INTERRUPTION MODE ***
+                                // User is speaking while AI is speaking - this is an interruption!
+                                // Use HIGHER threshold to avoid echo, but detect quickly (2 frames)
+                                val interruptionThreshold = energyThreshold * 1.5 // 50% higher to avoid echo
+
+                                if (consecutiveVoiceFrames >= 2 && energy > interruptionThreshold) {
+                                    if (!userSpeechDetected) {
+                                        userSpeechDetected = true
+                                        voiceState = VoiceState.INTERRUPTED
+                                        Log.w("Interruption", "🔴 USER INTERRUPTED AI! Energy: $energy (threshold: $interruptionThreshold)")
+                                        Log.w("Interruption", "Stopping AI playback and switching to user input")
+                                    }
+                                } else if (energy <= interruptionThreshold) {
+                                    // Log potential echo being ignored
+                                    if (consecutiveVoiceFrames % 20 == 0) {
+                                        Log.d("VAD", "Ignoring echo during AI speech - energy: $energy (need > $interruptionThreshold)")
+                                    }
+                                }
+                            } else if (voiceState == VoiceState.IDLE) {
+                                // *** NORMAL SPEECH DETECTION ***
+                                // User starting to speak when AI is not speaking
+                                if (consecutiveVoiceFrames >= 3) {
+                                    if (!userSpeechDetected) {
+                                        // Check if enough time has passed since AI finished (prevents echo tail)
+                                        val timeSinceAiFinished = System.currentTimeMillis() - lastAiSpeechEndTime
+                                        val echoPreventionDelay = 500L
+
+                                        if (timeSinceAiFinished > echoPreventionDelay || lastAiSpeechEndTime == 0L) {
+                                            userSpeechDetected = true
+                                            voiceState = VoiceState.USER_SPEAKING
+                                            Log.d("VAD", "✅ User speech detected - energy: $energy")
+                                        } else {
+                                            Log.d("VAD", "Ignoring echo tail - only ${timeSinceAiFinished}ms since AI finished")
+                                        }
+                                    }
+                                }
+                            }
+                            // If already in USER_SPEAKING or INTERRUPTED state, keep detecting voice
+                        } else {
+                            consecutiveSilenceFrames++
+                            consecutiveVoiceFrames = 0
+
+                            // User stopped speaking - need more silence frames to confirm
+                            if (consecutiveSilenceFrames >= 20 && userSpeechDetected) { // Increased from 15 to 20 for better tolerance
+                                userSpeechDetected = false
+                                Log.d("VAD", "User speech ended")
+
+                                if (voiceState == VoiceState.USER_SPEAKING || voiceState == VoiceState.INTERRUPTED) {
+                                    // Send end-of-speech signal
+                                    val eosMsg = JSONObject().apply {
+                                        put("type", "end_of_speech")
+                                        put("timestamp", System.currentTimeMillis())
+                                    }
+                                    webSocket?.send(eosMsg.toString())
+                                    Log.d("VAD", "Sent end_of_speech signal")
+                                    voiceState = VoiceState.IDLE
+                                }
+                            }
+                        }
+
+                        // ============================================================================
+                        // SEND AUDIO TO SERVER - Send when user is speaking
+                        // ============================================================================
+                        // Send audio when user is speaking (all frames, not just voice frames)
+                        // This ensures continuous audio stream including pauses between words
+                        val shouldSendAudio = when (voiceState) {
+                            VoiceState.USER_SPEAKING -> true
+                            VoiceState.INTERRUPTED -> true // Send during interruption
+                            VoiceState.IDLE -> false // Don't send when idle
+                            VoiceState.AI_SPEAKING -> false // Don't send when AI is speaking
+                        }
+
+                        // Send ALL audio frames when user is speaking (including silence between words)
+                        if (shouldSendAudio) {
+                            try {
+                                webSocket?.send(buffer.toByteString(0, read))
+
+                                // Enhanced logging for interruption tracking
+                                if (voiceState == VoiceState.INTERRUPTED) {
+                                    // Log first few frames of interruption
+                                    if (consecutiveVoiceFrames <= 5) {
+                                        Log.d("AudioSend", "📤 Sending INTERRUPTION audio: ${read} bytes, energy: $energy")
+                                    }
+                                } else if (consecutiveVoiceFrames % 10 == 0) {
+                                    // Log every 10th frame for normal speech
+                                    Log.d("AudioSend", "📤 Sending audio: ${read} bytes, state: $voiceState, energy: $energy")
+                                }
+                            } catch (e: Exception) {
+                                Log.e("AudioSend", "Error sending audio", e)
+                            }
+                        } else {
+                            // Log when we're NOT sending (for debugging)
+                            if (isVoiceDetected && consecutiveVoiceFrames == 1) {
+                                Log.d("AudioSend", "⏸️ NOT sending - state: $voiceState, energy: $energy")
+                            }
+                        }
                     }
                 }
             }
 
             onDispose {
+                Log.d("Lifecycle", "Disposing audio recording")
                 job.cancel()
                 audioRecord?.stop()
                 audioRecord?.release()
                 audioRecord = null
+
+                // Clean up playback
+                shouldStopPlayback = true
+                playbackJob?.cancel()
                 audioTrack?.stop()
+                audioTrack?.flush()
                 audioTrack?.release()
                 audioTrack = null
-                webSocket?.close(1000, "Disposed")
+
+                // Close WebSocket
+                webSocket?.close(1000, "User stopped recording")
+                webSocket = null
+
+                // Reset state
                 isRecording = false
+                isServerSpeaking = false
+                voiceState = VoiceState.IDLE
+                userSpeechDetected = false
+                audioQueue.clear()
             }
         } else {
             onDispose { }
         }
     }
+}
+
+
+fun amplifyAudio(audioData: ByteArray, gain: Float): ByteArray {
+    val amplified = ByteArray(audioData.size)
+
+    for (i in audioData.indices step 2) {
+        // Read 16-bit PCM sample (little-endian)
+        val sample = ((audioData[i + 1].toInt() shl 8) or (audioData[i].toInt() and 0xFF)).toShort()
+
+        // Apply gain
+        var amplifiedSample = (sample * gain).toInt()
+
+        // Prevent clipping (keep within 16-bit range: -32768 to 32767)
+        amplifiedSample = amplifiedSample.coerceIn(-32768, 32767)
+
+        // Write back as 16-bit PCM (little-endian)
+        amplified[i] = (amplifiedSample and 0xFF).toByte()
+        amplified[i + 1] = ((amplifiedSample shr 8) and 0xFF).toByte()
+    }
+
+    return amplified
 }
 
 
