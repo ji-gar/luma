@@ -716,7 +716,7 @@ fun OnBordingScreen5(navController: NavController) {
 
         val token = TokenManager.getInstance(context)
         val request = Request.Builder()
-            .url("wss://api-mvp.lumalife.de/ws/agents/123")
+            .url("wss://api-mvp.lumalife.de/ws/user/${token.getId()}")
             .build()
 
         val wsListener = object : WebSocketListener() {
@@ -849,6 +849,8 @@ fun OnBordingScreen5(navController: NavController) {
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
+                Log.d("WebSocket",text.toString())
+
                 try {
                     val jsonObject = JSONObject(text)
                     Log.d("WebSocket", "Received message: ${jsonObject.optString("type")}")
