@@ -1,5 +1,6 @@
 package com.io.luma.uiscreen.myselfflow.stepscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,12 +29,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -59,10 +64,11 @@ import ir.kaaveh.sdpcompose.ssp
 @Composable
 fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel) {
 
-    var language=remember { mutableStateOf("") }
+    var language by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var context= LocalContext.current
 
-    var password=remember { mutableStateOf("") }
-    var confirmPassword=remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize().background(color = Color.White).windowInsetsPadding(
         WindowInsets.statusBars))
     {
@@ -119,11 +125,11 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value =password.value,
+                    value =password,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     onValueChange = {
-                        password.value=it
+                        password=it
                     },
 
                     placeholder = {
@@ -148,11 +154,11 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = confirmPassword.value,
+                    value = confirmPassword,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     onValueChange = {
-                        confirmPassword.value=it
+                        confirmPassword=it
                     },
 
                     placeholder = {
@@ -177,11 +183,11 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = language.value,
+                    value = language,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     onValueChange = {
-                        language.value=it
+                        language=it
                     },
                     trailingIcon = {
                         Icon(
@@ -211,10 +217,28 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
             height(20)
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
                 "Set Profile") {
+                if (password.isBlank()) {
+                   var passwordError = "Please enter password"
+                    Toast.makeText(context, passwordError, Toast.LENGTH_SHORT).show()
 
-                  registermyself.updatePassword(password.value,confirmPassword.value)
-                  registermyself.updateLanguage(language = "en")
-                navController.navigate(NavRoute.MyselfStep3)
+                } else if (confirmPassword.isBlank()) {
+                  var  confirmPasswordError = "Please enter confirm password"
+                    Toast.makeText(context, confirmPasswordError, Toast.LENGTH_SHORT).show()
+
+                } else if (password != confirmPassword) {
+                    var confirmPasswordError = "Password and Confirm Password do not match"
+                    Toast.makeText(context, confirmPasswordError, Toast.LENGTH_SHORT).show()
+
+                }
+                else {
+                    registermyself.updatePassword(password,confirmPassword)
+                    registermyself.updateLanguage(language = "en")
+                    navController.navigate(NavRoute.MyselfStep3)
+                }
+
+//                  registermyself.updatePassword(password,confirmPassword)
+//                  registermyself.updateLanguage(language = "en")
+//                navController.navigate(NavRoute.MyselfStep3)
             }
 
 

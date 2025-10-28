@@ -1,5 +1,8 @@
 package com.io.luma.respositry
 
+import android.util.Log
+import com.google.gson.Gson
+import com.io.luma.model.ErrorHandlingModel
 import com.io.luma.model.SignupRequestModel
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.network.ApiClient
@@ -13,10 +16,15 @@ class  PatientSignupRepositry {
             if (response.isSuccessful && response.body() != null) {
                 Resource.Success(response.body()!!)
             } else {
-                Resource.Error("Error: ${response.code()} ${response.message()}")
+                Log.d("Else",response.errorBody()?.string().toString())
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, ErrorHandlingModel::class.java)
+                Resource.Error("${errorResponse.message}")
             }
         } catch (e: Exception) {
-            Resource.Error("Network Error: ${e.localizedMessage}")
+            Log.d("Else","Catch")
+            Resource.Error("Something went wrong")
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.io.luma.uiscreen.myselfflow.stepscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +19,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,11 +49,17 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel) {
+    var firstName by rememberSaveable { mutableStateOf("") }
+    var lastName by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
+    var context= LocalContext.current
 
-    var firstName=remember { mutableStateOf("") }
-    var lasttName=remember { mutableStateOf("") }
-    var email=remember { mutableStateOf("") }
-    var phone=remember { mutableStateOf("") }
+
+//    var firstName=remember { mutableStateOf("") }
+//    var lasttName=remember { mutableStateOf("") }
+//    var email=remember { mutableStateOf("") }
+//    var phone=remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize().background(color = Color.White))
     {
         Column(modifier = Modifier.fillMaxSize(),
@@ -86,9 +97,9 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 OutlinedTextField(
 
                     modifier = Modifier.fillMaxWidth(),
-                    value =firstName.value,
+                    value =firstName,
                     onValueChange = {
-                        firstName.value=it
+                        firstName=it
                     },
                     placeholder = {
                         Text("Enter your First Name",
@@ -112,9 +123,9 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value =lasttName.value,
+                    value =lastName,
                     onValueChange = {
-                        lasttName.value=it
+                        lastName=it
                     },
                     placeholder = {
                         Text("Enter Your Last Name",
@@ -138,9 +149,9 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value =email.value,
+                    value =email,
                     onValueChange = {
-                        email.value=it
+                        email=it
                     },
                     placeholder = {
                         Text("Enter Your Email",
@@ -165,10 +176,10 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value =phone.value,
+                    value =phone,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onValueChange = {
-                        phone.value=it
+                        phone=it
                     },
 
                     placeholder = {
@@ -194,11 +205,37 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
                 "Next") {
 
-                registermyself.updateName(name = firstName.value+""+lasttName.value)
-                registermyself.updateEmail(email=email.value)
-                registermyself.updatePhone(phone = phone.value)
+                registermyself.updateName(name = firstName+""+lastName)
+                registermyself.updateEmail(email=email)
+                registermyself.updatePhone(phone = phone)
+                when {
+                    firstName.isBlank() -> {
+                        Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
+                    }
+                    lastName.isBlank() -> {
+                        Toast.makeText(context, "Please enter last name", Toast.LENGTH_SHORT).show()
+                    }
+                    email.isBlank() -> {
+                        Toast.makeText(context, "Please enter email", Toast.LENGTH_SHORT).show()
+                    }
+                    !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                        Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                    }
+                    phone.isBlank() -> {
+                        Toast.makeText(context, "Please enter phone number", Toast.LENGTH_SHORT).show()
+                    }
+                    phone.length < 10 -> {
+                        Toast.makeText(context, "Phone number must be 10 digits", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        navController.navigate(NavRoute.MyselfStep2)
 
-                navController.navigate(NavRoute.MyselfStep2)
+                       // Toast.makeText(context, "Validation successful", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+
+
             }
 
 
