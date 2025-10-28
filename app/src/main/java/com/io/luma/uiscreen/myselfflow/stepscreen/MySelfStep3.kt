@@ -234,7 +234,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                 token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
                 token.saveId(response.user?.userId.toString())
                 LaunchedEffect(Unit) {
-                    navController.navigate(NavRoute.OnBordingScreen)
+                    navController.navigate(NavRoute.LoginScreen)
                 }
             }
 

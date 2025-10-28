@@ -1,5 +1,6 @@
 package com.io.luma.uiscreen.loginscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,39 +19,52 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
+import com.io.luma.model.LoginRequestModel
+import com.io.luma.model.SignupResponseModel
 import com.io.luma.navroute.NavRoute
+import com.io.luma.network.Resource
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
+import com.io.luma.utils.TokenManager
+import com.io.luma.viewmodel.LoginViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     var phone= remember{
         mutableStateOf("")
     }
     var password=remember { mutableStateOf("") }
+    val loginState by loginViewModel.loginState.collectAsState()
+    val context= LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
@@ -173,7 +187,33 @@ fun LoginScreen(navController: NavController) {
                         .padding(horizontal = 13.sdp),
                         "Login") {
 
-                         navController.navigate(NavRoute.OnBordingScreen)
+                        if(phone.value.isNullOrEmpty())
+                        {
+                            Toast.makeText(context, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show()
+
+                        }
+                        else if(phone.value.length<10)
+                        {
+                            Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
+                        }
+                        else if(phone.value.length>10)
+                        {
+                            Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
+                        }
+                        else if(password.value.isNullOrEmpty())
+                        {
+                            Toast.makeText(context, "Please Enter Password", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+
+                            navController.navigate(NavRoute.OnBordingScreen)
+//                            loginViewModel.addDetils(
+//                                LoginRequestModel(
+//                                    "+91",
+//                                    password.value.toString()
+//                                )
+//                            )
+                        }
                     }
 
 
@@ -182,7 +222,38 @@ fun LoginScreen(navController: NavController) {
                 }
             }
         }
+        when (loginState) {
+            is Resource.Loading<*> -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
 
+            is Resource.Success<*> -> {
+
+                val response = (loginState as Resource.Success<SignupResponseModel>).data
+                var token= TokenManager.getInstance(context)
+                token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
+                token.saveId(response.user?.userId.toString())
+                LaunchedEffect(Unit) {
+                    navController.navigate(NavRoute.OnBordingScreen)
+                }
+            }
+
+            is Resource.Error<*> -> {
+                val message = (loginState as Resource.Error<*>).message
+                LaunchedEffect(message) {
+                  Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            else -> {}
+        }
 
 
 //        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent))

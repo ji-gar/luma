@@ -27,7 +27,7 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun updatePhone(phone: String) {
-        user = user.copy(phoneNumber = phone)
+        user = user.copy(phoneNumber = "+91$phone")
     }
 
     fun updateEmail(email: String) {
