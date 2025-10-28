@@ -389,8 +389,9 @@ fun rowHeader(text: String) {
 
         Text(text,
             style = TextStyle(
-                color = Color(0xff3F3F3F),
+                color = Color(0xff0D0C0C),
                 fontFamily = manropesemibold,
+                fontWeight = FontWeight.W600,
                 fontSize = 13.ssp
             ))
 
@@ -398,6 +399,7 @@ fun rowHeader(text: String) {
             style = TextStyle(
                 color = Color(0xffDD0000),
                 fontFamily = manropesemibold,
+                fontWeight = FontWeight.W600,
                 fontSize = 13.ssp
             ))
 

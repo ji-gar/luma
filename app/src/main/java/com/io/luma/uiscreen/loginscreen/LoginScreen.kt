@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -37,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -45,12 +48,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
+import com.io.luma.customcompose.height
 import com.io.luma.model.LoginRequestModel
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.navroute.NavRoute
 import com.io.luma.network.Resource
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.utils.TokenManager
 import com.io.luma.viewmodel.LoginViewModel
@@ -68,8 +73,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
-            contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),) {
 
             Image(painter = painterResource(R.drawable.helloluma),
                 contentDescription = "")
@@ -94,8 +98,16 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 )
             ) {
                 Column(modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,) {
-                    com.io.luma.customcompose.height(10)
+                    ) {
+                    height(13)
+                   Row(modifier = Modifier.fillMaxWidth(),
+                       horizontalArrangement = Arrangement.Center)
+                   {
+
+                       Icon(painter = painterResource(R.drawable.iv_indicator),
+                           contentDescription = "",tint=Color.Unspecified)
+                   }
+                    height(13)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth().padding(end = 13.sdp),
@@ -105,17 +117,19 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                             "Login To Your\nAcconunt!",
                             style = TextStyle(
                                 color = textColor,
-                                fontSize = 24.ssp,
-                                fontFamily = manropebold
+                                fontSize = 21.ssp,
+                                fontFamily = verandaBold,
+                                fontWeight = FontWeight.W700
                             ),
                             textAlign = TextAlign.Center
                         )
 
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.cancle),
                             contentDescription = "",
+                            tint = Color.Unspecified,
                             modifier = Modifier
-                                .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+                                .align(Alignment.CenterEnd) // align image to the right
 
                         )
                     }
@@ -152,7 +166,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                             unfocusedBorderColor = Color(0xff93969B)
                         )
                     )
-                    com.io.luma.customcompose.height(15)
+                    com.io.luma.customcompose.height(13)
                     Box(modifier = Modifier.padding(horizontal = 13.sdp)){
                         rowHeader("Password")
                     }

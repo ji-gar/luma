@@ -1,9 +1,11 @@
 package com.io.luma.uiscreen.myselfflow.stepscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -21,16 +23,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
+import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.textColor
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -48,14 +54,12 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center) {
 
-            Text("Luma",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    color = textColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.ssp
-                ))
+           Row(modifier = Modifier.fillMaxWidth(),
+               horizontalArrangement = Arrangement.Center) {
+               Image(painter = painterResource(R.drawable.lumatext),
+                   contentDescription = "",
+                   )
+           }
 
             height(20)
 
@@ -72,7 +76,8 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                         fontSize = 20.ssp
                     ),
                     modifier = Modifier.fillMaxWidth(),
-                    fontFamily = manropebold,
+                    fontFamily = verandaBold,
+                    fontWeight = FontWeight.W700,
                     textAlign = TextAlign.Center
                 )
                 com.io.luma.customcompose.height(20)
@@ -88,8 +93,10 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Enter your First Name",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -112,8 +119,10 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Enter Your Last Name",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -136,8 +145,10 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Enter Your Email",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -163,8 +174,10 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Your Phone Number",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -176,11 +189,6 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     )
                 )
                 com.io.luma.customcompose.height(13)
-
-
-
-
-
             }
             height(20)
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),

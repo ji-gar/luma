@@ -57,7 +57,7 @@ fun OnBordingScreen8(navController: NavController) {
                 Column(modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painter = painterResource(R.drawable.img),
+                    Image(painter = painterResource(R.drawable.helloluma),
                         modifier = Modifier.height(150.dp),
                         contentScale = ContentScale.Crop,
                         contentDescription = "")

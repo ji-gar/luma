@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +48,9 @@ import com.io.luma.customcompose.height
 import com.io.luma.customcompose.width
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.textColor
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -107,9 +110,11 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                         fontSize = 20.ssp
                     ),
                     modifier = Modifier.fillMaxWidth(),
-                    fontFamily = manropebold,
+                    fontFamily = verandaBold,
+                    fontWeight = FontWeight.W700,
                     textAlign = TextAlign.Center
                 )
+                com.io.luma.customcompose.height(20)
                 rowHeader("Create Password")
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
@@ -124,8 +129,10 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Create your Password",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -151,8 +158,10 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("Confirm your Password",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),
@@ -163,7 +172,7 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                         unfocusedBorderColor = Color(0xff93969B)
                     )
                 )
-                com.io.luma.customcompose.height(6)
+                com.io.luma.customcompose.height(13)
                 rowHeader("User’s Language")
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
@@ -184,8 +193,10 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                     placeholder = {
                         Text("German",
                             style = TextStyle(
-                                color = Color(0xff56575D),
-                                fontSize = 15.ssp
+                                color = Color(0xff4C4C50),
+                                fontSize = 13.ssp,
+                                fontFamily = monospaceRegular,
+                                fontWeight = FontWeight.W400
                             ))
                     },
                     shape = RoundedCornerShape(6.sdp),

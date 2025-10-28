@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -50,13 +52,16 @@ import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.CustomOutlineButton
+import com.io.luma.customcompose.height
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.model.VerifyNumberRequestModel
 import com.io.luma.model.VerifyNumberResponseModel
 import com.io.luma.navroute.NavRoute
 import com.io.luma.network.Resource
 import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.textColor
+import com.io.luma.ui.theme.verandaBold
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.utils.TokenManager
 import com.io.luma.viewmodel.MobileNumberCheckViewModel
@@ -76,7 +81,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
-            contentAlignment = Alignment.Center) {
+            ) {
 
             Image(painter = painterResource(R.drawable.helloluma),
                 contentDescription = "")
@@ -86,7 +91,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.4f)
+                .fillMaxHeight(0.40f)
 
                 .align(alignment = Alignment.BottomCenter)
         )
@@ -101,32 +106,42 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 )
             ) {
                 Column(modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,) {
-                    com.io.luma.customcompose.height(10)
+                    horizontalAlignment = Alignment.Start) {
+                    height(10)
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center)
+                    {
+
+                        Icon(painter = painterResource(R.drawable.iv_indicator),
+                            contentDescription = "",tint=Color.Unspecified)
+                    }
+                    height(13)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth().padding(end = 13.sdp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Enter your\nphone number",
+                            "Enter your\nPhone number",
                             style = TextStyle(
                                 color = textColor,
-                                fontSize = 24.ssp,
-                                fontFamily = manropebold
+                                fontSize = 21.ssp,
+                                fontFamily = verandaBold,
+                                fontWeight = FontWeight.W700
                             ),
                             textAlign = TextAlign.Center
                         )
 
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.cancle),
                             contentDescription = "",
+                            tint = Color.Unspecified,
                             modifier = Modifier
-                                .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+                                .align(Alignment.CenterEnd) // align image to the right
 
                         )
                     }
-                    com.io.luma.customcompose.height(13)
+                    height(13)
                     HorizontalDivider(
                         color = Color(0xFF4E73FF).copy(alpha = 0.2f),
                         thickness = 1.dp
@@ -135,7 +150,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                     Box(modifier = Modifier.padding(horizontal = 13.sdp)){
                         rowHeader("Phone Number")
                     }
-                    com.io.luma.customcompose.height(3)
+                    com.io.luma.customcompose.height(6)
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
                         value =phone.value,
@@ -153,7 +168,8 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                             Text("Your Phone Number",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
