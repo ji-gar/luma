@@ -165,7 +165,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                         }),
 
                         placeholder = {
-                            Text("Your Phone Number",
+                            Text("Enter your phone number",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
                                     fontSize = 15.ssp,
@@ -229,6 +229,10 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 if (response.data?.nextAction.equals("register"))
                 {
                     navController.navigate(NavRoute.SignupOption)
+                }
+                else if (response.data?.nextAction.equals("login"))
+                {
+                    navController.navigate(NavRoute.LoginScreen)
                 }
 //                var token= TokenManager.getInstance(context)
 //                token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())

@@ -88,7 +88,7 @@ fun SignupCarer(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 text = "Join Luma", isIcon = true) {
 
-                 navController.navigate(NavRoute.SignupOption)
+                 navController.navigate(NavRoute.MobileScreen)
             }
 
 

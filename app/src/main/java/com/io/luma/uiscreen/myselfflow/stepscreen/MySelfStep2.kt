@@ -221,7 +221,8 @@ fun MySelfStep2(navController: NavController, registermyself: RegisterViewModel)
                    var passwordError = "Please enter password"
                     Toast.makeText(context, passwordError, Toast.LENGTH_SHORT).show()
 
-                } else if (confirmPassword.isBlank()) {
+                } else if (confirmPassword.isBlank())
+                {
                   var  confirmPasswordError = "Please enter confirm password"
                     Toast.makeText(context, confirmPasswordError, Toast.LENGTH_SHORT).show()
 

@@ -27,7 +27,7 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun updatePhone(phone: String) {
-        user = user.copy(phoneNumber = "+91$phone")
+        user = user.copy(phoneNumber = "$phone")
     }
 
     fun updateEmail(email: String) {
@@ -44,6 +44,9 @@ class RegisterViewModel : ViewModel() {
 
     fun updateLanguage(language: String) {
         user = user.copy(language = language)
+    }
+    fun updateCountryCode(code: String) {
+        user = user.copy(country_code = code)
     }
 
     fun addDetils(userSignupRequestModel: SignupRequestModel)

@@ -207,6 +207,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                         "Upload Photo"
                     ) {
                         registermyself.updateRole(role = "patient")
+                        registermyself.updateCountryCode("+91")
                         Log.d("GSON", registermyself.user.toString())
                         registermyself.addDetils(registermyself.user)
                     }

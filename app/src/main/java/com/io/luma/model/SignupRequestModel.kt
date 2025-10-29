@@ -12,7 +12,8 @@ data class SignupRequestModel(
 
 	@field:SerializedName("role")
 	val role: String? = null,
-
+	@field:SerializedName("country_code")
+    val country_code : String ?=null,
 	@field:SerializedName("phone_number")
 	val phoneNumber: String? = null,
 

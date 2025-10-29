@@ -44,6 +44,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -73,6 +74,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
+import com.io.luma.customcompose.CustomOutlineButton
+import com.io.luma.customcompose.width
 import com.io.luma.model.CalendarItem
 import com.io.luma.model.CalendarResponse
 import com.io.luma.model.ContactItem
@@ -261,12 +264,46 @@ fun OnBordingScreen5(navController: NavController) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            Text(
-                                text = "Your Normal Day",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 8.dp)
+                            com.io.luma.customcompose.height(13)
+                            Row(modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center)
+                            {
+
+                                Icon(painter = painterResource(R.drawable.iv_indicator),
+                                    contentDescription = "",tint=Color.Unspecified)
+                            }
+                            com.io.luma.customcompose.height(13)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth().padding(end = 13.sdp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "Your Nomal Day",
+                                    style = TextStyle(
+                                        color = textColor,
+                                        fontSize = 21.ssp,
+                                        fontFamily = verandaBold,
+                                        fontWeight = FontWeight.W700
+                                    ),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Icon(
+                                    painter = painterResource(R.drawable.cancle),
+                                    contentDescription = "",
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd) // align image to the right
+
+                                )
+                            }
+                            com.io.luma.customcompose.height(13)
+                            HorizontalDivider(
+                                color = Color(0xFF4E73FF).copy(alpha = 0.2f),
+                                thickness = 1.dp
                             )
+                            com.io.luma.customcompose.height(13)
 
                             // 3️⃣ Show each item in list
                             calendarList.forEach { item ->
@@ -274,22 +311,33 @@ fun OnBordingScreen5(navController: NavController) {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
                                         text = item.start_time ?: "--:--",
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.W700,
+                                        style = TextStyle(
+                                            fontFamily = verandaBold,
+                                            fontSize = 21.ssp,
+                                            color = Color(0xff0D0C0C)
+                                        )
                                     )
+                                    width(10)
                                     Text(
                                         text = item.title ?: "",
-                                        fontWeight = FontWeight.SemiBold
+                                        fontWeight = FontWeight.W700,
+
+                                        style = TextStyle(
+                                            fontFamily = verandaBold,
+                                            fontSize = 21.ssp,
+                                            color = Color(0xff0D0C0C)
+                                        )
                                     )
                                 }
                             }
 
                             Spacer(modifier = Modifier.height(12.dp))
 
-                            CustomButton(
+                            CustomOutlineButton(
                                 onClick = {},
                                 modifier = Modifier.fillMaxWidth(),
                                 text = "See you Afternoon"
@@ -319,32 +367,46 @@ fun OnBordingScreen5(navController: NavController) {
                             modifier = Modifier.fillMaxSize()
                                 .padding(horizontal = 13.dp),
                         ) {
-                            com.io.luma.customcompose.height(10)
+                            com.io.luma.customcompose.height(13)
+                            Row(modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center)
+                            {
+
+                                Icon(painter = painterResource(R.drawable.iv_indicator),
+                                    contentDescription = "",tint=Color.Unspecified)
+                            }
+                            com.io.luma.customcompose.height(13)
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth(),
+                                    .fillMaxWidth().padding(end = 13.sdp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("Choose Your\nCarer!",
+                                Text(
+                                    "Choose Your\nCarer!",
                                     style = TextStyle(
                                         color = textColor,
-                                        fontSize = 22.ssp
+                                        fontSize = 21.ssp,
+                                        fontFamily = verandaBold,
+                                        fontWeight = FontWeight.W700
                                     ),
-                                    modifier = Modifier.fillMaxWidth(),
-                                    fontFamily = manropebold,
                                     textAlign = TextAlign.Center
                                 )
 
-                                Image(
+                                Icon(
                                     painter = painterResource(R.drawable.cancle),
                                     contentDescription = "",
+                                    tint = Color.Unspecified,
                                     modifier = Modifier
-                                        .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+                                        .align(Alignment.CenterEnd) // align image to the right
 
                                 )
                             }
-
-                            com.io.luma.customcompose.height(20)
+                            com.io.luma.customcompose.height(13)
+                            HorizontalDivider(
+                                color = Color(0xFF4E73FF).copy(alpha = 0.2f),
+                                thickness = 1.dp
+                            )
+                            com.io.luma.customcompose.height(13)
                             optionList.forEachIndexed { index,text ->
                                 Row(
                                     modifier = Modifier
@@ -357,7 +419,7 @@ fun OnBordingScreen5(navController: NavController) {
                                             onClick = { onSelectedIndexChange(index) }
                                         )
                                         .border(width =if (index==selectedIndex)  2.dp else  1.dp, Color.Black, RoundedCornerShape(12.dp))
-                                        .height(56.dp),
+                                        ,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     RadioButton(
@@ -368,12 +430,16 @@ fun OnBordingScreen5(navController: NavController) {
                                             unselectedColor = Color.Black
                                         )
                                     )
-                                    Column {
+                                    Column(modifier = Modifier.padding(top = 13.sdp,
+                                        bottom = 13.sdp
+                                    )
+                                    ) {
                                         Text(
                                             text = text.tilte,
                                             style = TextStyle(
                                                 fontFamily = verandaBold,
-                                                color = Color.Black,
+                                                color = Color(0xff0D0C0C),
+                                                fontWeight = FontWeight.W700,
                                                 fontSize = 18.ssp
                                             )
                                         )
@@ -388,7 +454,7 @@ fun OnBordingScreen5(navController: NavController) {
                                     }
                                 }
                             }
-                            com.io.luma.customcompose.height(20)
+                            com.io.luma.customcompose.height(13)
 
                             CustomButton(modifier = Modifier.fillMaxWidth(),
                                 "Yes") {

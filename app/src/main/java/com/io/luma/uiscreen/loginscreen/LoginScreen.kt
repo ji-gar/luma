@@ -50,6 +50,7 @@ import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
 import com.io.luma.model.LoginRequestModel
+import com.io.luma.model.LoginResponse
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.navroute.NavRoute
 import com.io.luma.network.Resource
@@ -152,7 +153,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                         },
 
                         placeholder = {
-                            Text("Your Phone Number",
+                            Text("Enter your phone number",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
                                     fontSize = 15.ssp
@@ -220,13 +221,14 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                         }
                         else {
 
-                            navController.navigate(NavRoute.OnBordingScreen)
-//                            loginViewModel.addDetils(
-//                                LoginRequestModel(
-//                                    "+91",
-//                                    password.value.toString()
-//                                )
-//                            )
+
+                            loginViewModel.addDetils(
+                                LoginRequestModel(
+                                    "+91",
+                                      password.value.toString(),
+                                     phone.value.toString()
+                                )
+                            )
                         }
                     }
 
@@ -250,10 +252,10 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             is Resource.Success<*> -> {
 
-                val response = (loginState as Resource.Success<SignupResponseModel>).data
+                val response = (loginState as Resource.Success<LoginResponse>).data
                 var token= TokenManager.getInstance(context)
-                token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
-                token.saveId(response.user?.userId.toString())
+                token.saveTokens(response.data?.accessToken.toString(),response.data?.refreshToken.toString())
+                token.saveId(response.data?.user?.userId.toString())
                 LaunchedEffect(Unit) {
                     navController.navigate(NavRoute.OnBordingScreen)
                 }

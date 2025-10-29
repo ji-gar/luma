@@ -21,7 +21,8 @@ data class CarerSignupReuestModel(
 
 	@field:SerializedName("patient_full_name")
 	val patientFullName: String? = null,
-
+	@field:SerializedName("patient_country_code")
+	val patient_country_code :String?=null,
 	@field:SerializedName("email")
 	val email: String? = null,
 

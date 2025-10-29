@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import com.io.luma.R
@@ -70,7 +71,8 @@ fun SignupStep3(navController: NavController, carerViewModel: CarerRegisterViewM
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.sdp)) {
+                    .padding(horizontal = 20.sdp))
+            {
 
                 Icon(imageVector = Icons.Filled.KeyboardArrowLeft,
                     modifier = Modifier.clickable{
@@ -79,16 +81,16 @@ fun SignupStep3(navController: NavController, carerViewModel: CarerRegisterViewM
                     contentDescription = "Back")
 
 
-                Image(painter = painterResource(R.drawable.luma_life),
+                Image(painter = painterResource(R.drawable.lumalifewide),
                     contentDescription = "",
-                    modifier = Modifier.height(40.sdp),
-                    contentScale = ContentScale.Crop
-                )
+                    modifier = Modifier.height(33.sdp),
+
+                    )
 
                 Image(painter = painterResource(R.drawable.ic_launcher_background),
                     contentDescription = "",
                     modifier = Modifier
-                        .height(32.sdp)
+                        .height(16.sdp)
                         .clip(CircleShape))
             }
             com.io.luma.customcompose.height(30)
@@ -98,18 +100,19 @@ fun SignupStep3(navController: NavController, carerViewModel: CarerRegisterViewM
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Text("Finishing signing up",
+                Text("Hello, ${carerViewModel.user.fullName}. Your account\nhas been created",
                     style = TextStyle(
                         color = textColor,
                         fontSize = 20.ssp
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     fontFamily = manropebold,
+                    fontWeight = FontWeight.W700,
                     textAlign = TextAlign.Center
                 )
                 com.io.luma.customcompose.height(13)
 
-                Text("Get started by adding the person you care for.",
+                Text("Get started by adding the person\nyou care for.",
                     style = TextStyle(
                         color = Color(0xff4C4C50),
                         fontSize = 13.ssp

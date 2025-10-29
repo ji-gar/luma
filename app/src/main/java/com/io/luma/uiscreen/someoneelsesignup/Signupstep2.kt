@@ -2,6 +2,7 @@ package com.io.luma.uiscreen.someoneelsesignup
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
@@ -46,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,6 +76,7 @@ import com.io.luma.network.Resource
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.manropesemibold
+import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.skyblue
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
@@ -86,11 +90,12 @@ import org.w3c.dom.Text
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegisterViewModel= viewModel()) {
-    var firstName=remember { mutableStateOf("") }
-    var lasttName=remember { mutableStateOf("") }
-    var email=remember { mutableStateOf("") }
-    var password=remember { mutableStateOf("") }
-    var confirmPassword=remember { mutableStateOf("") }
+    var firstName = rememberSaveable { mutableStateOf("") }
+    var lasttName = rememberSaveable { mutableStateOf("") }
+    var email = rememberSaveable { mutableStateOf("") }
+    var password = rememberSaveable { mutableStateOf("") }
+    var confirmPassword = rememberSaveable { mutableStateOf("") }
+
 
     var context= LocalContext.current
 
@@ -111,6 +116,18 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
         ))
     {
         Scaffold(
+            modifier = Modifier.background(
+                brush = Brush.linearGradient(
+                    listOf(
+                        goldenYellow,
+                        Color.White,
+                        Color.White,
+                        Color.White,
+                        skyblue
+                    )
+                )
+            ),
+            containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         )
 
@@ -126,7 +143,8 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.sdp)) {
+                        .padding(horizontal = 20.sdp))
+                {
 
                     Icon(imageVector = Icons.Filled.KeyboardArrowLeft,
                         modifier = Modifier.clickable{
@@ -135,16 +153,16 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                         contentDescription = "Back")
 
 
-                    Image(painter = painterResource(R.drawable.luma_life),
+                    Image(painter = painterResource(R.drawable.lumalifewide),
                         contentDescription = "",
-                        modifier = Modifier.height(40.sdp),
-                        contentScale = ContentScale.Crop
-                    )
+                        modifier = Modifier.height(33.sdp),
+
+                        )
 
                     Image(painter = painterResource(R.drawable.ic_launcher_background),
                         contentDescription = "",
                         modifier = Modifier
-                            .height(32.sdp)
+                            .height(16.sdp)
                             .clip(CircleShape))
                 }
                 com.io.luma.customcompose.height(30)
@@ -153,7 +171,7 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp).verticalScroll(
                         rememberScrollState()
-                    ).imePadding()
+                    ).imePadding().windowInsetsPadding(WindowInsets.navigationBars)
                 )
                 {
 
@@ -164,6 +182,7 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                         ),
                         modifier = Modifier.fillMaxWidth(),
                         fontFamily = manropebold,
+                        fontWeight = FontWeight.W700,
                         textAlign = TextAlign.Center
                     )
                     com.io.luma.customcompose.height(20)
@@ -179,7 +198,9 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Text("Enter your First Name",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
@@ -203,7 +224,9 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Text("Enter Your Last Name",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
@@ -227,7 +250,9 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Text("Enter Your Email",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
@@ -254,7 +279,9 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Text("Create your Password",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
@@ -283,7 +310,9 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Text("Confirm your Password",
                                 style = TextStyle(
                                     color = Color(0xff56575D),
-                                    fontSize = 15.ssp
+                                    fontSize = 15.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
                                 ))
                         },
                         shape = RoundedCornerShape(6.sdp),
@@ -301,16 +330,47 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                         "Agree and Continue") {
 
 
-                      carerSignupViewModel.updateFullName(firstName.value+""+lasttName.value)
-                        carerSignupViewModel.updatePassword(password = password.value,confirmPassword=confirmPassword.value)
-                        carerSignupViewModel.updateEmail(email = email.value)
+                        if (firstName.value.isEmpty())
+                        {
+                            Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
+                        }
+                      else  if (lasttName.value.isEmpty())
+                        {
+                            Toast.makeText(context, "Please enter last name", Toast.LENGTH_SHORT).show()
+                        }
+                      else  if (email.value.isEmpty())
+                        {
+                            Toast.makeText(context, "Please enter email", Toast.LENGTH_SHORT).show()
+                        }
+                      else  if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches())
+                        {
+                            Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                        }
+                      else  if (password.value.isEmpty())
+                        {
+                            Toast.makeText(context, "Please enter password", Toast.LENGTH_SHORT).show()
+                        }
+                      else  if (confirmPassword.value.isEmpty())
+                        {
+                            Toast.makeText(context, "Please enter confirm password", Toast.LENGTH_SHORT).show()
+                        }
 
-                        navController.navigate(NavRoute.SignupOptionStep3)
+                      else  if (password.value!=confirmPassword.value)
+                        {
+                            Toast.makeText(context, "Password and Confirm Password do not match", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            carerSignupViewModel.updateFullName(firstName.value+" "+lasttName.value)
+                            carerSignupViewModel.updateEmail(email.value)
+                            carerSignupViewModel.updatePassword(password.value,confirmPassword.value)
+                            navController.navigate(NavRoute.SignupOptionStep3)
+                        }
+
                     }
 
                     com.io.luma.customcompose.height(20)
 
-                    Row(modifier = Modifier.fillMaxWidth(),
+                    Row(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.navigationBars),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center) {
 

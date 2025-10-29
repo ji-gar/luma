@@ -51,6 +51,9 @@ class CarerRegisterViewModel : ViewModel()
     fun updatePatientLanguage(language: String) {
         user = user.copy(patientLanguage = language)
     }
+    fun countrycode(code: String) {
+        user = user.copy(patient_country_code = code)
+    }
 
 
     fun addDetils(userSignupRequestModel: CarerSignupReuestModel)

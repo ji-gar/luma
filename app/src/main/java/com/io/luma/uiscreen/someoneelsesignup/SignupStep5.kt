@@ -83,7 +83,8 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
         ))
     {
         Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+            containerColor = Color.Transparent
         ){ it
             Column(modifier = Modifier
                 .fillMaxSize()
@@ -96,7 +97,8 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.sdp)) {
+                        .padding(horizontal = 20.sdp))
+                {
 
                     Icon(imageVector = Icons.Filled.KeyboardArrowLeft,
                         modifier = Modifier.clickable{
@@ -105,16 +107,16 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                         contentDescription = "Back")
 
 
-                    Image(painter = painterResource(R.drawable.luma_life),
+                    Image(painter = painterResource(R.drawable.lumalifewide),
                         contentDescription = "",
-                        modifier = Modifier.height(40.sdp),
-                        contentScale = ContentScale.Crop
-                    )
+                        modifier = Modifier.height(33.sdp),
+
+                        )
 
                     Image(painter = painterResource(R.drawable.ic_launcher_background),
                         contentDescription = "",
                         modifier = Modifier
-                            .height(32.sdp)
+                            .height(16.sdp)
                             .clip(CircleShape))
                 }
 
@@ -248,7 +250,11 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                 }
             }
 
-            else -> {}
+            else -> {
+
+
+
+            }
         }
 
 

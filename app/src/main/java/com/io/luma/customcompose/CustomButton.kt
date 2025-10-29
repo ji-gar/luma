@@ -33,7 +33,7 @@ fun CustomButton(modifier: Modifier = Modifier,
 ) {
     Button(
         modifier = modifier,
-        shape = RoundedCornerShape(41.sdp),
+        shape = RoundedCornerShape(40.sdp),
         colors = ButtonDefaults.buttonColors(
             containerColor = bgColor,
             contentColor = textColor

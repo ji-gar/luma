@@ -1,5 +1,6 @@
 package com.io.luma.uiscreen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.navroute.NavRoute
+import com.io.luma.utils.TokenManager
 import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.delay
 
@@ -40,7 +42,15 @@ fun SplaceScreen(navController: NavController) {
 
     LaunchedEffect(true) {
         delay(4000)
-        navController.navigate(NavRoute.MobileScreen)
+        if (TokenManager.getInstance().getAccessToken()!=null)
+        {
+            Log.d("Token",TokenManager.getInstance().getAccessToken().toString())
+            navController.navigate(NavRoute.OnBordingScreen)
+        }
+        else
+        {
+            navController.navigate(NavRoute.MobileScreen)
+        }
     }
 
 

@@ -3,6 +3,7 @@ package com.io.luma.network
 
 import com.io.luma.model.CarerSignupReuestModel
 import com.io.luma.model.LoginRequestModel
+import com.io.luma.model.LoginResponse
 import com.io.luma.model.SignupRequestModel
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.model.VerifyNumberRequestModel
@@ -25,5 +26,5 @@ interface ApiService {
     @POST("v1/auth/verify-phone")
     suspend fun verifyPhone(@Body user: VerifyNumberRequestModel): Response<VerifyNumberResponseModel>
     @POST("v1/auth/login-phone")
-    suspend fun loginUser(@Body user: LoginRequestModel): Response<VerifyNumberResponseModel>
+    suspend fun loginUser(@Body user: LoginRequestModel): Response<LoginResponse>
 }

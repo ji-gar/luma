@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -76,10 +77,11 @@ fun SignupStep1(navController: NavController) {
             Row(horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()) {
-                Image(painter = painterResource(R.drawable.luma_life),
-                    modifier = Modifier.height(40.sdp),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "")
+                Image(painter = painterResource(R.drawable.lumalifewide),
+                    contentDescription = "",
+                    modifier = Modifier.height(33.sdp),
+
+                    )
             }
             com.io.luma.customcompose.height(30)
 
@@ -93,7 +95,8 @@ fun SignupStep1(navController: NavController) {
                 Text("Which statement best describes them?",
                     style = TextStyle(
                         color = textColor,
-                        fontSize = 20.ssp
+                        fontSize = 20.ssp,
+                        fontWeight = FontWeight.W700
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     fontFamily = manropebold,
@@ -125,7 +128,8 @@ fun SignupStep1(navController: NavController) {
                             TextStyle(
                                 fontFamily = manropesemibold,
                                 fontSize = 13.ssp,
-                                color = textColor
+                                color = textColor,
+                                fontWeight = FontWeight.W600
                             ))
                     }
                 }
@@ -134,7 +138,7 @@ fun SignupStep1(navController: NavController) {
 
             com.io.luma.customcompose.height(30)
 
-            CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 21.sdp),
+            CustomButton(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeContent).padding(horizontal = 21.sdp),
                 text = "Continue") {
 
                 navController.navigate(NavRoute.SignupOptionStep2)
