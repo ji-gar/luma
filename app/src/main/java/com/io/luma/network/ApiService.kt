@@ -2,6 +2,8 @@ package com.io.luma.network
 
 
 import com.io.luma.model.CarerSignupReuestModel
+import com.io.luma.model.InviatePaintentRequest
+import com.io.luma.model.InviatePaintentResponse
 import com.io.luma.model.LoginRequestModel
 import com.io.luma.model.LoginResponse
 import com.io.luma.model.SignupRequestModel
@@ -20,11 +22,12 @@ interface ApiService {
     suspend fun createcarerUser(@Body user: CarerSignupReuestModel): Response<SignupResponseModel>
 
 
-    @POST("v1/carer/invite-patient")
-    suspend fun creatSendInviation(@Body user: CarerSignupReuestModel): Response<SignupResponseModel>
 
     @POST("v1/auth/verify-phone")
     suspend fun verifyPhone(@Body user: VerifyNumberRequestModel): Response<VerifyNumberResponseModel>
     @POST("v1/auth/login-phone")
     suspend fun loginUser(@Body user: LoginRequestModel): Response<LoginResponse>
+
+    @POST("v1/carer/invite-patient")
+    suspend fun inviatePaintent(@Body user: InviatePaintentRequest): Response<InviatePaintentResponse>
 }

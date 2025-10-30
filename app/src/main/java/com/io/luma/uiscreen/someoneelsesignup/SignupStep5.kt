@@ -160,7 +160,7 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                         textAlign = TextAlign.Start
                     )
 
-                    Text("${carerViewModel.user.email}",
+                    Text("${carerViewModel.user.patientEmail}",
                         style = TextStyle(
                             color = textColor,
                             fontSize = 16.ssp

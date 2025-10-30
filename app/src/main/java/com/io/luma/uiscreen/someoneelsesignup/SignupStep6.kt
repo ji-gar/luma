@@ -1,5 +1,7 @@
 package com.io.luma.uiscreen.someoneelsesignup
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,9 +23,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,12 +38,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
+import com.io.luma.model.InviatePaintentRequest
+import com.io.luma.model.InviatePaintentResponse
+import com.io.luma.network.Resource
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.manropesemibold
@@ -46,6 +57,7 @@ import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
 import com.io.luma.ui.theme.verandaRegular
 import com.io.luma.viewmodel.CarerRegisterViewModel
+import com.io.luma.viewmodel.InvitePatientViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -58,7 +70,9 @@ data class CheckBoxUI(
 )
 
 @Composable
-fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewModel) {
+fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewModel,invitePatientViewModel: InvitePatientViewModel= viewModel()) {
+    val inviteState by invitePatientViewModel.invitePatientState.collectAsState()
+    var localContext= LocalContext.current
     var checkBoxList= remember {
 
         mutableStateListOf(CheckBoxUI(
@@ -87,37 +101,47 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
             )
         ))
     {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.statusBars)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+        )
+        {
 
 
             com.io.luma.customcompose.height(30)
-            Row(horizontalArrangement = Arrangement.SpaceBetween,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.sdp))
+                    .padding(horizontal = 20.sdp)
+            )
             {
 
-                Icon(imageVector = Icons.Filled.KeyboardArrowLeft,
-                    modifier = Modifier.clickable{
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    modifier = Modifier.clickable {
                         navController.popBackStack()
                     },
-                    contentDescription = "Back")
+                    contentDescription = "Back"
+                )
 
 
-                Image(painter = painterResource(R.drawable.lumalifewide),
+                Image(
+                    painter = painterResource(R.drawable.lumalifewide),
                     contentDescription = "",
                     modifier = Modifier.height(33.sdp),
 
                     )
 
-                Image(painter = painterResource(R.drawable.ic_launcher_background),
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_background),
                     contentDescription = "",
                     modifier = Modifier
                         .height(16.sdp)
-                        .clip(CircleShape))
+                        .clip(CircleShape)
+                )
             }
             com.io.luma.customcompose.height(30)
 
@@ -130,7 +154,8 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
             )
             {
 
-                Text("Great job!",
+                Text(
+                    "Great job!",
                     style = TextStyle(
                         color = textColor,
                         fontSize = 20.ssp
@@ -142,12 +167,15 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
 
                 com.io.luma.customcompose.height(20)
 
-                Text(text = "We’ve almost finished! Let’s send a download link to a Person you will care about", style =
-                    TextStyle(
-                        fontFamily = manropesemibold,
-                        fontSize = 13.ssp,
-                        color = textColor
-                    ))
+                Text(
+                    text = "We’ve almost finished! Let’s send a download link to a Person you will care about",
+                    style =
+                        TextStyle(
+                            fontFamily = manropesemibold,
+                            fontSize = 13.ssp,
+                            color = textColor
+                        )
+                )
 
                 com.io.luma.customcompose.height(20)
 
@@ -156,35 +184,37 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
 
                     checkBoxList.forEachIndexed { index, uI ->
                         Row {
-                           Checkbox(
-                               checked = uI.isChecked,
-                               onCheckedChange = {
-                                   checkBoxList[index]= uI.copy(isChecked = it)
-                               },
-                               colors = CheckboxDefaults.colors(
-                                   uncheckedColor = Color.Black,
-                                   checkmarkColor = Color.White,
-                                   checkedColor = Color.Black
-                               )
-                           )
+                            Checkbox(
+                                checked = uI.isChecked,
+                                onCheckedChange = {
+                                    checkBoxList[index] = uI.copy(isChecked = it)
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    uncheckedColor = Color.Black,
+                                    checkmarkColor = Color.White,
+                                    checkedColor = Color.Black
+                                )
+                            )
                             com.io.luma.customcompose.width(4)
                             Column {
-                                Text(uI.title, style = TextStyle(
-                                    fontFamily = verandaRegular,
-                                    fontSize = 13.ssp
-                                ))
+                                Text(
+                                    uI.title, style = TextStyle(
+                                        fontFamily = verandaRegular,
+                                        fontSize = 13.ssp
+                                    )
+                                )
 
-                                Text(uI.dec, style = TextStyle(
-                                    fontFamily = verandaBold,
-                                    fontSize = 18.ssp
-                                ))
+                                Text(
+                                    uI.dec, style = TextStyle(
+                                        fontFamily = verandaBold,
+                                        fontSize = 18.ssp
+                                    )
+                                )
 
                             }
 
 
-
                         }
-
 
 
                     }
@@ -196,22 +226,74 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                 CustomButton(
 
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Send a Link") { }
+                    text = "Send a Link"
+                ) {
+                    Log.d("Invite",InviatePaintentRequest(
+                        countryCode = "+91",
+                        fullName = carerViewModel.user.patientFullName,
+                        sendViaEmail = checkBoxList[1].isChecked,
+                        phoneNumber = carerViewModel.user.patientPhoneNumber,
+                        language = carerViewModel.user.patientLanguage,
+                        email = carerViewModel.user.patientEmail,
+                        sendViaPhone = checkBoxList[0].isChecked
+                    ).toString())
 
-
-
-
-
-
+                    invitePatientViewModel.invitePatient(
+                        InviatePaintentRequest(
+                            countryCode = "+91",
+                            fullName = carerViewModel.user.patientFullName,
+                            sendViaEmail = checkBoxList[1].isChecked,
+                            phoneNumber = carerViewModel.user.patientPhoneNumber,
+                            language = carerViewModel.user.patientLanguage,
+                            email = carerViewModel.user.patientEmail,
+                            sendViaPhone = checkBoxList[0].isChecked
+                        )
+                    )
+                }
 
 
             }
 
 
-
         }
 
+        when (inviteState) {
 
+            is Resource.Loading<*> -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
+
+            is Resource.Success<*> -> {
+                val response = (inviteState as Resource.Success<InviatePaintentResponse>).data
+
+                // Handle response data
+                LaunchedEffect(Unit) {
+                    Toast.makeText(localContext, "Invite sent successfully", Toast.LENGTH_SHORT)
+                        .show()
+                    // Navigate to next screen if needed
+                    // navController.navigate(NavRoute.SomeNextScreen)
+                }
+            }
+
+            is Resource.Error<*> -> {
+                val message = (inviteState as Resource.Error<*>).message
+                LaunchedEffect(message) {
+                    Toast.makeText(localContext, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> {
+
+            }
+
+
+        }
     }
 
 }
