@@ -26,4 +26,7 @@ class LoginViewModel : ViewModel() {
         }
 
     }
+    fun resetInviteState() {
+        _loginState.value = null  // 👈 just clear the state instead of Idle
+    }
 }

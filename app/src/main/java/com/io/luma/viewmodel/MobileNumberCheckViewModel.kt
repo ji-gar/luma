@@ -25,4 +25,7 @@ class MobileNumberCheckViewModel : ViewModel() {
         }
 
     }
+    fun resetInviteState() {
+        _verifyNumber.value = null  // 👈 just clear the state instead of Idle
+    }
 }

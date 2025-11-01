@@ -257,6 +257,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 token.saveTokens(response.data?.accessToken.toString(),response.data?.refreshToken.toString())
                 token.saveId(response.data?.user?.userId.toString())
                 LaunchedEffect(Unit) {
+                    loginViewModel.resetInviteState()
                     navController.navigate(NavRoute.OnBordingScreen)
                 }
             }

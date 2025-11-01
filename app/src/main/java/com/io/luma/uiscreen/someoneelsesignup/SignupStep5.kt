@@ -145,7 +145,7 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
 
                     CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
                         bgColor = Color(0xffDAE1FD),
-                        text = "Your PWD is Amy Bishop") {
+                        text = "Your ${carerViewModel.user.patientFullName} is Amy Bishop") {
 
                     }
                     com.io.luma.customcompose.height(20)
@@ -239,6 +239,7 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                 token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
                 token.saveId(response.user?.userId.toString())
                 LaunchedEffect(Unit) {
+                        carerViewModel.resetInviteState()
                          navController.navigate(NavRoute.SignupOptionStep6)
                 }
             }
@@ -247,6 +248,7 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                 val message = (userFlow as Resource.Error<*>).message
                 LaunchedEffect(message) {
                     snackbarHostState.showSnackbar(message)
+                    carerViewModel.resetInviteState()
                 }
             }
 

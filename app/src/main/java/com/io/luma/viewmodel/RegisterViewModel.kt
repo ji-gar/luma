@@ -58,4 +58,7 @@ class RegisterViewModel : ViewModel() {
         }
 
     }
+    fun resetInviteState() {
+        _createUser.value = null  // 👈 just clear the state instead of Idle
+    }
 }

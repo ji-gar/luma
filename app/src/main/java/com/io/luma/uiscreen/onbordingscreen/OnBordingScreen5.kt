@@ -123,7 +123,7 @@ fun OnBordingScreen5(navController: NavController) {
 
     val context = LocalContext.current
     val sampleRate = 16000
-    val agentId = "5066"
+    var agentId by remember { mutableStateOf("5066") }
 
     var isRecording by remember { mutableStateOf(false) }
     var isCalander by remember { mutableStateOf(false) }
@@ -161,6 +161,9 @@ fun OnBordingScreen5(navController: NavController) {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         micPermissionGranted.value = granted
+        if (granted) {
+            agentId="123"
+        }
     }
 
     val backgroundColor by animateColorAsState(

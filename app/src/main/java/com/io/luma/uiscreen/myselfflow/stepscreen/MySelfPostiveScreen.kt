@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,6 +43,7 @@ import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
+import com.io.luma.uiscreen.loginscreen.CountryOutlinedDropdown
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -180,6 +182,11 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onValueChange = {
                         phone=it
+                    },
+                    leadingIcon = {
+                        CountryOutlinedDropdown(
+                            modifier = Modifier.wrapContentHeight()
+                        )
                     },
 
                     placeholder = {

@@ -195,7 +195,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                             .padding(horizontal = 20.sdp),
                         "Take Photo"
                     ) {
-                        navController.navigate(NavRoute.MyselfStep2)
+                        image.launch("image/*")
                     }
 
                     height(24)
@@ -235,6 +235,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                 token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
                 token.saveId(response.user?.userId.toString())
                 LaunchedEffect(Unit) {
+                    registermyself.resetInviteState()
                     navController.navigate(NavRoute.LoginScreen)
                 }
             }
@@ -243,6 +244,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                 val message = (userFlow as Resource.Error<*>).message
                 LaunchedEffect(message) {
                     snackbarHostState.showSnackbar(message)
+                    registermyself.resetInviteState()
                 }
             }
 

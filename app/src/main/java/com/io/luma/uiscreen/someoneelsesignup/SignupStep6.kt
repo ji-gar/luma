@@ -263,7 +263,7 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
+                        .background(Color.Black.copy(alpha = 0.3f)) .clickable(enabled = false) {},
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = Color.White)
@@ -277,6 +277,7 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                 LaunchedEffect(Unit) {
                     Toast.makeText(localContext, "Invite sent successfully", Toast.LENGTH_SHORT)
                         .show()
+                    invitePatientViewModel.resetInviteState()
                     // Navigate to next screen if needed
                     // navController.navigate(NavRoute.SomeNextScreen)
                 }
@@ -286,6 +287,7 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                 val message = (inviteState as Resource.Error<*>).message
                 LaunchedEffect(message) {
                     Toast.makeText(localContext, message, Toast.LENGTH_SHORT).show()
+                    invitePatientViewModel.resetInviteState()
                 }
             }
             else -> {

@@ -94,13 +94,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
     val keyboardController = LocalSoftwareKeyboardController.current
     val verifyNumberFlow by verifyNumberViewModel.verifyNumber.collectAsState()
 
-     val countries = listOf(
-        Country("Germany", "+49", "🇩🇪"),
-        Country("Switzerland", "+41", "🇨🇭"),
-        Country("Austria", "+43", "🇦🇹"),
-        Country("United Kingdom", "+44", "🇬🇧"),
-        Country("United States", "+1", "🇺🇸")
-    )
+
 
 
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
@@ -266,6 +260,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                             Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
                         }
                         else {
+
                             Log.d("Number",phone.value)
                             verifyNumberViewModel.verifyNumber(VerifyNumberRequestModel("+91",phone.value.toString()))
                            // navController.navigate(NavRoute.LoginScreen)
@@ -296,10 +291,12 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 val response = (verifyNumberFlow as Resource.Success<VerifyNumberResponseModel>).data
                 if (response.data?.nextAction.equals("register"))
                 {
+                    verifyNumberViewModel.resetInviteState()
                     navController.navigate(NavRoute.SignupOption)
                 }
                 else if (response.data?.nextAction.equals("login"))
                 {
+                    verifyNumberViewModel.resetInviteState()
                     navController.navigate(NavRoute.LoginScreen)
                 }
 //                var token= TokenManager.getInstance(context)
@@ -426,7 +423,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
     }
 
 }
-private val countries = listOf(
+ val countries = listOf(
     Country("Germany", "+49", "🇩🇪"),
     Country("Switzerland", "+41", "🇨🇭"),
     Country("Austria", "+43", "🇦🇺"),

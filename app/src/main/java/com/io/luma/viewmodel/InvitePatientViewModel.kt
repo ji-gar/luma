@@ -23,4 +23,7 @@ class InvitePatientViewModel : ViewModel() {
             _invitePatientState.value = repository.invitePatient(request)
         }
     }
+    fun resetInviteState() {
+        _invitePatientState.value = null  // 👈 just clear the state instead of Idle
+    }
 }
