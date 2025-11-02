@@ -6,6 +6,7 @@ import com.io.luma.model.InviatePaintentRequest
 import com.io.luma.model.InviatePaintentResponse
 import com.io.luma.model.LoginRequestModel
 import com.io.luma.model.LoginResponse
+import com.io.luma.model.SetPasswordRequest
 import com.io.luma.model.SignupRequestModel
 import com.io.luma.model.SignupResponseModel
 import com.io.luma.model.VerifyNumberRequestModel
@@ -30,4 +31,7 @@ interface ApiService {
 
     @POST("v1/carer/invite-patient")
     suspend fun inviatePaintent(@Body user: InviatePaintentRequest): Response<InviatePaintentResponse>
+
+    @POST("v1/auth/set-password")
+    suspend fun setPassword(@Body user: SetPasswordRequest): Response<LoginResponse>
 }

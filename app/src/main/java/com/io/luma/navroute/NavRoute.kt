@@ -58,6 +58,9 @@ sealed class NavRoute {
     data object OnBordingScreen7 : NavRoute()
 
     @Serializable
+    data object SetPassword : NavRoute()
+
+    @Serializable
     data object OnBordingScreen8 : NavRoute()
 
     @Serializable
@@ -71,6 +74,9 @@ sealed class NavRoute {
 
     @Serializable
     data object LoginScreen : NavRoute()
+
+    @Serializable
+    data object DashBoard : NavRoute()
 
 
 

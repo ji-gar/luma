@@ -1,42 +1,27 @@
-package com.io.luma.uiscreen.loginscreen
+package com.io.luma.uiscreen
 
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
@@ -45,63 +30,60 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
-import com.io.luma.customcompose.CustomOutlineButton
 import com.io.luma.customcompose.height
-import com.io.luma.model.Country
-import com.io.luma.model.SignupResponseModel
-import com.io.luma.model.VerifyNumberRequestModel
-import com.io.luma.model.VerifyNumberResponseModel
+import com.io.luma.model.LoginRequestModel
+import com.io.luma.model.LoginResponse
+import com.io.luma.model.SetPasswordRequest
 import com.io.luma.navroute.NavRoute
 import com.io.luma.network.Resource
-import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
+import com.io.luma.uiscreen.loginscreen.CountryOutlinedDropdown
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
 import com.io.luma.utils.TokenManager
-import com.io.luma.viewmodel.MobileNumberCheckViewModel
+import com.io.luma.viewmodel.SetPasswordViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: MobileNumberCheckViewModel= viewModel()) {
+fun setPassword(navController: NavController,setPasswordViewModel: SetPasswordViewModel= viewModel()) {
+
+
+    val context= LocalContext.current
+    val setPasswordState by setPasswordViewModel.setPasswordState.collectAsState()
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
     var phone= remember{
-        mutableStateOf("")
+        mutableStateOf(TokenManager.getInstance(context).getPhoneNumber())
     }
-    val context = LocalContext.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val verifyNumberFlow by verifyNumberViewModel.verifyNumber.collectAsState()
-    var countrycode by remember { mutableStateOf("+44") }
-
-
+    var countrycode by remember { mutableStateOf(TokenManager.getInstance(context).getCountryCode()) }
 
 
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
-            ) {
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),) {
 
             Image(painter = painterResource(R.drawable.helloluma),
                 contentDescription = "")
@@ -111,9 +93,9 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.40f)
-
-                .align(alignment = Alignment.BottomCenter)
+                .fillMaxHeight(0.6f)
+                .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.navigationBars)
         )
         {
             OutlinedCard(
@@ -126,8 +108,8 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 )
             ) {
                 Column(modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.Start) {
-                    height(10)
+                ) {
+                    height(13)
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center)
                     {
@@ -142,7 +124,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Enter your\nPhone number",
+                            "Set Password!",
                             style = TextStyle(
                                 color = textColor,
                                 fontSize = 21.ssp,
@@ -161,30 +143,25 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
 
                         )
                     }
-                    height(13)
+                    com.io.luma.customcompose.height(10)
                     HorizontalDivider(
                         color = Color(0xFF4E73FF).copy(alpha = 0.2f),
                         thickness = 1.dp
                     )
-                    com.io.luma.customcompose.height(20)
-                    Box(modifier = Modifier.padding(horizontal = 13.sdp)){
-                        rowHeader("Phone Number")
-                    }
-                    com.io.luma.customcompose.height(6)
-                    Row(modifier = Modifier.fillMaxWidth())
-                    {
+                    com.io.luma.customcompose.height(10)
+                    phone.value?.let {
                         OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 13.sdp),
-                            value = phone.value,
+                            value = it,
                             onValueChange = { phone.value = it },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             leadingIcon = {
                                 CountryOutlinedDropdown(
                                     modifier = Modifier.wrapContentHeight(),
-                                    defaultCountryCode = "+44"
+                                    defaultCountryCode = "${TokenManager.getInstance(context).getCountryCode()}"
                                 ){
                                     countrycode=it.code
                                     Log.d("Country",countrycode.toString())
@@ -208,67 +185,106 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                                 unfocusedBorderColor = Color(0xff93969B)
                             )
                         )
-
-
-
-
-//                        OutlinedTextField(
-//                            modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
-//                            value =phone.value,
-//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                            onValueChange = {
-//                                phone.value=it
-//                            },
-//                            leadingIcon = {
-//                                CountryOutlinedDropdown(modifier = Modifier.wrapContentSize()) {
-//
-//                                }
-//                            },
-//                            singleLine = true,
-//                            keyboardActions = KeyboardActions(onDone = {
-//                                keyboardController?.hide()
-//
-//                            }),
-//
-//                            placeholder = {
-//                                Text("Enter your phone number",
-//                                    style = TextStyle(
-//                                        color = Color(0xff56575D),
-//                                        fontSize = 15.ssp,
-//                                        fontFamily = monospaceRegular
-//                                    ))
-//                            },
-//                            shape = RoundedCornerShape(6.sdp),
-//                            colors = OutlinedTextFieldDefaults.colors(
-//                                focusedContainerColor = Color.Transparent,
-//                                unfocusedContainerColor = Color.Transparent,
-//                                focusedBorderColor = Color(0xff93969B),
-//                                unfocusedBorderColor = Color(0xff93969B)
-//                            )
-//                        )
                     }
-                    com.io.luma.customcompose.height(20)
-                    CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
-                        "Next") {
+                    com.io.luma.customcompose.height(13)
 
-                        if(phone.value.isNullOrEmpty())
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth().padding(horizontal = 13.sdp),
+                    ) {
+                        rowHeader("Create Password")
+                    }
+                    com.io.luma.customcompose.height(6)
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
+                        value =password,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        visualTransformation = PasswordVisualTransformation(),
+                        onValueChange = {
+                            password=it
+                        },
+
+                        placeholder = {
+                            Text("Create your Password",
+                                style = TextStyle(
+                                    color = Color(0xff4C4C50),
+                                    fontSize = 13.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
+                                ))
+                        },
+                        shape = RoundedCornerShape(6.sdp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedBorderColor = Color(0xff93969B),
+                            unfocusedBorderColor = Color(0xff93969B)
+                        )
+                    )
+                    com.io.luma.customcompose.height(13)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth().padding(horizontal = 13.sdp),
+                    ) {
+                        rowHeader("Confirm Password")
+                    }
+                    com.io.luma.customcompose.height(6)
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
+                        value = confirmPassword,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        visualTransformation = PasswordVisualTransformation(),
+                        onValueChange = {
+                            confirmPassword=it
+                        },
+
+                        placeholder = {
+                            Text("Confirm your Password",
+                                style = TextStyle(
+                                    color = Color(0xff4C4C50),
+                                    fontSize = 13.ssp,
+                                    fontFamily = monospaceRegular,
+                                    fontWeight = FontWeight.W400
+                                ))
+                        },
+                        shape = RoundedCornerShape(6.sdp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedBorderColor = Color(0xff93969B),
+                            unfocusedBorderColor = Color(0xff93969B)
+                        )
+                    )
+                    com.io.luma.customcompose.height(13)
+                    CustomButton(modifier = Modifier.fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .padding(horizontal = 13.sdp),
+                        "Set Password") {
+
+                        if (password.isBlank()) {
+                            var passwordError = "Please enter password"
+                            Toast.makeText(context, passwordError, Toast.LENGTH_SHORT).show()
+
+                        } else if (confirmPassword.isBlank())
                         {
-                            Toast.makeText(context, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show()
+                            var  confirmPasswordError = "Please enter confirm password"
+                            Toast.makeText(context, confirmPasswordError, Toast.LENGTH_SHORT).show()
+
+                        } else if (password != confirmPassword) {
+                            var confirmPasswordError = "Password and Confirm Password do not match"
+                            Toast.makeText(context, confirmPasswordError, Toast.LENGTH_SHORT).show()
 
                         }
-                        else if(phone.value.length<10)
-                        {
-                            Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
-                        }
-                        else if(phone.value.length>10)
-                        {
-                            Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-
-                            Log.d("Number",phone.value)
-                            verifyNumberViewModel.verifyNumber(VerifyNumberRequestModel("${countrycode}",phone.value.toString()))
-                           // navController.navigate(NavRoute.LoginScreen)
+                        else{
+                           setPasswordViewModel.setPassword(
+                               SetPasswordRequest(
+                                   countrycode,
+                                   password,
+                                   phone.value,
+                                   confirmPassword
+                               )
+                           )
+                            //navController.navigate(NavRoute.OnBordingScreen)
                         }
                     }
 
@@ -278,8 +294,7 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 }
             }
         }
-
-        when (verifyNumberFlow) {
+        when (setPasswordState) {
             is Resource.Loading<*> -> {
                 Box(
                     modifier = Modifier
@@ -293,36 +308,18 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
 
             is Resource.Success<*> -> {
 
-                val response = (verifyNumberFlow as Resource.Success<VerifyNumberResponseModel>).data
-                if (response.data?.nextAction.equals("register"))
-                {
-                    verifyNumberViewModel.resetInviteState()
-                    TokenManager.getInstance(context).savePhoneNumber(phone.value.toString())
-                    TokenManager.getInstance(context).saveCountryCode(countrycode)
-                    navController.navigate(NavRoute.SignupOption)
+                val response = (setPasswordState as Resource.Success<LoginResponse>).data
+                var token= TokenManager.getInstance(context)
+                token.saveTokens(response.data?.accessToken.toString(),response.data?.refreshToken.toString())
+                token.saveId(response.data?.user?.userId.toString())
+                LaunchedEffect(Unit) {
+                    setPasswordViewModel.resetSetPasswordState()
+                    navController.navigate(NavRoute.OnBordingScreen)
                 }
-                else if (response.data?.nextAction.equals("login"))
-                {
-                    verifyNumberViewModel.resetInviteState()
-                    navController.navigate(NavRoute.LoginScreen)
-                }
-                else if (response.data?.nextAction.equals("set_password"))
-                {
-                    verifyNumberViewModel.resetInviteState()
-                    TokenManager.getInstance(context).savePhoneNumber(phone.value.toString())
-                    TokenManager.getInstance(context).saveCountryCode(countrycode)
-                    navController.navigate(NavRoute.SetPassword)
-                }
-//                var token= TokenManager.getInstance(context)
-//                token.saveTokens(response.accessToken.toString(),response.refreshToken.toString())
-//                token.saveId(response.user?.userId.toString())
-//                LaunchedEffect(Unit) {
-//                    navController.navigate(NavRoute.SignupOptionStep6)
-//                }
             }
 
             is Resource.Error<*> -> {
-                val message = (verifyNumberFlow as Resource.Error<*>).message
+                val message = (setPasswordState as Resource.Error<*>).message
                 LaunchedEffect(message) {
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
@@ -330,10 +327,43 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
 
             else -> {}
         }
+//        when (loginState) {
+//            is Resource.Loading<*> -> {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(Color.Black.copy(alpha = 0.3f)),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    CircularProgressIndicator(color = Color.White)
+//                }
+//            }
+//
+//            is Resource.Success<*> -> {
+//
+//                val response = (loginState as Resource.Success<LoginResponse>).data
+//                var token= TokenManager.getInstance(context)
+//                token.saveTokens(response.data?.accessToken.toString(),response.data?.refreshToken.toString())
+//                token.saveId(response.data?.user?.userId.toString())
+//                LaunchedEffect(Unit) {
+//                    loginViewModel.resetInviteState()
+//                    navController.navigate(NavRoute.OnBordingScreen)
+//                }
+//            }
+//
+//            is Resource.Error<*> -> {
+//                val message = (loginState as Resource.Error<*>).message
+//                LaunchedEffect(message) {
+//                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//
+//            else -> {}
+//        }
 
 
-
-//        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent)) {
+//        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent))
+        //        {
 //
 //            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f).background(color = Color.White),
 //                contentAlignment = Alignment.Center) {
@@ -436,99 +466,6 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
 
     }
 
-}
- val countries = listOf(
-    Country("Germany", "+49", "🇩🇪"),
-    Country("Switzerland", "+41", "🇨🇭"),
-    Country("Austria", "+43", "🇦🇺"),
-    Country("United Kingdom", "+44", "🇬🇧"),
-    Country("United States", "+1", "🇺🇸")
-)
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CountryOutlinedDropdown(
-    modifier: Modifier = Modifier,
-    items: List<Country> = countries,
-    defaultCountryCode: String? = "+44",
-    onCountrySelected: (Country) -> Unit = {}
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val defaultCountry = remember {
-        items.find { it.code == defaultCountryCode } ?: items.firstOrNull()
-    }
-
-    val selectedCountry = remember { mutableStateOf(defaultCountry) }
-
-    // ✅ Compact layout without using OutlinedTextField inside
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
-            .clickable { expanded = true }
-            .padding(horizontal = 6.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = selectedCountry.value?.flagEmoji ?: "🇨🇭",
-                fontSize = 18.ssp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = selectedCountry.value?.code ?: "+41",
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 15.ssp,
-                    fontFamily = monospaceRegular
-                )
-            )
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Dropdown Arrow",
-                tint = Color(0xff56575D),
-                modifier = Modifier.size(18.dp)
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            containerColor = Color.White,
-            onDismissRequest = { expanded = false }
-        ) {
-            items.forEach { country ->
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row {
-                                Text(
-                                    text = country.flagEmoji,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    text = country.name,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                            Text(
-                                text = country.code,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xff56575D)
-                            )
-                        }
-                    },
-                    onClick = {
-                        selectedCountry.value = country
-                        expanded = false
-                        onCountrySelected(country)
-                    }
-                )
-            }
-        }
-    }
 }

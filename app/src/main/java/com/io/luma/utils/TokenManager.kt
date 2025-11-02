@@ -13,6 +13,10 @@ class TokenManager private constructor(context: Context) {
         private const val PREFS_TOKEN_FILE = "prefs_token_file"
         private const val ACCESS_TOKEN = "access_token"
         private const val REFRESH_TOKEN = "refresh_token"
+
+        private const val COUNTRY_CODE = "country_code"
+
+        private const val PHONE_NUMBER = "phone_number"
         private const val USER_ID = "userid"
 
         @Volatile
@@ -58,6 +62,24 @@ class TokenManager private constructor(context: Context) {
             refreshToken?.let { putString(REFRESH_TOKEN, it) }
             apply()
         }
+    }
+    fun saveCountryCode(countryCode: String, ) {
+        prefs.edit().apply {
+            putString(COUNTRY_CODE, countryCode)
+            apply()
+        }
+    }
+    fun savePhoneNumber(phoneNumber: String, ) {
+        prefs.edit().apply {
+            putString(PHONE_NUMBER, phoneNumber)
+            apply()
+        }
+    }
+    fun getCountryCode(): String? {
+        return prefs.getString(COUNTRY_CODE, null)
+    }
+    fun getPhoneNumber(): String? {
+        return prefs.getString(PHONE_NUMBER, null)
     }
 
     fun getAccessToken(): String? {

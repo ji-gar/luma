@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
@@ -33,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,12 +67,14 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
-    var phone= remember{
-        mutableStateOf("")
-    }
+
     var password=remember { mutableStateOf("") }
     val loginState by loginViewModel.loginState.collectAsState()
     val context= LocalContext.current
+    var countrycode by remember { mutableStateOf("${TokenManager.getInstance(context).getCountryCode()}") }
+    var phone= remember{
+        mutableStateOf("${TokenManager.getInstance(context).getPhoneNumber()}")
+    }
 
     Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
     {
@@ -86,7 +90,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
                 .align(Alignment.BottomCenter)
-                .align(alignment = Alignment.BottomCenter)
+                .align(alignment = Alignment.BottomCenter).windowInsetsPadding(WindowInsets.navigationBars)
         )
         {
             OutlinedCard(
@@ -139,7 +143,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                         color = Color(0xFF4E73FF).copy(alpha = 0.2f),
                         thickness = 1.dp
                     )
-                    com.io.luma.customcompose.height(20)
+                    com.io.luma.customcompose.height(15)
                     Box(modifier = Modifier.padding(horizontal = 13.sdp)){
                         rowHeader("Phone Number")
                     }
@@ -150,6 +154,13 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onValueChange = {
                             phone.value=it
+                        },
+                        leadingIcon = {
+                            CountryOutlinedDropdown(
+                                modifier = Modifier.wrapContentHeight()
+                            ){
+                                countrycode=it.code
+                            }
                         },
 
                         placeholder = {
@@ -224,7 +235,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
                             loginViewModel.addDetils(
                                 LoginRequestModel(
-                                    "+91",
+                                    countrycode,
                                       password.value.toString(),
                                      phone.value.toString()
                                 )

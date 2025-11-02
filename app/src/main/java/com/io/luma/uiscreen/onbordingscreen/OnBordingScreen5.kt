@@ -247,10 +247,6 @@ fun OnBordingScreen5(navController: NavController) {
         when {
             isCalander -> {
 
-
-
-
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -949,6 +945,7 @@ fun OnBordingScreen5(navController: NavController) {
                                     isContactList = true
                                     contact = json.toString()
                                     var temp=Gson().fromJson(contact, Array<ContactItem>::class.java).toList()
+                                    optionList.clear()
                                     temp.forEachIndexed { index, item ->
                                         optionList.add(RadioGroup(item.name, item.phone!!))
                                     }

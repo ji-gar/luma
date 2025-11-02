@@ -32,6 +32,7 @@ import com.io.luma.ui.theme.skyblue
 import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
 import com.io.luma.uiscreen.SplaceScreen
+import com.io.luma.uiscreen.dashboard.DashBoard
 import com.io.luma.uiscreen.loginscreen.LoginOption
 import com.io.luma.uiscreen.loginscreen.LoginScreen
 import com.io.luma.uiscreen.loginscreen.MobileNumberScreen
@@ -47,6 +48,7 @@ import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen5
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen6
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen7
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen8
+import com.io.luma.uiscreen.setPassword
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep1
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep2
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep3
@@ -86,6 +88,10 @@ fun NavHost() {
         composable<NavRoute.SignupСarer> {
 
             SignupCarer(navController)
+        }
+        composable<NavRoute.DashBoard> {
+
+            DashBoard(navController)
         }
 
         composable<NavRoute.MobileScreen> {
@@ -148,6 +154,10 @@ fun NavHost() {
         }
         composable<NavRoute.MyselfStep3> {
             MySelfStep3(navController,registermyself)
+
+        }
+        composable<NavRoute.SetPassword> {
+           setPassword(navController)
 
         }
         composable<NavRoute.OnBordingScreen> {

@@ -207,7 +207,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                         "Upload Photo"
                     ) {
                         registermyself.updateRole(role = "patient")
-                        registermyself.updateCountryCode("+91")
+                        registermyself.updateCountryCode("${TokenManager.getInstance(context).getCountryCode()}")
                         Log.d("GSON", registermyself.user.toString())
                         registermyself.addDetils(registermyself.user)
                     }
@@ -236,7 +236,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                 token.saveId(response.user?.userId.toString())
                 LaunchedEffect(Unit) {
                     registermyself.resetInviteState()
-                    navController.navigate(NavRoute.LoginScreen)
+                    navController.navigate(NavRoute.OnBordingScreen)
                 }
             }
 

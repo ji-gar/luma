@@ -1,6 +1,7 @@
 package com.io.luma.uiscreen.someoneelsesignup
 
 import android.provider.ContactsContract
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,9 +37,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +68,8 @@ import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.skyblue
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaRegular
+import com.io.luma.uiscreen.loginscreen.CountryOutlinedDropdown
+import com.io.luma.utils.TokenManager
 import com.io.luma.viewmodel.CarerRegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
@@ -76,45 +82,102 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
     var email = rememberSaveable { mutableStateOf("") }
     var phone = rememberSaveable { mutableStateOf("") }
     var language = rememberSaveable { mutableStateOf("") }
+    var countrycodes by remember { mutableStateOf("") }
 
 
     var context= LocalContext.current
 
-    var contactPick= rememberLauncherForActivityResult(contract = ActivityResultContracts.PickContact(), onResult = {
-       if (it!=null)
-       {
-           var cursor=context.contentResolver.query(it,null,null,null,null)
+//    var contactPick= rememberLauncherForActivityResult(contract = ActivityResultContracts.PickContact(), onResult = {
+//       if (it!=null)
+//       {
+//           var cursor=context.contentResolver.query(it,null,null,null,null)
+//
+//           if (cursor?.moveToNext() ?: false)
+//           {
+//               val idIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
+//               val nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+//               val id = cursor.getString(idIndex)
+//               val name = cursor.getString(nameIndex)
+//               firstName.value=name
+//
+//               val phoneCursor = context.contentResolver.query(
+//                   ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                   null,
+//                   "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+//                   arrayOf(id),
+//                   null
+//               )
+//
+//               phoneCursor?.use { pCur ->
+//                   if (pCur.moveToFirst()) {
+//                       val phoneIndex =
+//                           pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+//                       phone.value = pCur.getString(phoneIndex)
+//                   }
+//               }
+//
+//
+//           }
+//       }
+//
+//
+//    })
+    val contactPick = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickContact(),
+        onResult = { uri ->
+            if (uri != null) {
+                val cursor = context.contentResolver.query(uri, null, null, null, null)
 
-           if (cursor?.moveToNext() ?: false)
-           {
-               val idIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
-               val nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-               val id = cursor.getString(idIndex)
-               val name = cursor.getString(nameIndex)
-               firstName.value=name
+                if (cursor?.moveToNext() == true) {
+                    val idIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
+                    val nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
 
-               val phoneCursor = context.contentResolver.query(
-                   ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                   null,
-                   "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
-                   arrayOf(id),
-                   null
-               )
+                    val id = cursor.getString(idIndex)
+                    val name = cursor.getString(nameIndex)
+                    firstName.value = name
 
-               phoneCursor?.use { pCur ->
-                   if (pCur.moveToFirst()) {
-                       val phoneIndex =
-                           pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                       phone.value = pCur.getString(phoneIndex)
-                   }
-               }
+                    val phoneCursor = context.contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+                        arrayOf(id),
+                        null
+                    )
 
+                    phoneCursor?.use { pCur ->
+                        if (pCur.moveToFirst()) {
+                            val phoneIndex =
+                                pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                            val rawNumber = pCur.getString(phoneIndex)
 
-           }
-       }
+                            // Clean spaces or dashes
+                            val cleanedNumber = rawNumber.replace("\\s|-".toRegex(), "")
 
+                            // Parse number with libphonenumber
+                            val phoneUtil = com.google.i18n.phonenumbers.PhoneNumberUtil.getInstance()
+                            try {
+                                val parsedNumber = phoneUtil.parse(cleanedNumber, null)
+                                val countryCode = parsedNumber.countryCode
+                                val nationalNumber = parsedNumber.nationalNumber
 
-    })
+                                // ✅ Set values in your state
+                                countrycodes = "+$countryCode"
+                                phone.value = nationalNumber.toString()
+
+                                Log.d("ContactPick", "Country: +$countryCode | Number: $nationalNumber")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                // fallback if parsing fails
+                                phone.value = cleanedNumber
+                            }
+                        }
+                    }
+                }
+                cursor?.close()
+            }
+        }
+    )
+
 
     var rememberPermissions= rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
 
@@ -295,6 +358,14 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
                         phone.value=it
                     },
                     singleLine = true,
+                    leadingIcon = {
+                        CountryOutlinedDropdown(
+                            modifier = Modifier.wrapContentHeight(),
+                            defaultCountryCode = "${TokenManager.getInstance(context).getCountryCode()}"
+                        ){
+                            countrycodes=it.code
+                        }
+                    },
 
                     placeholder = {
                         Text("Your Phone Number",
@@ -373,7 +444,7 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
                       carerViewModel.updatePatientName(firstName.value+""+lasttName.value)
                       carerViewModel.updatePatientLanguage("en")
                       carerViewModel.updatePatientPhone(patientPhone = phone.value)
-                      carerViewModel.countrycode("+91")
+                      carerViewModel.countrycode("${countrycodes}")
                       carerViewModel.updatePatientEmail(patientEmail = email.value)
                       navController.navigate(NavRoute.SignupOptionStep5)
                     }

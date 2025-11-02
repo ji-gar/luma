@@ -1,5 +1,6 @@
 package com.io.luma.uiscreen.myselfflow.stepscreen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
 import com.io.luma.uiscreen.loginscreen.CountryOutlinedDropdown
 import com.io.luma.uiscreen.someoneelsesignup.rowHeader
+import com.io.luma.utils.TokenManager
 import com.io.luma.viewmodel.RegisterViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
@@ -54,8 +56,9 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
+
     var context= LocalContext.current
+    var phone by rememberSaveable { mutableStateOf("${TokenManager.getInstance(context).getPhoneNumber()}") }
 
 
 //    var firstName=remember { mutableStateOf("") }
@@ -184,9 +187,13 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
                         phone=it
                     },
                     leadingIcon = {
+                        Log.d("Country",TokenManager.getInstance(context).getCountryCode().toString())
                         CountryOutlinedDropdown(
-                            modifier = Modifier.wrapContentHeight()
-                        )
+                            modifier = Modifier.wrapContentHeight(),
+                            defaultCountryCode = "${TokenManager.getInstance(context).getCountryCode()}"
+                        ){
+
+                        }
                     },
 
                     placeholder = {
