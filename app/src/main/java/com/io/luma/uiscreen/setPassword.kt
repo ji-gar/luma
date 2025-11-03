@@ -276,14 +276,14 @@ fun setPassword(navController: NavController,setPasswordViewModel: SetPasswordVi
 
                         }
                         else{
-                           setPasswordViewModel.setPassword(
-                               SetPasswordRequest(
-                                   countrycode,
-                                   password,
-                                   phone.value,
-                                   confirmPassword
-                               )
-                           )
+                            setPasswordViewModel.setPassword(
+                                SetPasswordRequest(
+                                    countrycode,
+                                    password,
+                                    phone.value,
+                                    confirmPassword
+                                )
+                            )
                             //navController.navigate(NavRoute.OnBordingScreen)
                         }
                     }
@@ -314,7 +314,7 @@ fun setPassword(navController: NavController,setPasswordViewModel: SetPasswordVi
                 token.saveId(response.data?.user?.userId.toString())
                 LaunchedEffect(Unit) {
                     setPasswordViewModel.resetSetPasswordState()
-                    navController.navigate(NavRoute.OnBordingScreen)
+                    navController.navigate(NavRoute.LoginScreen)
                 }
             }
 

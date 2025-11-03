@@ -76,16 +76,16 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewModel) {
-
+    var context= LocalContext.current
     var firstName = rememberSaveable { mutableStateOf("") }
     var lasttName = rememberSaveable { mutableStateOf("") }
     var email = rememberSaveable { mutableStateOf("") }
     var phone = rememberSaveable { mutableStateOf("") }
     var language = rememberSaveable { mutableStateOf("") }
-    var countrycodes by remember { mutableStateOf("") }
+    var countrycodes by remember { mutableStateOf(TokenManager.getInstance(context).getCountryCode()) }
 
 
-    var context= LocalContext.current
+
 
 //    var contactPick= rememberLauncherForActivityResult(contract = ActivityResultContracts.PickContact(), onResult = {
 //       if (it!=null)
@@ -162,9 +162,10 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
 
                                 // ✅ Set values in your state
                                 countrycodes = "+$countryCode"
+                                //  countrycodes=countrycodes
                                 phone.value = nationalNumber.toString()
 
-                                Log.d("ContactPick", "Country: +$countryCode | Number: $nationalNumber")
+                                Log.d("ContactPick", "Country: $countrycodes | Number: $nationalNumber")
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 // fallback if parsing fails
@@ -361,7 +362,7 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
                     leadingIcon = {
                         CountryOutlinedDropdown(
                             modifier = Modifier.wrapContentHeight(),
-                            defaultCountryCode = "${TokenManager.getInstance(context).getCountryCode()}"
+                            defaultCountryCode = "${countrycodes}"
                         ){
                             countrycodes=it.code
                         }
@@ -424,29 +425,29 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
 
                 CustomButton(modifier = Modifier.fillMaxWidth(),
                     "Save") {
-                  if (phone.value.length<10)
-                  {
-                      Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
-                  }
+                    if (phone.value.length<10)
+                    {
+                        Toast.makeText(context, "Please enter valid phone number", Toast.LENGTH_SHORT).show()
+                    }
                     else if (email.value.isEmpty())
-                  {
-                      Toast.makeText(context, "Please enter email", Toast.LENGTH_SHORT).show()
-                  }
+                    {
+                        Toast.makeText(context, "Please enter email", Toast.LENGTH_SHORT).show()
+                    }
                     else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches())
-                  {
-                      Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
-                  }
+                    {
+                        Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                    }
                     else if (firstName.value.isEmpty())
-                  {
-                      Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
-                  }
+                    {
+                        Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
+                    }
                     else {
-                      carerViewModel.updatePatientName(firstName.value+""+lasttName.value)
-                      carerViewModel.updatePatientLanguage("en")
-                      carerViewModel.updatePatientPhone(patientPhone = phone.value)
-                      carerViewModel.countrycode("${countrycodes}")
-                      carerViewModel.updatePatientEmail(patientEmail = email.value)
-                      navController.navigate(NavRoute.SignupOptionStep5)
+                        carerViewModel.updatePatientName(firstName.value+""+lasttName.value)
+                        carerViewModel.updatePatientLanguage("en")
+                        carerViewModel.updatePatientPhone(patientPhone = phone.value)
+                        carerViewModel.countrycode("${countrycodes}")
+                        carerViewModel.updatePatientEmail(patientEmail = email.value)
+                        navController.navigate(NavRoute.SignupOptionStep5)
                     }
 
 

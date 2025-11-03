@@ -6,7 +6,7 @@ data class CalendarItem(
     val description: String,
     val type: String,
     val date: String?,
-    val start_time: String?,
+    val time: String?,
     val end_time: String?,
     val timezone: String?,
     val all_day: Boolean,

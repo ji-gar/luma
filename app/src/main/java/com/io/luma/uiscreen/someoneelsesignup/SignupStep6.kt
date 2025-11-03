@@ -48,6 +48,7 @@ import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.model.InviatePaintentRequest
 import com.io.luma.model.InviatePaintentResponse
+import com.io.luma.navroute.NavRoute
 import com.io.luma.network.Resource
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
@@ -56,6 +57,7 @@ import com.io.luma.ui.theme.skyblue
 import com.io.luma.ui.theme.textColor
 import com.io.luma.ui.theme.verandaBold
 import com.io.luma.ui.theme.verandaRegular
+import com.io.luma.utils.TokenManager
 import com.io.luma.viewmodel.CarerRegisterViewModel
 import com.io.luma.viewmodel.InvitePatientViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -229,7 +231,7 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                     text = "Send a Link"
                 ) {
                     Log.d("Invite",InviatePaintentRequest(
-                        countryCode = "+91",
+                        countryCode =  carerViewModel.user.patient_country_code,
                         fullName = carerViewModel.user.patientFullName,
                         sendViaEmail = checkBoxList[1].isChecked,
                         phoneNumber = carerViewModel.user.patientPhoneNumber,
@@ -240,7 +242,7 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
 
                     invitePatientViewModel.invitePatient(
                         InviatePaintentRequest(
-                            countryCode = "+91",
+                            countryCode = carerViewModel.user.patient_country_code,
                             fullName = carerViewModel.user.patientFullName,
                             sendViaEmail = checkBoxList[1].isChecked,
                             phoneNumber = carerViewModel.user.patientPhoneNumber,
@@ -275,8 +277,13 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
 
                 // Handle response data
                 LaunchedEffect(Unit) {
+                    TokenManager.getInstance(context = localContext).clear()
                     Toast.makeText(localContext, "Invite sent successfully", Toast.LENGTH_SHORT)
                         .show()
+                    navController.navigate(NavRoute.MobileScreen) {
+                        popUpTo(0) { inclusive = true } // clears entire back stack
+                        launchSingleTop = true          // prevents multiple copies
+                    }
                     invitePatientViewModel.resetInviteState()
                     // Navigate to next screen if needed
                     // navController.navigate(NavRoute.SomeNextScreen)

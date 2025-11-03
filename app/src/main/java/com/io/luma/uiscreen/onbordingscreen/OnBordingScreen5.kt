@@ -312,7 +312,7 @@ fun OnBordingScreen5(navController: NavController) {
                                         .padding(vertical = 4.dp),
                                 ) {
                                     Text(
-                                        text = item.start_time ?: "--:--",
+                                        text = item.time ?: "--:--",
                                         fontWeight = FontWeight.W700,
                                         style = TextStyle(
                                             fontFamily = verandaBold,

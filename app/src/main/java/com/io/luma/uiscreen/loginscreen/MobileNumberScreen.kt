@@ -304,6 +304,8 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
                 else if (response.data?.nextAction.equals("login"))
                 {
                     verifyNumberViewModel.resetInviteState()
+                    TokenManager.getInstance(context).savePhoneNumber(phone.value.toString())
+                    TokenManager.getInstance(context).saveCountryCode(countrycode)
                     navController.navigate(NavRoute.LoginScreen)
                 }
                 else if (response.data?.nextAction.equals("set_password"))
@@ -450,18 +452,24 @@ fun MobileNumberScreen(navController: NavController,verifyNumberViewModel: Mobil
 @Composable
 fun CountryOutlinedDropdown(
     modifier: Modifier = Modifier,
-    items: List<Country> = countries,
+    items: List<Country> = countries,   // Your country list
     defaultCountryCode: String? = "+44",
     onCountrySelected: (Country) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val defaultCountry = remember {
-        items.find { it.code == defaultCountryCode } ?: items.firstOrNull()
+
+    // Find country from default code
+    fun findCountry(code: String?): Country? =
+        items.find { it.code == code } ?: items.firstOrNull()
+
+    // Initial selected country
+    var currentCountry by remember { mutableStateOf(findCountry(defaultCountryCode)) }
+
+    // ✅ When defaultCountryCode changes from outside (like contact picker), update UI
+    LaunchedEffect(defaultCountryCode) {
+        currentCountry = findCountry(defaultCountryCode)
     }
 
-    val selectedCountry = remember { mutableStateOf(defaultCountry) }
-
-    // ✅ Compact layout without using OutlinedTextField inside
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
@@ -473,12 +481,12 @@ fun CountryOutlinedDropdown(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = selectedCountry.value?.flagEmoji ?: "🇨🇭",
+                text = currentCountry?.flagEmoji ?: "🏳️",
                 fontSize = 18.ssp
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = selectedCountry.value?.code ?: "+41",
+                text = currentCountry?.code ?: "+00",
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 15.ssp,
@@ -523,7 +531,7 @@ fun CountryOutlinedDropdown(
                         }
                     },
                     onClick = {
-                        selectedCountry.value = country
+                        currentCountry = country
                         expanded = false
                         onCountrySelected(country)
                     }
@@ -532,3 +540,88 @@ fun CountryOutlinedDropdown(
         }
     }
 }
+//@Composable
+//fun CountryOutlinedDropdown(
+//    modifier: Modifier = Modifier,
+//    items: List<Country> = countries,
+//    defaultCountryCode: String? = "+44",
+//    onCountrySelected: (Country) -> Unit = {}
+//) {
+//    var expanded by remember { mutableStateOf(false) }
+//    val defaultCountry = remember {
+//        items.find { it.code == defaultCountryCode } ?: items.firstOrNull()
+//    }
+//
+//    val selectedCountry = remember { mutableStateOf(defaultCountry) }
+//
+//    // ✅ Compact layout without using OutlinedTextField inside
+//    Box(
+//        modifier = modifier
+//            .clip(RoundedCornerShape(6.dp))
+//            .clickable { expanded = true }
+//            .padding(horizontal = 6.dp, vertical = 4.dp),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = selectedCountry.value?.flagEmoji ?: "🇨🇭",
+//                fontSize = 18.ssp
+//            )
+//            Spacer(modifier = Modifier.width(4.dp))
+//            Text(
+//                text = selectedCountry.value?.code ?: "+41",
+//                style = TextStyle(
+//                    color = Color.Black,
+//                    fontSize = 15.ssp,
+//                    fontFamily = monospaceRegular
+//                )
+//            )
+//            Icon(
+//                imageVector = Icons.Default.ArrowDropDown,
+//                contentDescription = "Dropdown Arrow",
+//                tint = Color(0xff56575D),
+//                modifier = Modifier.size(18.dp)
+//            )
+//        }
+//
+//        DropdownMenu(
+//            expanded = expanded,
+//            containerColor = Color.White,
+//            onDismissRequest = { expanded = false }
+//        ) {
+//            items.forEach { country ->
+//                DropdownMenuItem(
+//                    text = {
+//                        Row(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Row {
+//                                Text(
+//                                    text = country.flagEmoji,
+//                                    modifier = Modifier.padding(end = 8.dp)
+//                                )
+//                                Text(
+//                                    text = country.name,
+//                                    fontWeight = FontWeight.Medium
+//                                )
+//                            }
+//                            Text(
+//                                text = country.code,
+//                                fontWeight = FontWeight.Medium,
+//                                color = Color(0xff56575D)
+//                            )
+//                        }
+//                    },
+//                    onClick = {
+//                        selectedCountry.value = country
+//                        expanded = false
+//                        onCountrySelected(country)
+//                    }
+//                )
+//            }
+//        }
+//    }
+//}
