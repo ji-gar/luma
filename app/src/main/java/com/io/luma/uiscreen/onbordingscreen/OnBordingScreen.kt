@@ -1,5 +1,10 @@
 package com.io.luma.uiscreen.onbordingscreen
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -12,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -36,12 +42,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,13 +58,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.io.luma.R
+import com.io.luma.brodcast.NotificationReceiver
+import com.io.luma.commonmethod.getCalendarFromDateAndTime
+import com.io.luma.commonmethod.scheduleNotification
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.CustomOutlineButton
 import com.io.luma.navroute.NavRoute
+import com.io.luma.room.ActivityOffline
+import com.io.luma.room.AppDatabase
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.textColor
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +82,9 @@ fun OnBordingScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val infiniteTransition = rememberInfiniteTransition(label = "move")
+    var context=LocalContext.current
+    var db=remember { mutableStateOf(AppDatabase.getInstance(context)) }
+
 
     val offsetY by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -149,22 +171,65 @@ fun OnBordingScreen(navController: NavController) {
                         textAlign = TextAlign.Center
                     )
                     com.io.luma.customcompose.height(20)
+                    CustomButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 13.sdp),
+                        text = "Yes"
+                    ) {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            val activity = ActivityOffline(
+                                activityId = UUID.randomUUID().toString(),
+                                patientId = "123",
+                                title = "Morning Rounties",
+                                activityDescription = "Breakfast Time",
+                                activityType = "Daily",
+                                startTime = "22:33:00",
+                                date = "2025-11-06",
+                                isActive = true,
+                                addedBy = "Jigar",
+                                createdAt = "2025-11-06 20:00:00",
+                                updatedAt = "2025-11-06 20:00:00"
+                            )
+                            db.value.activityDao().insertActivity(activity)
+                        }
 
-                    CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
-                        "Yes") {
-
-
-                        navController.navigate(NavRoute.OnBordingScreen2)
+                        // You can navigate if needed after insertion
+                        // navController.navigate(NavRoute.OnBordingScreen2)
                     }
 
-                    com.io.luma.customcompose.height(20)
+                    Spacer(modifier = Modifier.height(20.sdp))
 
-                    CustomOutlineButton (modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp),
-                        "No") {
+                    CustomOutlineButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 13.sdp),
+                        text = "No"
+                    ) {
+                        db.value.activityDao().getAllInfo().observeForever { activityList ->
+                            activityList?.let { list ->
+                                list.forEach { activity ->
+                                    val date = activity.date
+                                    val startTime = activity.startTime
 
+                                    if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
+                                        val calendar = getCalendarFromDateAndTime(date, startTime)
+                                        calendar?.let {
+                                            if (it.timeInMillis > System.currentTimeMillis()) {
+                                                scheduleNotification(context, activity, it)
+                                                Log.d("Notification", "Scheduled for ${it.time}")
+                                            } else {
+                                                Log.d("Notification", "Skipped past time ${date} ${startTime}")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         // navController.navigate(NavRoute.SignupOptionStep5)
                     }
+
 
 
                 }
@@ -276,4 +341,28 @@ fun OnBordingScreen(navController: NavController) {
 
     }
 
+    fun scheduleNotification(context: Context, activity: ActivityOffline, calendar: Calendar) {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("title", activity.title)
+            putExtra("description", activity.activityDescription ?: "")
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            activity.activityId.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+    }
+
 }
+
+
+

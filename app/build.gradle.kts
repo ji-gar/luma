@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,12 +42,17 @@ android {
 }
 
 dependencies {
-
+    val room_version = "2.8.3"
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation("io.coil-kt.coil3:coil-compose:3.2.0")
+    ksp ("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
     implementation(libs.androidx.scenecore)
+
     val nav_version = "2.9.5"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation ("com.intuit.ssp:ssp-android:1.1.1")
