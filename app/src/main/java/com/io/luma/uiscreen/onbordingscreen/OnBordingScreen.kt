@@ -184,12 +184,12 @@ fun OnBordingScreen(navController: NavController) {
                                 title = "Morning Rounties",
                                 activityDescription = "Breakfast Time",
                                 activityType = "Daily",
-                                startTime = "22:33:00",
-                                date = "2025-11-06",
+                                startTime = "10:19:00",
+                                date = "2025-11-07",
                                 isActive = true,
                                 addedBy = "Jigar",
-                                createdAt = "2025-11-06 20:00:00",
-                                updatedAt = "2025-11-06 20:00:00"
+                                createdAt = "2025-11-07 20:00:00",
+                                updatedAt = "2025-11-07 20:00:00"
                             )
                             db.value.activityDao().insertActivity(activity)
                         }

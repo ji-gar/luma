@@ -1,12 +1,16 @@
 package com.io.luma.brodcast
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.io.luma.R
+import com.io.luma.uiscreen.FullscreenAlarmActivity
 import kotlin.random.Random
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -21,17 +25,58 @@ class NotificationReceiver : BroadcastReceiver() {
             val channel = NotificationChannel(
                 channelId,
                 "Activity Notifications",
-                NotificationManager.IMPORTANCE_HIGH
-            )
+                NotificationManager.IMPORTANCE_HIGH // must be HIGH
+            ).apply {
+                description = "Activity alert notifications"
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
             manager.createNotificationChannel(channel)
         }
+
+
+
+
+        val fullScreenIntent = Intent(context, FullscreenAlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("title", title)
+            putExtra("desc", desc)
+        }
+
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val answerPendingIntent = PendingIntent.getBroadcast(
+            context,
+            2,
+            fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val declinePendingIntent = PendingIntent.getBroadcast(
+            context,
+            1,
+            fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_popup_reminder)
             .setContentTitle(title)
             .setContentText(desc)
-            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_CALL)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .addAction(R.drawable.ic_call_answer, "Answer", answerPendingIntent)
+            .addAction(R.drawable.ic_call_decline, "Decline", declinePendingIntent)
             .build()
+
 
         manager.notify(1, notification)
     }
