@@ -53,6 +53,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontVariation.Settings
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -177,6 +178,8 @@ fun OnBordingScreen(navController: NavController) {
                             .padding(horizontal = 13.sdp),
                         text = "Yes"
                     ) {
+
+
                         GlobalScope.launch(Dispatchers.IO) {
                             val activity = ActivityOffline(
                                 activityId = UUID.randomUUID().toString(),
@@ -184,7 +187,7 @@ fun OnBordingScreen(navController: NavController) {
                                 title = "Morning Rounties",
                                 activityDescription = "Breakfast Time",
                                 activityType = "Daily",
-                                startTime = "10:19:00",
+                                startTime = "19:25:00",
                                 date = "2025-11-07",
                                 isActive = true,
                                 addedBy = "Jigar",
