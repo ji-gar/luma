@@ -3,6 +3,7 @@ package com.io.luma.uiscreen.dashboard
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.io.luma.R
+import com.io.luma.customcompose.width
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.monospaceRegular
@@ -129,6 +133,7 @@ fun HomeScreen(navController: NavController) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
+
                     Image(painter = painterResource(R.drawable.lumalifewide),
                         contentDescription = "",
                         modifier = Modifier.height(33.sdp).align(Alignment.Center),
@@ -143,7 +148,7 @@ fun HomeScreen(navController: NavController) {
                         )
 
                 }
-                com.io.luma.customcompose.height(30)
+                com.io.luma.customcompose.height(13)
                 Text("Hello, John!",
                     style = TextStyle(
                         color = Color(0xff0D0C0C),
@@ -153,14 +158,36 @@ fun HomeScreen(navController: NavController) {
                     ))
                 com.io.luma.customcompose.height(23)
                 Row(modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Hello, John!",
+                    Text("Your PWD to care",
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
-                            fontSize = 22.ssp,
+                            fontSize = 15.ssp,
                             fontFamily = manropebold,
                             fontWeight = FontWeight.W700
                         ))
+
+                    Box(modifier = Modifier.wrapContentSize().border(width = 2.dp, color = Color(0xff0D0C0C),
+                        shape = RoundedCornerShape(13.sdp))
+                    ){
+                        Row(modifier = Modifier.padding(vertical = 13.sdp,
+                            horizontal = 13.sdp),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Icon(painter = painterResource(R.drawable.iv_plus),
+                                contentDescription = "",
+                                tint = Color.Unspecified
+                            )
+                            width(3)
+                            Text("Add PWD",
+                                style = TextStyle(
+                                    color = Color(0xff0D0C0C),
+                                    fontSize = 13.ssp,
+                                    fontFamily = manropebold,
+                                    fontWeight = FontWeight.W700
+                                ))
+                        }
+                    }
                 }
 
             }

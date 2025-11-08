@@ -187,7 +187,7 @@ fun OnBordingScreen(navController: NavController) {
                                 title = "Morning Rounties",
                                 activityDescription = "Breakfast Time",
                                 activityType = "Daily",
-                                startTime = "19:25:00",
+                                startTime = "22:08:00",
                                 date = "2025-11-07",
                                 isActive = true,
                                 addedBy = "Jigar",
