@@ -51,3 +51,6 @@ val manropesemibold= FontFamily(
 val monospaceRegular= FontFamily(
     Font(R.font.manroperegular,FontWeight.Normal)
 )
+val monospaceMedium= FontFamily(
+    Font(R.font.manropemedium,FontWeight.Normal)
+)
