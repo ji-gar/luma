@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +51,7 @@ import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.width
+import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.monospaceMedium
@@ -113,7 +115,7 @@ fun DashBoard(navController: NavController) {
                            HomeScreen(navController,it)
                        }
                        1->{
-
+                         FeedBackScreen(navController)
                        }
                    }
 
@@ -166,7 +168,9 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
             // Main scrollable content
            Column(modifier = Modifier.fillMaxSize()) {
                com.io.luma.customcompose.height(30)
-               Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp)) {
+               Box(modifier = Modifier
+                   .fillMaxWidth()
+                   .padding(horizontal = 13.sdp)) {
                    Image(
                        painter = painterResource(R.drawable.lumalifewide),
                        contentDescription = "",
@@ -298,7 +302,9 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
                                    )
                                }
 
-                               Row(verticalAlignment = Alignment.CenterVertically) {
+                               Row(verticalAlignment = Alignment.CenterVertically,
+                                   modifier = Modifier.clickable { navController.navigate(NavRoute.PatientScreen) }
+                               ) {
                                    Text(
                                        "Check info",
                                        style = TextStyle(
@@ -408,6 +414,40 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
            }
         }
     }
+}
+
+
+@Composable
+fun FeedBackScreen(navController: NavController) {
+
+    // Background layers
+    // Top-left gradient
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    listOf(
+                        goldenYellow,
+                        Color.White,
+                        Color.White,
+                        Color.White,
+                        skyblue
+                    )
+                )
+            )
+    ){
+
+
+        Image(painter = painterResource(R.drawable.helloluma),
+            contentDescription = "",
+            modifier = Modifier.fillMaxSize()
+               )
+
+    }
+
+    // Bottom-right gradient
+
 }
 
 

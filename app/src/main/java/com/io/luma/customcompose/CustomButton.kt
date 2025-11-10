@@ -9,12 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.io.luma.ui.theme.skyblue
@@ -106,6 +108,53 @@ fun CustomOutlineButton(modifier: Modifier = Modifier,
                     contentDescription = ""
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+fun FirstIconCustomOutlineButton(modifier: Modifier = Modifier,
+                        text: String,bgColor: Color= Color.Transparent,
+                        textColor: Color=Color(0xff0D0C0C),
+                        fontSize: Int=16,
+                        isIcon: Boolean=false,
+                                 icon:Int,
+                        onClick :()->Unit
+
+) {
+    OutlinedButton(
+        modifier = modifier,
+        border = BorderStroke(width=1.dp,Color.Black),
+        shape = RoundedCornerShape(41.sdp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = textColor,
+            containerColor = bgColor
+        ),
+        contentPadding = PaddingValues(
+            vertical = 15.sdp,
+            horizontal = 5.sdp
+        ),
+        onClick = {
+
+            onClick.invoke()
+        }) {
+
+
+        Row(verticalAlignment = Alignment.CenterVertically){
+
+            if (isIcon)
+            {
+
+              Icon(painter = painterResource(icon),
+                contentDescription = "",tint=Color.Black)
+                width(3)
+            }
+            Text(text = text, style = TextStyle(
+                fontSize = fontSize.ssp,
+                fontFamily = verandaBold
+            ))
+
         }
     }
 }

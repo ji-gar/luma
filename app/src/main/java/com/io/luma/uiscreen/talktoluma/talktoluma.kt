@@ -1,0 +1,241 @@
+package com.io.luma.uiscreen.talktoluma
+
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.io.luma.R
+import com.io.luma.customcompose.CustomButton
+import com.io.luma.customcompose.CustomOutlineButton
+import com.io.luma.customcompose.FirstIconCustomOutlineButton
+import com.io.luma.customcompose.height
+import com.io.luma.navroute.NavRoute
+import com.io.luma.ui.theme.manropebold
+import com.io.luma.ui.theme.textColor
+import ir.kaaveh.sdpcompose.sdp
+import ir.kaaveh.sdpcompose.ssp
+
+@Composable
+fun talkToLuma(navController: NavController) {
+
+    val infiniteTransition = rememberInfiniteTransition(label = "move")
+
+    val offsetY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = -20f, // Move upward
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "offsetY"
+    )
+    Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
+    {
+
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
+            contentAlignment = Alignment.Center)
+        {
+
+            Column(modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(painter = painterResource(R.drawable.onbordingluma),
+                    modifier = Modifier.offset(y = offsetY.dp),
+                    contentDescription = "")
+
+            }
+        }
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.55f)
+                .align(Alignment.BottomCenter)
+        )
+        {
+            // Top shadow layer
+
+
+            // Card content
+            OutlinedCard(
+                modifier = Modifier.fillMaxSize(),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xffF0F5FB),
+                ),
+                border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+                )
+            ) {
+                Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    height(20)
+                       CustomButton(modifier = Modifier.fillMaxWidth(),
+                           "Talk to Luma") { }
+                    height(20)
+
+                    FirstIconCustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+                        "FeedBack",
+                        isIcon = true,
+                        icon = R.drawable.iv_message) { }
+
+                    height(20)
+
+                    FirstIconCustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+                        "Play Brain Games",
+                        isIcon = true,
+                        icon = R.drawable.iv_education) { }
+                    height(20)
+
+                    FirstIconCustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+                        "My Schedule",
+                        isIcon = true,
+                        icon = R.drawable.iv_smallcalander) { }
+
+
+                    height(20)
+
+                    FirstIconCustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+                        "My Carers",
+                        isIcon = true,
+                        icon = R.drawable.iv_liked) { }
+
+                }
+            }
+        }
+
+
+//        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent)) {
+//
+//            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f).background(color = Color.White),
+//                contentAlignment = Alignment.Center)
+//            {
+//
+//                Column(modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally) {
+//                    Image(painter = painterResource(R.drawable.lumaperson),
+//                        contentDescription = "")
+//
+//                }
+//            }
+//
+//
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .fillMaxHeight()
+//                    .weight(1f)
+//            )
+//            {
+//                // Top shadow layer
+//
+//
+//                // Card content
+//                OutlinedCard(
+//                    modifier = Modifier.fillMaxSize(),
+//                    elevation = CardDefaults.elevatedCardElevation(defaultElevation = 16.dp),
+//                    colors = CardDefaults.cardColors(
+//                        containerColor = Color.White,
+//                    ),
+//                    border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+//                    )
+//                ) {
+//                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp),
+//                        horizontalAlignment = Alignment.CenterHorizontally) {
+//                        com.io.luma.customcompose.height(10)
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//
+//                            Image(
+//                                painter = painterResource(R.drawable.cancle),
+//                                contentDescription = "",
+//                                modifier = Modifier
+//                                    .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+//
+//                            )
+//                        }
+//                        Text("Chose who you want\nto talk with",
+//                            style = TextStyle(
+//                                color = textColor,
+//                                fontSize = 22.ssp
+//                            ),
+//                            modifier = Modifier.fillMaxWidth(),
+//                            fontFamily = manropebold,
+//                            textAlign = TextAlign.Center
+//                        )
+//                        com.io.luma.customcompose.height(20)
+//
+//                        Text("Luma (Female)",
+//                            style = TextStyle(
+//                                color = Color(0xff4C4C50),
+//                                fontSize = 26.ssp
+//                            ),
+//                            modifier = Modifier.fillMaxWidth(),
+//                            fontFamily = manropebold,
+//                            textAlign = TextAlign.Center
+//                        )
+//                        com.io.luma.customcompose.height(20)
+//
+//                        CustomOutlineButton(modifier = Modifier.fillMaxWidth(),
+//                            "Male") {
+//
+//                            navController.navigate(NavRoute.OnBordingScreen5)
+//                        }
+//
+//                        com.io.luma.customcompose.height(20)
+//
+//                        CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
+//                            "Female") {
+//
+//
+//                            navController.navigate(NavRoute.OnBordingScreen5)
+//                        }
+//
+//
+//                    }
+//                }
+//            }
+//
+//        }
+
+
+
+    }
+
+}

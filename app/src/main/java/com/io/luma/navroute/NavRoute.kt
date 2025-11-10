@@ -78,6 +78,18 @@ sealed class NavRoute {
     @Serializable
     data object DashBoard : NavRoute()
 
+    @Serializable
+    data object PatientScreen : NavRoute()
+
+    @Serializable
+    data object talkToLuma : NavRoute()
+
+    @Serializable
+    data object SchdualScreen : NavRoute()
+
+    @Serializable
+    data object DailyRouting : NavRoute()
+
 
 
     //SignupStep4

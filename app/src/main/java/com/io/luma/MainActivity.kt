@@ -33,6 +33,7 @@ import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
 import com.io.luma.uiscreen.SplaceScreen
 import com.io.luma.uiscreen.dashboard.DashBoard
+import com.io.luma.uiscreen.dashboard.PatientScreen
 import com.io.luma.uiscreen.loginscreen.LoginOption
 import com.io.luma.uiscreen.loginscreen.LoginScreen
 import com.io.luma.uiscreen.loginscreen.MobileNumberScreen
@@ -48,6 +49,8 @@ import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen5
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen6
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen7
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen8
+import com.io.luma.uiscreen.schdual.DailyRouting
+import com.io.luma.uiscreen.schdual.SchdualScreen
 import com.io.luma.uiscreen.setPassword
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep1
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep2
@@ -55,6 +58,7 @@ import com.io.luma.uiscreen.someoneelsesignup.SignupStep3
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep4
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep5
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep6
+import com.io.luma.uiscreen.talktoluma.talkToLuma
 import com.io.luma.viewmodel.CarerRegisterViewModel
 import com.io.luma.viewmodel.RegisterViewModel
 
@@ -93,6 +97,17 @@ fun NavHost() {
 
             DashBoard(navController)
         }
+        composable<NavRoute.DailyRouting> {
+            DailyRouting(navController)
+
+        }
+
+        composable<NavRoute.PatientScreen> {
+            PatientScreen(navController)
+        }
+        composable<NavRoute.talkToLuma> {
+            talkToLuma(navController)
+        }
 
         composable<NavRoute.MobileScreen> {
             MobileNumberScreen(navController)
@@ -118,6 +133,12 @@ fun NavHost() {
             SignupStep1(navController)
 
         }
+
+        composable<NavRoute.SchdualScreen> {
+            SchdualScreen(navController)
+
+        }
+
         composable<NavRoute.SignupOptionStep2> {
             SignupStep2(navController,carerViewModel)
 
