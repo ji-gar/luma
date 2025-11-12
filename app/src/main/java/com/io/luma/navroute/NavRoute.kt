@@ -90,6 +90,12 @@ sealed class NavRoute {
     @Serializable
     data object DailyRouting : NavRoute()
 
+    @Serializable
+    data object WeekalyRouting : NavRoute()
+
+
+    @Serializable
+    data object  WeekalyRoutingForm : NavRoute()
 
 
     //SignupStep4

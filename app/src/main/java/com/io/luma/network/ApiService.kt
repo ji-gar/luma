@@ -22,8 +22,6 @@ interface ApiService {
     @POST("v1/carer/signup")
     suspend fun createcarerUser(@Body user: CarerSignupReuestModel): Response<SignupResponseModel>
 
-
-
     @POST("v1/auth/verify-phone")
     suspend fun verifyPhone(@Body user: VerifyNumberRequestModel): Response<VerifyNumberResponseModel>
     @POST("v1/auth/login-phone")

@@ -59,6 +59,8 @@ import com.io.luma.uiscreen.someoneelsesignup.SignupStep4
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep5
 import com.io.luma.uiscreen.someoneelsesignup.SignupStep6
 import com.io.luma.uiscreen.talktoluma.talkToLuma
+import com.io.luma.uiscreen.weeaklySchdual.WeekalyRouting
+import com.io.luma.uiscreen.weeaklySchdual.WeekalyRoutingForm
 import com.io.luma.viewmodel.CarerRegisterViewModel
 import com.io.luma.viewmodel.RegisterViewModel
 
@@ -82,12 +84,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavHost() {
+    //signleton
     var navController= rememberNavController()
     val registermyself: RegisterViewModel = viewModel()
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.DashBoard) {
+    NavHost(navController, startDestination = NavRoute.WeekalyRoutingForm) {
 
         composable<NavRoute.SignupСarer> {
 
@@ -107,6 +110,11 @@ fun NavHost() {
         }
         composable<NavRoute.talkToLuma> {
             talkToLuma(navController)
+        }
+
+        composable<NavRoute.WeekalyRoutingForm> {
+            WeekalyRoutingForm(navController)
+
         }
 
         composable<NavRoute.MobileScreen> {
@@ -131,6 +139,10 @@ fun NavHost() {
         }
         composable<NavRoute.SignupOptionStep1> {
             SignupStep1(navController)
+
+        }
+        composable<NavRoute.WeekalyRouting> {
+            WeekalyRouting(navController)
 
         }
 

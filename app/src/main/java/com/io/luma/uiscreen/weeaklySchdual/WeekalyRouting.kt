@@ -1,6 +1,5 @@
-package com.io.luma.uiscreen.schdual
+package com.io.luma.uiscreen.weeaklySchdual
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -24,7 +22,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -43,20 +39,21 @@ import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
-import com.io.luma.customcompose.width
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
-import com.io.luma.ui.theme.manropesemibold
 import com.io.luma.ui.theme.monospaceMedium
 import com.io.luma.ui.theme.skyblue
+import com.io.luma.uiscreen.schdual.EventInformation
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
+//WeekalyRouting
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DailyRouting(navController: NavController)
+fun WeekalyRouting(navController: NavController)
 {
-   var showModel= remember { mutableStateOf(true) }
+    var showModel= remember { mutableStateOf(false) }
     Box(modifier = Modifier
         .fillMaxSize()
         .background(
@@ -89,13 +86,13 @@ fun DailyRouting(navController: NavController)
 
             },
             floatingActionButtonPosition = FabPosition.End,
-
-
-            ){
+            )
+        {
             Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp).windowInsetsPadding(WindowInsets.statusBars)) {
                 height(30)
                 Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 )
                 {
 
@@ -106,7 +103,7 @@ fun DailyRouting(navController: NavController)
                         tint = Color.Unspecified
                     )
 
-                    Text("Schedule",
+                    Text("Weekly Routine",
 
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
@@ -133,91 +130,148 @@ fun DailyRouting(navController: NavController)
 
                     height(13)
 
-                    Text(
-                        "Morning",
 
-                        style = TextStyle(
-                            color = Color(0xff0D0C0C),
-                            fontSize = 20.ssp,
-                            fontFamily = monospaceMedium,
-                            fontWeight = FontWeight.W700
+                   Row(modifier = Modifier.fillMaxWidth(),
+                       horizontalArrangement = Arrangement.SpaceBetween,
+                       verticalAlignment = Alignment.CenterVertically
+                   )
+                    {
+                        Text("Monday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
                         )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
+                    height(13)
+
+                    EventInformation(
+                        "7:30",
+                        text = "Reminders"
+                    ) {
+                        showModel.value=true
+                    }
+                    height(13)
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     )
+                    {
+                        Text("Monday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
                     height(13)
 
                     EventInformation(
                         "7:30",
                         text = "Reminders"
                     ) { }
-                    height(13)
-                    EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
-                    ) { }
-                    height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
+
                     height(13)
 
-
-
-                    Text(
-                        "Afternoon",
-
-                        style = TextStyle(
-                            color = Color(0xff0D0C0C),
-                            fontSize = 20.ssp,
-                            fontFamily = monospaceMedium,
-                            fontWeight = FontWeight.W700
-                        )
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     )
-                    height(13)
-
-                    EventInformation(
-                        "7:30",
-                        text = "Reminders"
-                    ) { }
-                    height(13)
-                    EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
-                    ) { }
-                    height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
-                    height(13)
-
-
-                    Text(
-                        "Evening",
-
-                        style = TextStyle(
-                            color = Color(0xff0D0C0C),
-                            fontSize = 20.ssp,
-                            fontFamily = monospaceMedium,
-                            fontWeight = FontWeight.W700
+                    {
+                        Text("Wednesday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
                         )
-                    )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
                     height(13)
 
-                    EventInformation(
-                        "7:30",
-                        text = "Reminders"
-                    ) { }
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        Text("Friday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
+
                     height(13)
-                    EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
-                    ) { }
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        Text("Saturday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
+
                     height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        Text("Sunday",
+                            style = TextStyle(
+                                color = Color(0xff0D0C0C),
+                                fontSize = 20.ssp,
+                                fontFamily = monospaceMedium,
+                                fontWeight = FontWeight.W700
+                            )
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.iv_svgsmallicon),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    }
 
 
                     if (showModel.value)
@@ -302,7 +356,7 @@ fun DailyRouting(navController: NavController)
                                     onClick = { /* Your click action */ },
                                     shape = RoundedCornerShape(50.dp),
                                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDD0000)),
-                                     modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp)
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp)
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(horizontal = 13.sdp,
@@ -334,60 +388,4 @@ fun DailyRouting(navController: NavController)
 
     }
 
-}
-
-
-@Composable
-fun EventInformation(title: String, text:String, onClick:()->Unit) {
-
-    OutlinedCard(modifier = Modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(10.sdp))
-        .clickable {
-            onClick.invoke()
-        },
-        shape = RoundedCornerShape(10.sdp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xffF0F5FB),
-        ),
-        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
-        )
-    ) {
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 10.sdp,
-                vertical = 10.sdp
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            Text(title,
-                style = TextStyle(
-                    color = Color(0xff0D0C0C),
-                    fontSize = 13.ssp,
-                    fontFamily = monospaceMedium,
-
-                    )
-            )
-
-            Text(text,
-                style = TextStyle(
-                    color = Color(0xff0D0C0C),
-                    fontSize = 13.ssp,
-                    fontFamily = manropesemibold,
-
-                    )
-            )
-            Icon(
-                painter = painterResource(R.drawable.iv_editor),
-                contentDescription = "",
-                tint = Color.Unspecified
-            )
-
-        }
-
-    }
 }
