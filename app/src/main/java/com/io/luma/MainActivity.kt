@@ -25,10 +25,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.io.luma.customcompose.CustomOutlineButton
+import com.io.luma.uiscreen.event.EventListCompose
+import com.io.luma.uiscreen.event.EventListForm
 import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.LumaTheme
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.skyblue
+import com.io.luma.uiscreen.CareerCamping
 import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
 import com.io.luma.uiscreen.SplaceScreen
@@ -49,6 +52,8 @@ import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen5
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen6
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen7
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen8
+import com.io.luma.uiscreen.recurringtasks.RecurringTasksList
+import com.io.luma.uiscreen.recurringtasks.RecurringtaskFormScreen
 import com.io.luma.uiscreen.schdual.DailyRouting
 import com.io.luma.uiscreen.schdual.SchdualScreen
 import com.io.luma.uiscreen.setPassword
@@ -90,7 +95,7 @@ fun NavHost() {
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.WeekalyRoutingForm) {
+    NavHost(navController, startDestination = NavRoute.CareerCampingScreen) {
 
         composable<NavRoute.SignupСarer> {
 
@@ -112,8 +117,26 @@ fun NavHost() {
             talkToLuma(navController)
         }
 
+        composable<NavRoute.RecurringTasksList> {
+            RecurringTasksList(navController)
+
+        }
+
+        composable<NavRoute.EventListForm> {
+            EventListForm(navController)
+
+        }
+        composable<NavRoute.RecurringtaskFormScreen> {
+            RecurringtaskFormScreen(navController)
+
+        }
+
         composable<NavRoute.WeekalyRoutingForm> {
             WeekalyRoutingForm(navController)
+
+        }
+        composable<NavRoute.EventListCompose> {
+            EventListCompose(navController)
 
         }
 
@@ -157,6 +180,11 @@ fun NavHost() {
         }
         composable<NavRoute.SignupOptionStep3> {
             SignupStep3(navController,carerViewModel)
+
+        }
+
+        composable<NavRoute.CareerCampingScreen> {
+            CareerCamping(navController)
 
         }
         composable<NavRoute.SignupOptionStep4> {

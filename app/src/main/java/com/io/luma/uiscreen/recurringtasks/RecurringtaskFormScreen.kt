@@ -1,23 +1,23 @@
-package com.io.luma.uiscreen.weeaklySchdual
+package com.io.luma.uiscreen.recurringtasks
 
+import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Checkbox
@@ -31,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,27 +42,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
 import com.io.luma.customcompose.width
-import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropesemibold
 import com.io.luma.ui.theme.monospaceMedium
 import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.skyblue
+import com.io.luma.uiscreen.weeaklySchdual.TimeSlot
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 import java.util.Calendar
 
+
+
 @Composable
-fun WeekalyRoutingForm(navController: NavController) {
+fun RecurringtaskFormScreen(navController: NavController) {
     var context=LocalContext.current
     var type by rememberSaveable { mutableStateOf("") }
     var listOfType=listOf<String>("Daily Routine","Weekly Routine","Monthly Routine")
@@ -76,30 +73,18 @@ fun WeekalyRoutingForm(navController: NavController) {
         "Saturday",
         "Sunday"
     )
-    val listOfDurations = listOf("10 m", "15 m", "30 m")
+    val listOfDurations = listOf("10 m", "15 m", "30 m", "45 m", "1 h", "3 h")
+
     var selectItem by rememberSaveable { mutableStateOf(0) }
-    var day by rememberSaveable { mutableStateOf(listOfDays.get(0)) }
-    var time by rememberSaveable { mutableStateOf("") }
     var isTypeDropdownExpanded by rememberSaveable { mutableStateOf(false) }
-    var isDayDropdownExpanded by rememberSaveable { mutableStateOf(false) }
+
     var typeDecrption by rememberSaveable { mutableStateOf("") }
     var isChecked by rememberSaveable { mutableStateOf(false) }
-    var shouldLumaCall by rememberSaveable { mutableStateOf(false) }
-    val calendar = Calendar.getInstance()
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
 
-    val timePickerDialog = TimePickerDialog(
-        context,
-        { _, selectedHour: Int, selectedMinute: Int ->
-            // Format time like 09:05 AM
-            val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-            time = formattedTime
-        },
-        hour,
-        minute,
-        true // 24-hour format
-    )
+
+
+
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -119,7 +104,8 @@ fun WeekalyRoutingForm(navController: NavController) {
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 13.sdp)
-            .windowInsetsPadding(WindowInsets.statusBars)){
+            .windowInsetsPadding(WindowInsets.statusBars))
+        {
 
             height(30)
             Row(modifier = Modifier.fillMaxWidth(),
@@ -135,7 +121,7 @@ fun WeekalyRoutingForm(navController: NavController) {
                     tint = Color.Unspecified
                 )
 
-                Text("Weekly Routine",
+                Text("Add Event",
 
                     style = TextStyle(
                         color = Color(0xff0D0C0C),
@@ -174,6 +160,12 @@ fun WeekalyRoutingForm(navController: NavController) {
                     enabled = false,
                     onValueChange = {},
                     readOnly = true,
+                    textStyle = TextStyle(
+                        color = Color(0xff0D0C0C), // 👈 change your text color here
+                        fontSize = 15.ssp,
+                        fontFamily = monospaceRegular,
+                        fontWeight = FontWeight.W400
+                    ),
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowDown,
@@ -183,12 +175,6 @@ fun WeekalyRoutingForm(navController: NavController) {
                             }
                         )
                     },
-                    textStyle = TextStyle(
-                        color = Color(0xff0D0C0C), // 👈 change your text color here
-                        fontSize = 15.ssp,
-                        fontFamily = monospaceRegular,
-                        fontWeight = FontWeight.W400
-                    ),
                     placeholder = {
                         Text(
                             "Daily Routine",
@@ -303,7 +289,8 @@ fun WeekalyRoutingForm(navController: NavController) {
             }
 
             height(20)
-            Text("Day",
+
+            Text("How often to remind?",
                 style = TextStyle(
                     color = Color(0xff0D0C0C),
                     fontSize = 13.ssp,
@@ -312,152 +299,23 @@ fun WeekalyRoutingForm(navController: NavController) {
                 )
             )
             height(6)
-            Box(
+            FlowRow(
+                maxItemsInEachRow = 3,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(6.sdp))
-                    .clickable {
-                        isTypeDropdownExpanded = true
-                    }
-            )
-            {
-                OutlinedTextField(
-                    value = day,
-                    enabled = false,
-                    onValueChange = {},
-                    readOnly = true,
-                    textStyle = TextStyle(
-                        color = Color(0xff0D0C0C), // 👈 change your text color here
-                        fontSize = 15.ssp,
-                        fontFamily = monospaceRegular,
-                        fontWeight = FontWeight.W400
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                isTypeDropdownExpanded = true
-                            }
-                        )
-                    },
-                    placeholder = {
-                        Text(
-                            "Daily Routine",
-                            style = TextStyle(
-                                color = Color(0xff4C4C50),
-                                fontSize = 13.ssp,
-                                fontFamily = monospaceRegular,
-                                fontWeight = FontWeight.W400
-                            )
-                        )
-                    },
-                    shape = RoundedCornerShape(6.sdp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedBorderColor = Color(0xff000000),
-                        unfocusedBorderColor = Color(0xff000000),
-                        disabledBorderColor = Color(0xff000000)
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            Log.d("Type===============", "Clicked Field ✅")
-                            isDayDropdownExpanded = true
-                        }
-                )
-
-                DropdownMenu(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    expanded = isDayDropdownExpanded,
-                    onDismissRequest = { isDayDropdownExpanded = false }
-                ) {
-                    listOfDays.forEach { item ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = item,
-                                    style = TextStyle(
-                                        color = Color(0xff0D0C0C),
-                                        fontSize = 13.ssp,
-                                        fontFamily = monospaceRegular,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            },
-                            onClick = {
-                                day = item
-                                isDayDropdownExpanded = false
-                            }
-                        )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(8.sdp)
+            ) {
+                listOfDurations.forEachIndexed { index, item ->
+                    TimeSlot(
+                        text = item,
+                        isSelected = selectItem == index
+                    ) {
+                        selectItem = index
                     }
                 }
             }
 
-            height(20)
-            Text("Time",
-                style = TextStyle(
-                    color = Color(0xff0D0C0C),
-                    fontSize = 13.ssp,
-                    fontFamily = manropesemibold,
-                    fontWeight = FontWeight.W600
-                )
-            )
-            height(6)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(6.sdp))
-                    .clickable {
-                        isTypeDropdownExpanded = true
-                    }
-            ) {
-                OutlinedTextField(
-                    value = time,
-                    onValueChange = {
-                        typeDecrption=it
-                    },
-                    textStyle = TextStyle(
-                        color = Color(0xff0D0C0C), // 👈 change your text color here
-                        fontSize = 15.ssp,
-                        fontFamily = monospaceRegular,
-                        fontWeight = FontWeight.W400
-                    ),
-                    enabled = false,
-
-                    placeholder = {
-                        Text(
-                            "8:00 AM",
-                            style = TextStyle(
-                                color = Color(0xff4C4C50),
-                                fontSize = 13.ssp,
-                                fontFamily = monospaceRegular,
-                                fontWeight = FontWeight.W400
-                            )
-                        )
-                    },
-                    shape = RoundedCornerShape(6.sdp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedBorderColor = Color(0xff000000),
-                        unfocusedBorderColor = Color(0xff000000),
-                        disabledBorderColor = Color(0xff000000)
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            timePickerDialog.show()
-                        }
-
-                )
-
-
-            }
-            height(13)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -487,66 +345,9 @@ fun WeekalyRoutingForm(navController: NavController) {
 
 
             }
-            if (isChecked)
-            {
-              Column() {
-                  Text("How long before?",
-                      style = TextStyle(
-                          color = Color(0xff0D0C0C),
-                          fontSize = 13.ssp,
-                          fontFamily = manropesemibold,
-                          fontWeight = FontWeight.W600
-                      )
-                  )
-                  height(6)
-                  Row(modifier = Modifier.fillMaxWidth(),
-                      horizontalArrangement = Arrangement.SpaceAround,
-                      verticalAlignment = Alignment.CenterVertically
-                  )
-                  {
-                      listOfDurations.forEachIndexed { index, item ->
-                          TimeSlot(item,isSelected = selectItem==index) {
-                              selectItem=index
-                          }
-                      }
-                  }
-              }
-            }
+
             height(13)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth() // Toggle on row click
-            )
-            {
-                Checkbox(
-                    checked = shouldLumaCall,
 
-                    onCheckedChange = { shouldLumaCall = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Color(0xf0000000), // Optional custom color
-                        uncheckedColor = Color.Gray,
-                        checkmarkColor = Color.White,
-                    )
-                )
-                width(2)
-                Text("Should Luma make a call?",
-                    style = TextStyle(
-                        color = Color(0xff0D0C0C),
-                        fontSize = 15.ssp,
-                        fontFamily = manropesemibold,
-                        fontWeight = FontWeight.W600
-                    )
-                )
-
-
-
-            }
-            height(13)
-            CustomButton(modifier = Modifier.fillMaxWidth(),
-                "Save") {
-               // navController.navigate(NavRoute.WeekalyRouting)
-            }
 
 
 
@@ -554,34 +355,18 @@ fun WeekalyRoutingForm(navController: NavController) {
 
 
         }
-    }
-    
-}
 
-@Composable
-fun TimeSlot(text: String,isSelected:Boolean,onClick:()->Unit) {
-
-    Box(modifier = Modifier.wrapContentSize()
-        .background(color = if (isSelected) skyblue else Color.Transparent,
-        shape = RoundedCornerShape(50)).border(
-        width = 2.dp,
-        color = if (isSelected) Color.Transparent else Color(0xff0D0C0C),
-        shape = RoundedCornerShape(50)
-    ).clip(RoundedCornerShape(50)).clickable {
-        onClick.invoke()
-    },) {
-        Text(
-            text = text,
-            style = TextStyle(
-                color = if (isSelected) Color.White else Color(0xff0D0C0C),
-                fontSize = 16.ssp,
-                fontFamily = monospaceMedium,
-                fontWeight = FontWeight.W700
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 18.sdp, vertical = 10.sdp)
-        )
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.BottomCenter)
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(bottom = 25.sdp, start = 13.sdp, end = 13.sdp)
+        ){
+            CustomButton(modifier = Modifier.fillMaxWidth(),
+                "Save") {
+                // navController.navigate(NavRoute.WeekalyRouting)
+            }
+        }
     }
 
 }
-

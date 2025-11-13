@@ -1,9 +1,9 @@
-package com.io.luma.uiscreen.weeaklySchdual
+package com.io.luma.uiscreen.event
 
+import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Checkbox
@@ -31,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,27 +40,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
 import com.io.luma.customcompose.width
-import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropesemibold
 import com.io.luma.ui.theme.monospaceMedium
 import com.io.luma.ui.theme.monospaceRegular
 import com.io.luma.ui.theme.skyblue
+import com.io.luma.uiscreen.weeaklySchdual.TimeSlot
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 import java.util.Calendar
 
+
 @Composable
-fun WeekalyRoutingForm(navController: NavController) {
+fun EventListForm(navController: NavController) {
     var context=LocalContext.current
     var type by rememberSaveable { mutableStateOf("") }
     var listOfType=listOf<String>("Daily Routine","Weekly Routine","Monthly Routine")
@@ -88,6 +82,14 @@ fun WeekalyRoutingForm(navController: NavController) {
     val calendar = Calendar.getInstance()
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
+    var date by rememberSaveable { mutableStateOf("") }
+
+
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val days = calendar.get(Calendar.DAY_OF_MONTH)
+
 
     val timePickerDialog = TimePickerDialog(
         context,
@@ -99,6 +101,18 @@ fun WeekalyRoutingForm(navController: NavController) {
         hour,
         minute,
         true // 24-hour format
+    )
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, selectedYear, selectedMonth, selectedDay ->
+            // Format selected date as DD/MM/YYYY
+            date =
+                String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
+        },
+        year,
+        month,
+        days
     )
 
     Box(modifier = Modifier
@@ -135,7 +149,7 @@ fun WeekalyRoutingForm(navController: NavController) {
                     tint = Color.Unspecified
                 )
 
-                Text("Weekly Routine",
+                Text("Add Event",
 
                     style = TextStyle(
                         color = Color(0xff0D0C0C),
@@ -174,6 +188,12 @@ fun WeekalyRoutingForm(navController: NavController) {
                     enabled = false,
                     onValueChange = {},
                     readOnly = true,
+                    textStyle = TextStyle(
+                        color = Color(0xff0D0C0C), // 👈 change your text color here
+                        fontSize = 15.ssp,
+                        fontFamily = monospaceRegular,
+                        fontWeight = FontWeight.W400
+                    ),
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowDown,
@@ -183,12 +203,6 @@ fun WeekalyRoutingForm(navController: NavController) {
                             }
                         )
                     },
-                    textStyle = TextStyle(
-                        color = Color(0xff0D0C0C), // 👈 change your text color here
-                        fontSize = 15.ssp,
-                        fontFamily = monospaceRegular,
-                        fontWeight = FontWeight.W400
-                    ),
                     placeholder = {
                         Text(
                             "Daily Routine",
@@ -322,28 +336,21 @@ fun WeekalyRoutingForm(navController: NavController) {
             )
             {
                 OutlinedTextField(
-                    value = day,
+                    value = date,
+                    onValueChange = {
+                        typeDecrption=it
+                    },
                     enabled = false,
-                    onValueChange = {},
-                    readOnly = true,
                     textStyle = TextStyle(
                         color = Color(0xff0D0C0C), // 👈 change your text color here
                         fontSize = 15.ssp,
                         fontFamily = monospaceRegular,
                         fontWeight = FontWeight.W400
                     ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                isTypeDropdownExpanded = true
-                            }
-                        )
-                    },
+
                     placeholder = {
                         Text(
-                            "Daily Routine",
+                            "${13/11/2025}",
                             style = TextStyle(
                                 color = Color(0xff4C4C50),
                                 fontSize = 13.ssp,
@@ -363,38 +370,10 @@ fun WeekalyRoutingForm(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            Log.d("Type===============", "Clicked Field ✅")
-                            isDayDropdownExpanded = true
+                            datePickerDialog.show()
                         }
-                )
 
-                DropdownMenu(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    expanded = isDayDropdownExpanded,
-                    onDismissRequest = { isDayDropdownExpanded = false }
-                ) {
-                    listOfDays.forEach { item ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = item,
-                                    style = TextStyle(
-                                        color = Color(0xff0D0C0C),
-                                        fontSize = 13.ssp,
-                                        fontFamily = monospaceRegular,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                )
-                            },
-                            onClick = {
-                                day = item
-                                isDayDropdownExpanded = false
-                            }
-                        )
-                    }
-                }
+                )
             }
 
             height(20)
@@ -489,28 +468,28 @@ fun WeekalyRoutingForm(navController: NavController) {
             }
             if (isChecked)
             {
-              Column() {
-                  Text("How long before?",
-                      style = TextStyle(
-                          color = Color(0xff0D0C0C),
-                          fontSize = 13.ssp,
-                          fontFamily = manropesemibold,
-                          fontWeight = FontWeight.W600
-                      )
-                  )
-                  height(6)
-                  Row(modifier = Modifier.fillMaxWidth(),
-                      horizontalArrangement = Arrangement.SpaceAround,
-                      verticalAlignment = Alignment.CenterVertically
-                  )
-                  {
-                      listOfDurations.forEachIndexed { index, item ->
-                          TimeSlot(item,isSelected = selectItem==index) {
-                              selectItem=index
-                          }
-                      }
-                  }
-              }
+                Column() {
+                    Text("How long before?",
+                        style = TextStyle(
+                            color = Color(0xff0D0C0C),
+                            fontSize = 13.ssp,
+                            fontFamily = manropesemibold,
+                            fontWeight = FontWeight.W600
+                        )
+                    )
+                    height(6)
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        listOfDurations.forEachIndexed { index, item ->
+                            TimeSlot(item,isSelected = selectItem==index) {
+                                selectItem=index
+                            }
+                        }
+                    }
+                }
             }
             height(13)
             Row(
@@ -545,7 +524,7 @@ fun WeekalyRoutingForm(navController: NavController) {
             height(13)
             CustomButton(modifier = Modifier.fillMaxWidth(),
                 "Save") {
-               // navController.navigate(NavRoute.WeekalyRouting)
+                // navController.navigate(NavRoute.WeekalyRouting)
             }
 
 
@@ -555,33 +534,5 @@ fun WeekalyRoutingForm(navController: NavController) {
 
         }
     }
-    
-}
-
-@Composable
-fun TimeSlot(text: String,isSelected:Boolean,onClick:()->Unit) {
-
-    Box(modifier = Modifier.wrapContentSize()
-        .background(color = if (isSelected) skyblue else Color.Transparent,
-        shape = RoundedCornerShape(50)).border(
-        width = 2.dp,
-        color = if (isSelected) Color.Transparent else Color(0xff0D0C0C),
-        shape = RoundedCornerShape(50)
-    ).clip(RoundedCornerShape(50)).clickable {
-        onClick.invoke()
-    },) {
-        Text(
-            text = text,
-            style = TextStyle(
-                color = if (isSelected) Color.White else Color(0xff0D0C0C),
-                fontSize = 16.ssp,
-                fontFamily = monospaceMedium,
-                fontWeight = FontWeight.W700
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 18.sdp, vertical = 10.sdp)
-        )
-    }
 
 }
-

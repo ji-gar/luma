@@ -767,7 +767,7 @@ fun notificationItem(text: String,onClick:()->Unit) {
                 ))
 
             Icon(
-                painter = painterResource(R.drawable.iv_rightarrow),
+                painter = painterResource(R.drawable.iv_smallrightarrow),
                 contentDescription = "",
                 tint = Color.Unspecified
             )

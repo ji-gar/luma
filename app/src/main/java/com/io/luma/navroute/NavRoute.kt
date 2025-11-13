@@ -97,6 +97,22 @@ sealed class NavRoute {
     @Serializable
     data object  WeekalyRoutingForm : NavRoute()
 
+    @Serializable
+    data object  EventListCompose : NavRoute()
+
+    @Serializable
+    data object  EventListForm : NavRoute()
+
+
+    @Serializable
+    data object  RecurringTasksList : NavRoute()
+
+    @Serializable
+    data object  RecurringtaskFormScreen : NavRoute()
+
+    @Serializable
+    data object CareerCampingScreen :NavRoute()
+
 
     //SignupStep4
 }

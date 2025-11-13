@@ -1,4 +1,4 @@
-package com.io.luma.uiscreen.schdual
+package com.io.luma.uiscreen.recurringtasks
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -24,7 +23,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -43,20 +40,21 @@ import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.height
-import com.io.luma.customcompose.width
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
-import com.io.luma.ui.theme.manropesemibold
 import com.io.luma.ui.theme.monospaceMedium
 import com.io.luma.ui.theme.skyblue
+import com.io.luma.uiscreen.schdual.EventInformation
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DailyRouting(navController: NavController)
+fun RecurringTasksList(navController: NavController)
 {
-   var showModel= remember { mutableStateOf(true) }
+    var showModel= remember { mutableStateOf(false) }
     Box(modifier = Modifier
         .fillMaxSize()
         .background(
@@ -69,7 +67,8 @@ fun DailyRouting(navController: NavController)
                     skyblue
                 )
             )
-        )){
+        ))
+    {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
@@ -95,7 +94,8 @@ fun DailyRouting(navController: NavController)
             Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp).windowInsetsPadding(WindowInsets.statusBars)) {
                 height(30)
                 Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 )
                 {
 
@@ -106,7 +106,7 @@ fun DailyRouting(navController: NavController)
                         tint = Color.Unspecified
                     )
 
-                    Text("Schedule",
+                    Text("Recurring Tasks",
 
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
@@ -134,7 +134,7 @@ fun DailyRouting(navController: NavController)
                     height(13)
 
                     Text(
-                        "Morning",
+                        "Hourly",
 
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
@@ -146,25 +146,17 @@ fun DailyRouting(navController: NavController)
                     height(13)
 
                     EventInformation(
-                        "7:30",
-                        text = "Reminders"
+                        "Drink water",
+                        text = " ",
+                        icon = R.drawable.iv_cross
                     ) { }
-                    height(13)
-                    EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
-                    ) { }
-                    height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
+
                     height(13)
 
 
 
                     Text(
-                        "Afternoon",
+                        "Every 2 hours",
 
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
@@ -176,24 +168,17 @@ fun DailyRouting(navController: NavController)
                     height(13)
 
                     EventInformation(
-                        "7:30",
-                        text = "Reminders"
+                        "Go to the toilet",
+                        text = "",
+                        icon = R.drawable.iv_cross
                     ) { }
-                    height(13)
-                    EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
-                    ) { }
-                    height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
+
+
                     height(13)
 
 
                     Text(
-                        "Evening",
+                        "Once a Day",
 
                         style = TextStyle(
                             color = Color(0xff0D0C0C),
@@ -205,19 +190,17 @@ fun DailyRouting(navController: NavController)
                     height(13)
 
                     EventInformation(
-                        "7:30",
-                        text = "Reminders"
+                        "Water your plants",
+                        text = "",
+                        icon = R.drawable.iv_cross
                     ) { }
                     height(13)
                     EventInformation(
-                        "8:30",
-                        text = "Weekly Schedule"
+                        "Water your plants",
+                        text = "",
+                        icon = R.drawable.iv_cross
                     ) { }
-                    height(13)
-                    EventInformation(
-                        "8:25",
-                        text = "Special Events"
-                    ) { }
+
 
 
                     if (showModel.value)
@@ -301,8 +284,8 @@ fun DailyRouting(navController: NavController)
                                 OutlinedButton(
                                     onClick = { /* Your click action */ },
                                     shape = RoundedCornerShape(50.dp),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDD0000)),
-                                     modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp)
+                                    border = BorderStroke(1.dp, Color(0xFFDD0000)),
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 13.sdp)
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(horizontal = 13.sdp,
@@ -334,60 +317,4 @@ fun DailyRouting(navController: NavController)
 
     }
 
-}
-
-
-@Composable
-fun EventInformation(title: String, text:String,icon:Int=R.drawable.iv_editor, onClick:()->Unit) {
-
-    OutlinedCard(modifier = Modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(10.sdp))
-        .clickable {
-            onClick.invoke()
-        },
-        shape = RoundedCornerShape(10.sdp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xffF0F5FB),
-        ),
-        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
-        )
-    ) {
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 10.sdp,
-                vertical = 10.sdp
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
-            Text(title,
-                style = TextStyle(
-                    color = Color(0xff0D0C0C),
-                    fontSize = 13.ssp,
-                    fontFamily = monospaceMedium,
-
-                    )
-            )
-
-            Text(text,
-                style = TextStyle(
-                    color = Color(0xff0D0C0C),
-                    fontSize = 13.ssp,
-                    fontFamily = manropesemibold,
-
-                    )
-            )
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = "",
-                tint = Color.Unspecified
-            )
-
-        }
-
-    }
 }
