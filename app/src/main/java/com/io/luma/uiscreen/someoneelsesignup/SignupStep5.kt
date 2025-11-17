@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -44,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.io.luma.R
@@ -141,13 +143,24 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                     )
 
                     com.io.luma.customcompose.height(20)
+                    Box(modifier = Modifier.fillMaxWidth().background(color = Color(0xffDAE1FD),
+                        shape = RoundedCornerShape(13.sdp))){
 
+                        Text("Your ${carerViewModel.user.patientFullName} is Amy Bishop",
+                            style = TextStyle(
+                                color = textColor,
+                                fontSize = 20.ssp,
+                                fontWeight = FontWeight.W700
+                            ),
+                            maxLines = 1,
 
-                    CustomOutlineButton (modifier = Modifier.fillMaxWidth(),
-                        bgColor = Color(0xffDAE1FD),
-                        text = "Your ${carerViewModel.user.patientFullName} is Amy Bishop") {
-
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 13.sdp),
+                            fontFamily = manropebold,
+                            textAlign = TextAlign.Center
+                        )
                     }
+
+
                     com.io.luma.customcompose.height(20)
 
                     Text("${carerViewModel.user.patientPhoneNumber}",

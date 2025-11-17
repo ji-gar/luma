@@ -91,7 +91,8 @@ fun DailyRouting(navController: NavController)
             floatingActionButtonPosition = FabPosition.End,
 
 
-            ){
+            )
+           {
             Column(modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp).windowInsetsPadding(WindowInsets.statusBars)) {
                 height(30)
                 Row(modifier = Modifier.fillMaxWidth(),

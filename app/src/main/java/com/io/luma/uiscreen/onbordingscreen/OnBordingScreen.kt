@@ -198,7 +198,7 @@ fun OnBordingScreen(navController: NavController) {
                         }
 
                         // You can navigate if needed after insertion
-                        // navController.navigate(NavRoute.OnBordingScreen2)
+                         navController.navigate(NavRoute.OnBordingScreen2)
                     }
 
                     Spacer(modifier = Modifier.height(20.sdp))
@@ -230,7 +230,7 @@ fun OnBordingScreen(navController: NavController) {
                             }
                         }
 
-                        // navController.navigate(NavRoute.SignupOptionStep5)
+                         navController.navigate(NavRoute.SignupOptionStep2)
                     }
 
 

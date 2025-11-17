@@ -59,19 +59,23 @@ fun SignupStep1(navController: NavController) {
 
     // State for each checkbox
     val checkedStates = remember { mutableStateListOf(*Array(options.size) { false }) }
-    Box(modifier = Modifier.fillMaxSize().background(
-        brush = Brush.linearGradient(
-            listOf(
-                goldenYellow,
-                Color.White,
-                Color.White,
-                Color.White,
-                skyblue
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(
+            brush = Brush.linearGradient(
+                listOf(
+                    goldenYellow,
+                    Color.White,
+                    Color.White,
+                    Color.White,
+                    skyblue
+                )
             )
-        )
-    ))
+        ))
     {
-        Column(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)) {
 
             com.io.luma.customcompose.height(30)
             Row(horizontalArrangement = Arrangement.Center,
@@ -87,7 +91,9 @@ fun SignupStep1(navController: NavController) {
 
 
             Column(
-             modifier = Modifier.fillMaxWidth().padding(horizontal = 21.sdp)
+             modifier = Modifier
+                 .fillMaxWidth()
+                 .padding(horizontal = 20.sdp)
 
             )
             {
@@ -105,32 +111,36 @@ fun SignupStep1(navController: NavController) {
 
                 com.io.luma.customcompose.height(30)
                 options.forEachIndexed { index, option ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .toggleable(
-                                value = checkedStates[index],
-                                onValueChange = { checkedStates[index] = it }
-                            )
-                    ) {
-                        Checkbox(
-                            checked = checkedStates[index],
-                            onCheckedChange = { checkedStates[index] = it },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = Color.Black,
-                                uncheckedColor = Color.Black
-                            )
+                    Box(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .toggleable(
+                                    value = checkedStates[index],
+                                    onValueChange = { checkedStates[index] = it }
+                                )
+                        ) {
+                            Checkbox(
+                                checked = checkedStates[index],
+                                onCheckedChange = { checkedStates[index] = it },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color.Black,
+                                    uncheckedColor = Color.Black
+                                )
 
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = option, style =
-                            TextStyle(
-                                fontFamily = manropesemibold,
-                                fontSize = 13.ssp,
-                                color = textColor,
-                                fontWeight = FontWeight.W600
-                            ))
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = option, style =
+                                    TextStyle(
+                                        fontFamily = manropesemibold,
+                                        fontSize = 13.ssp,
+                                        color = textColor,
+                                        fontWeight = FontWeight.W600
+                                    )
+                            )
+                        }
                     }
                 }
                 com.io.luma.customcompose.height(30)
@@ -138,7 +148,10 @@ fun SignupStep1(navController: NavController) {
 
             com.io.luma.customcompose.height(30)
 
-            CustomButton(modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeContent).padding(horizontal = 21.sdp),
+            CustomButton(modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(horizontal = 20.sdp),
                 text = "Continue") {
 
                 navController.navigate(NavRoute.SignupOptionStep2)
