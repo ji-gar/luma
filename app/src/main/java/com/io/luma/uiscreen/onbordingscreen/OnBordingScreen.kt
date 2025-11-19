@@ -4,7 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -14,11 +16,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,13 +29,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,13 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontVariation.Settings
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,7 +56,6 @@ import com.io.luma.commonmethod.getCalendarFromDateAndTime
 import com.io.luma.commonmethod.scheduleNotification
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.CustomOutlineButton
-import com.io.luma.navroute.NavRoute
 import com.io.luma.room.ActivityOffline
 import com.io.luma.room.AppDatabase
 import com.io.luma.ui.theme.manropebold
@@ -74,17 +65,21 @@ import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBordingScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val infiniteTransition = rememberInfiniteTransition(label = "move")
-    var context=LocalContext.current
-    var db=remember { mutableStateOf(AppDatabase.getInstance(context)) }
+    var context = LocalContext.current
+    var db = remember { mutableStateOf(AppDatabase.getInstance(context)) }
 
 
     val offsetY by infiniteTransition.animateFloat(
@@ -96,14 +91,26 @@ fun OnBordingScreen(navController: NavController) {
         ),
         label = "offsetY"
     )
-    Box(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).background(color = Color.White))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .background(color = Color.White)
+    )
     {
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White),
-            contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(color = Color.White),
+            contentAlignment = Alignment.Center
+        ) {
 
-            Image(painter = painterResource(R.drawable.onbordingluma),
+            Image(
+                painter = painterResource(R.drawable.onbordingluma),
                 modifier = Modifier.offset(y = offsetY.dp),
-                contentDescription = "")
+                contentDescription = ""
+            )
         }
 
 
@@ -125,15 +132,19 @@ fun OnBordingScreen(navController: NavController) {
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
                 ),
-                border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
+                border = BorderStroke(
+                    1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f) // 20% opacity
                 )
             ) {
-                Column(modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     com.io.luma.customcompose.height(10)
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth().padding(end = 13.sdp),
+                            .fillMaxWidth()
+                            .padding(end = 13.sdp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -150,7 +161,8 @@ fun OnBordingScreen(navController: NavController) {
                             painter = painterResource(R.drawable.cancle),
                             contentDescription = "",
                             modifier = Modifier
-                                .align(Alignment.CenterEnd).size(30.sdp) // align image to the right
+                                .align(Alignment.CenterEnd)
+                                .size(30.sdp) // align image to the right
 
                         )
                     }
@@ -161,7 +173,8 @@ fun OnBordingScreen(navController: NavController) {
                     )
                     com.io.luma.customcompose.height(20)
 
-                    Text("Do you want to\njoin?",
+                    Text(
+                        "Do you want to\njoin?",
                         style = TextStyle(
                             color = textColor,
                             fontSize = 27.ssp,
@@ -181,24 +194,32 @@ fun OnBordingScreen(navController: NavController) {
 
 
                         GlobalScope.launch(Dispatchers.IO) {
+                            val today = LocalDate.now()
+                            val formatter =
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd") // choose any pattern
+
+                            val dateFormat = today.format(formatter)
+                            val startTime = LocalTime.now().plusSeconds(10)
+                            val formatted =
+                                startTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
                             val activity = ActivityOffline(
                                 activityId = UUID.randomUUID().toString(),
                                 patientId = "123",
                                 title = "Morning Rounties",
                                 activityDescription = "Breakfast Time",
                                 activityType = "Daily",
-                                startTime = "20:30:00",
-                                date = "2025-11-12",
+                                startTime = formatted,
+                                date = dateFormat,
                                 isActive = true,
                                 addedBy = "Jigar",
-                                createdAt = "2025-11-07 20:00:00",
+                                createdAt = "$dateFormat $formatted",
                                 updatedAt = "2025-11-07 20:00:00"
                             )
                             db.value.activityDao().insertActivity(activity)
                         }
 
                         // You can navigate if needed after insertion
-                         navController.navigate(NavRoute.OnBordingScreen2)
+//                         navController.navigate(NavRoute.OnBordingScreen2)
                     }
 
                     Spacer(modifier = Modifier.height(20.sdp))
@@ -222,7 +243,10 @@ fun OnBordingScreen(navController: NavController) {
                                                 scheduleNotification(context, activity, it)
                                                 Log.d("Notification", "Scheduled for ${it.time}")
                                             } else {
-                                                Log.d("Notification", "Skipped past time ${date} ${startTime}")
+                                                Log.d(
+                                                    "Notification",
+                                                    "Skipped past time ${date} ${startTime}"
+                                                )
                                             }
                                         }
                                     }
@@ -230,15 +254,13 @@ fun OnBordingScreen(navController: NavController) {
                             }
                         }
 
-                         navController.navigate(NavRoute.SignupOptionStep2)
+//                         navController.navigate(NavRoute.SignupOptionStep2)
                     }
-
 
 
                 }
             }
         }
-
 
 
 //        Column(modifier = Modifier.fillMaxSize().background(color = Color.Transparent)) {
@@ -339,7 +361,6 @@ fun OnBordingScreen(navController: NavController) {
 //            }
 //
 //        }
-
 
 
     }
