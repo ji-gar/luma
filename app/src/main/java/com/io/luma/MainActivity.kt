@@ -35,6 +35,7 @@ import com.io.luma.uiscreen.CareerCamping
 import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
 import com.io.luma.uiscreen.SplaceScreen
+import com.io.luma.uiscreen.carrercontanct.CarersContactList
 import com.io.luma.uiscreen.dashboard.DashBoard
 import com.io.luma.uiscreen.dashboard.PatientScreen
 import com.io.luma.uiscreen.loginscreen.LoginOption
@@ -101,6 +102,7 @@ fun NavHost() {
 
             SignupCarer(navController)
         }
+
         composable<NavRoute.DashBoard> {
 
             DashBoard(navController)
@@ -158,6 +160,11 @@ fun NavHost() {
         }
         composable<NavRoute.LoginScreen> {
             LoginScreen(navController)
+
+        }
+
+        composable<NavRoute.CarrersContactList> {
+            CarersContactList()
 
         }
         composable<NavRoute.SignupOptionStep1> {

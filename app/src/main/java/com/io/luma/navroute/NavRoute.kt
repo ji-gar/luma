@@ -113,6 +113,12 @@ sealed class NavRoute {
     @Serializable
     data object CareerCampingScreen :NavRoute()
 
+    @Serializable
+    data object  Paitent : NavRoute()
+
+    @Serializable
+    data object  CarrersContactList : NavRoute()
+
 
     //SignupStep4
 }

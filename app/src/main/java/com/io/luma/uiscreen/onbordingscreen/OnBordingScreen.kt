@@ -65,6 +65,7 @@ import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -189,7 +190,7 @@ fun OnBordingScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 13.sdp),
-                        text = "Yes"
+                        text = "schedule notification"
                     ) {
 
 
@@ -216,6 +217,29 @@ fun OnBordingScreen(navController: NavController) {
                                 updatedAt = "2025-11-07 20:00:00"
                             )
                             db.value.activityDao().insertActivity(activity)
+
+                           withContext(Dispatchers.Main) {
+                               db.value.activityDao().getAllInfo().observeForever { activityList ->
+                                   activityList?.let { list ->
+                                       list.forEach { activity ->
+                                           val date = activity.date
+                                           val startTime = activity.startTime
+
+                                           if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
+                                               val calendar = getCalendarFromDateAndTime(date, startTime)
+                                               calendar?.let {
+                                                   if (it.timeInMillis > System.currentTimeMillis()) {
+                                                       scheduleNotification(context, activity, it)
+                                                       Log.d("Notification", "Scheduled for ${it.time}")
+                                                   } else {
+                                                       Log.d("Notification", "Skipped past time ${date} ${startTime}")
+                                                   }
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                           }
                         }
 
                         // You can navigate if needed after insertion
@@ -228,7 +252,7 @@ fun OnBordingScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 13.sdp),
-                        text = "No"
+                        text = "Done"
                     ) {
                         db.value.activityDao().getAllInfo().observeForever { activityList ->
                             activityList?.let { list ->
