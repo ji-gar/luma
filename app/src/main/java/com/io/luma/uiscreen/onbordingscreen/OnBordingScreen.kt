@@ -74,6 +74,7 @@ import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.UUID
 
@@ -176,7 +177,7 @@ fun OnBordingScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 13.sdp),
-                        text = "Yes"
+                        text = "schedule notification"
                     ) {
 
 
@@ -187,18 +188,41 @@ fun OnBordingScreen(navController: NavController) {
                                 title = "Morning Rounties",
                                 activityDescription = "Breakfast Time",
                                 activityType = "Daily",
-                                startTime = "20:30:00",
-                                date = "2025-11-12",
+                                startTime = "23:18:00",
+                                date = "2025-11-21",
                                 isActive = true,
                                 addedBy = "Jigar",
-                                createdAt = "2025-11-07 20:00:00",
+                                createdAt = "2025-11-07 20:16:00",
                                 updatedAt = "2025-11-07 20:00:00"
                             )
                             db.value.activityDao().insertActivity(activity)
+
+                           withContext(Dispatchers.Main) {
+                               db.value.activityDao().getAllInfo().observeForever { activityList ->
+                                   activityList?.let { list ->
+                                       list.forEach { activity ->
+                                           val date = activity.date
+                                           val startTime = activity.startTime
+
+                                           if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
+                                               val calendar = getCalendarFromDateAndTime(date, startTime)
+                                               calendar?.let {
+                                                   if (it.timeInMillis > System.currentTimeMillis()) {
+                                                       scheduleNotification(context, activity, it)
+                                                       Log.d("Notification", "Scheduled for ${it.time}")
+                                                   } else {
+                                                       Log.d("Notification", "Skipped past time ${date} ${startTime}")
+                                                   }
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                           }
                         }
 
                         // You can navigate if needed after insertion
-                         navController.navigate(NavRoute.OnBordingScreen2)
+                       //  navController.navigate(NavRoute.OnBordingScreen2)
                     }
 
                     Spacer(modifier = Modifier.height(20.sdp))
@@ -207,7 +231,7 @@ fun OnBordingScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 13.sdp),
-                        text = "No"
+                        text = "Done"
                     ) {
                         db.value.activityDao().getAllInfo().observeForever { activityList ->
                             activityList?.let { list ->
@@ -230,7 +254,7 @@ fun OnBordingScreen(navController: NavController) {
                             }
                         }
 
-                         navController.navigate(NavRoute.SignupOptionStep2)
+                       //  navController.navigate(NavRoute.SignupOptionStep2)
                     }
 
 

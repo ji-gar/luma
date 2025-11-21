@@ -7,8 +7,11 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.text.HtmlCompat
 import com.io.luma.R
 import com.io.luma.uiscreen.FullscreenAlarmActivity
 import kotlin.random.Random
@@ -44,21 +47,44 @@ class NotificationReceiver : BroadcastReceiver() {
             context, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val summary = HtmlCompat.fromHtml(
+            "<b>Good Morning, Luma ☀️</b><br>" +
+                    "Have a fresh start to your day!<br><br>" +
+                    "<b>💧 Water Drinking Time</b><br>" +
+                    "Take a short break & drink water.<br><br>" +
+                    "<b>🍽 Breakfast Time</b><br>" +
+                    "Fuel your body with a healthy meal.<br><br>",
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+
         // Optional: You can use Broadcasts for buttons if needed, but for now
         // let’s keep focus on showing the full-screen UI
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_popup_reminder)
             .setContentTitle(title)
-            .setContentText(desc)
+            .setContentText(summary)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setFullScreenIntent(fullScreenPendingIntent, true) // 👈 shows even when locked
             .setAutoCancel(false)
             .setOngoing(true)
+            .setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(gradwabletoBitmap(context))
+
+            )
+            .setLargeIcon(gradwabletoBitmap(context))
             .build()
 
         manager.notify(1001, notification)
     }
+}
+
+fun gradwabletoBitmap(context: Context): Bitmap{
+
+    var bitmap= BitmapFactory.decodeResource(context.resources,R.drawable.onbordingluma)
+    return bitmap
+
 }
 
 

@@ -29,6 +29,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -86,6 +88,22 @@ fun CareerCamping(navController: NavController) {
 
 
         Scaffold(modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /* Your click action */ },
+                    containerColor = Color.Black, // optional
+                    contentColor = Color.White
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.iv_mics),
+                        contentDescription = "Add",
+                        tint = Color.Unspecified
+                    )
+                }
+
+
+            },
+            floatingActionButtonPosition = FabPosition.End,
             bottomBar = {
                 NavigationBar(
                     containerColor = Color.White,
@@ -178,7 +196,7 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
             )
 
             // Main scrollable content
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
                 com.io.luma.customcompose.height(30)
                 Box(modifier = Modifier
                     .fillMaxWidth()
@@ -202,9 +220,7 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .weight(1f)
-                        .windowInsetsPadding(WindowInsets.statusBars)
-                        .padding(paddingValues = values),
+                        .weight(1f),
                     contentPadding = PaddingValues(horizontal = 13.sdp)
                 )
                 {
@@ -213,7 +229,7 @@ fun HomeScreen(navController: NavController, values: PaddingValues) {
 
                     // Greeting
                     item {
-                        com.io.luma.customcompose.height(13)
+                      height(10)
                         Row(modifier = Modifier.fillMaxWidth(),
 
                             verticalAlignment = Alignment.CenterVertically
