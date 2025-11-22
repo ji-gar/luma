@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.io.luma.alarmsystem.AlarmReceiver
 import com.io.luma.brodcast.NotificationReceiver
 import com.io.luma.room.ActivityOffline
 import java.text.SimpleDateFormat
@@ -26,7 +27,7 @@ fun getCalendarFromDateAndTime(dateString: String, timeString: String): Calendar
 
 
 fun scheduleNotification(context: Context, activity: ActivityOffline, calendar: Calendar) {
-    val intent = Intent(context, NotificationReceiver::class.java).apply {
+    /*val intent = Intent(context, NotificationReceiver::class.java).apply {
         putExtra("title", activity.title)
         putExtra("description", activity.activityDescription ?: "")
     }
@@ -34,6 +35,25 @@ fun scheduleNotification(context: Context, activity: ActivityOffline, calendar: 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
         activity.activityId.hashCode(),
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.setExactAndAllowWhileIdle(
+        AlarmManager.RTC_WAKEUP,
+        calendar.timeInMillis,
+        pendingIntent
+    )*/
+
+    val intent = Intent(context, AlarmReceiver::class.java).apply {
+        putExtra("title", activity.title)
+        putExtra("description", activity.activityDescription ?: "")
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        0,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )

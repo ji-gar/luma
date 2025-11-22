@@ -75,7 +75,7 @@ import java.util.UUID
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OnBordingScreen(navController: NavController) {
+fun OnBordingScreen(navController: NavController, showNotification: () -> Unit) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val infiniteTransition = rememberInfiniteTransition(label = "move")
@@ -97,8 +97,7 @@ fun OnBordingScreen(navController: NavController) {
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars)
             .background(color = Color.White)
-    )
-    {
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -218,28 +217,35 @@ fun OnBordingScreen(navController: NavController) {
                             )
                             db.value.activityDao().insertActivity(activity)
 
-                           withContext(Dispatchers.Main) {
-                               db.value.activityDao().getAllInfo().observeForever { activityList ->
-                                   activityList?.let { list ->
-                                       list.forEach { activity ->
-                                           val date = activity.date
-                                           val startTime = activity.startTime
+                            withContext(Dispatchers.Main) {
+                                db.value.activityDao().getAllInfo().observeForever { activityList ->
+                                    activityList?.let { list ->
+                                        list.forEach { activity ->
+                                            val date = activity.date
+                                            val startTime = activity.startTime
 
-                                           if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
-                                               val calendar = getCalendarFromDateAndTime(date, startTime)
-                                               calendar?.let {
-                                                   if (it.timeInMillis > System.currentTimeMillis()) {
-                                                       scheduleNotification(context, activity, it)
-                                                       Log.d("Notification", "Scheduled for ${it.time}")
-                                                   } else {
-                                                       Log.d("Notification", "Skipped past time ${date} ${startTime}")
-                                                   }
-                                               }
-                                           }
-                                       }
-                                   }
-                               }
-                           }
+                                            if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
+                                                val calendar =
+                                                    getCalendarFromDateAndTime(date, startTime)
+                                                calendar?.let {
+                                                    if (it.timeInMillis > System.currentTimeMillis()) {
+                                                        scheduleNotification(context, activity, it)
+                                                        Log.d(
+                                                            "Notification",
+                                                            "Scheduled for ${it.time}"
+                                                        )
+                                                    } else {
+                                                        Log.d(
+                                                            "Notification",
+                                                            "Skipped past time ${date} ${startTime}"
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         // You can navigate if needed after insertion
@@ -264,7 +270,7 @@ fun OnBordingScreen(navController: NavController) {
                                         val calendar = getCalendarFromDateAndTime(date, startTime)
                                         calendar?.let {
                                             if (it.timeInMillis > System.currentTimeMillis()) {
-                                                scheduleNotification(context, activity, it)
+//                                                scheduleNotification(context, activity, it)
                                                 Log.d("Notification", "Scheduled for ${it.time}")
                                             } else {
                                                 Log.d(

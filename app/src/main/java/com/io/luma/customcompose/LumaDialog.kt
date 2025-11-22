@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.delay
 
 @Composable
@@ -60,11 +62,13 @@ fun LumaPopupDialog(
         properties = DialogProperties(
             dismissOnClickOutside = dismissOnClickOutside,
             dismissOnBackPress = true,
+            usePlatformDefaultWidth = false
         ),
         content = {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.sdp)
                     .wrapContentHeight()
                     .graphicsLayer {
                         this.scaleX = scaleX
@@ -83,7 +87,8 @@ fun LumaPopupDialog(
                         .fillMaxWidth()
                         .graphicsLayer {
                             this.alpha = contentAlpha
-                        }) {
+                        }
+                ) {
                     content.invoke()
                 }
             }

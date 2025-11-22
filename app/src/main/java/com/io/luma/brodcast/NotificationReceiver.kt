@@ -9,8 +9,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Build
-import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import com.io.luma.R
@@ -22,19 +24,22 @@ class NotificationReceiver : BroadcastReceiver() {
         val desc = intent.getStringExtra("description") ?: "You have an upcoming activity"
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "activity_channel"
+        val channelId = "alarm_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Activity Notifications",
+                "Alarm Notifications",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Activity alert notifications"
+                description = "Alarm-style notifications"
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setBypassDnd(true)
+                setSound(null, null)
             }
             manager.createNotificationChannel(channel)
         }
+
 
         val fullScreenIntent = Intent(context, FullscreenAlarmActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -61,17 +66,17 @@ class NotificationReceiver : BroadcastReceiver() {
         // let’s keep focus on showing the full-screen UI
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_popup_reminder)
-            .setContentTitle(title)
+            .setContentTitle("$title From Notification Receiver")
             .setContentText(summary)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setFullScreenIntent(fullScreenPendingIntent, true) // 👈 shows even when locked
-            .setAutoCancel(false)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)   // 🔥 REQUIRED
+            .setFullScreenIntent(fullScreenPendingIntent, true)
             .setOngoing(true)
+            .setAutoCancel(false)
+            .setSound(null)
             .setStyle(
                 NotificationCompat.BigPictureStyle()
                     .bigPicture(gradwabletoBitmap(context))
-
             )
             .setLargeIcon(gradwabletoBitmap(context))
             .build()
@@ -80,9 +85,9 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 }
 
-fun gradwabletoBitmap(context: Context): Bitmap{
+fun gradwabletoBitmap(context: Context): Bitmap {
 
-    var bitmap= BitmapFactory.decodeResource(context.resources,R.drawable.onbordingluma)
+    var bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.onbordingluma)
     return bitmap
 
 }

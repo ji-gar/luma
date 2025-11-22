@@ -1,6 +1,7 @@
 package com.io.luma.uiscreen
 
-import android.app.Activity
+import android.app.NotificationManager
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -30,7 +31,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,14 +44,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.io.luma.R
-import com.io.luma.navroute.NavRoute
+import com.io.luma.alarmsystem.AlarmConstants
+import com.io.luma.alarmsystem.AlarmService
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.skyblue
 
@@ -74,45 +74,58 @@ class FullscreenAlarmActivity : ComponentActivity() {
         val desc = intent.getStringExtra("desc") ?: ""
 
         setContent {
-            Surface(modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        listOf(
-                            goldenYellow,
-                            Color.White,
-                            Color.White,
-                            Color.White,
-                            skyblue
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.linearGradient(
+                            listOf(
+                                goldenYellow,
+                                Color.White,
+                                Color.White,
+                                Color.White,
+                                skyblue
+                            )
                         )
                     )
-                )) {
-                DailyRoutineReminderUI()
-
+            ) {
+                DailyRoutineReminderUI {
+                    stopAlarm()
+                    finish()
+                }
             }
         }
+    }
+
+    private fun stopAlarm() {
+        stopService(Intent(this, AlarmService::class.java))
+
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        nm.cancel(AlarmConstants.ALARM_NOTIFICATION_ID)
+
+        finish()
     }
 }
 
 @Composable
-fun DailyRoutineReminderUI() {
+fun DailyRoutineReminderUI(onDismiss: () -> Unit) {
 
     val context = LocalContext.current
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
-    val activity = LocalContext.current as? Activity
+    val activity = LocalContext.current
 
     // Auto stop sound when user leaves screen
     // Auto start sound when screen opens
     LaunchedEffect(Unit) {
         try {
-            mediaPlayer?.stop()
+            /*mediaPlayer?.stop()
             mediaPlayer?.release()
 
             mediaPlayer = MediaPlayer.create(context, R.raw.demo3).apply {
                 isLooping = true
                 start()
-            }
+            }*/
 
         } catch (e: Exception) {
             Log.e("SOUND_ERROR", "Failed: ${e.message}")
@@ -139,7 +152,7 @@ fun DailyRoutineReminderUI() {
     ) {
 
         Column(
-          verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 16.dp)
@@ -228,9 +241,8 @@ fun DailyRoutineReminderUI() {
                         .height(340.dp),
 
 
-                )
+                    )
             }
-
 
 
             // ---------- BUTTON ----------
@@ -253,14 +265,15 @@ fun DailyRoutineReminderUI() {
                 )
             }
 
-            Row(horizontalArrangement = Arrangement.Center,
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
                     onClick = {
                         mediaPlayer?.stop()
                         mediaPlayer?.release()
-                        activity?.finish()
+                        onDismiss.invoke()
                         // close app screen
                     },
                     modifier = Modifier

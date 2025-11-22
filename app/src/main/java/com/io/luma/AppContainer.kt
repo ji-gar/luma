@@ -1,38 +1,19 @@
 package com.io.luma
 
 import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.io.luma.customcompose.CustomOutlineButton
-import com.io.luma.uiscreen.event.EventListCompose
-import com.io.luma.uiscreen.event.EventListForm
+import com.io.luma.customcompose.NotificationDialog
 import com.io.luma.navroute.NavRoute
-import com.io.luma.ui.theme.LumaTheme
-import com.io.luma.ui.theme.goldenYellow
-import com.io.luma.ui.theme.skyblue
 import com.io.luma.uiscreen.CareerCamping
 import com.io.luma.uiscreen.CarerSignupOption
 import com.io.luma.uiscreen.SignupCarer
@@ -40,6 +21,8 @@ import com.io.luma.uiscreen.SplaceScreen
 import com.io.luma.uiscreen.carrercontanct.CarersContactList
 import com.io.luma.uiscreen.dashboard.DashBoard
 import com.io.luma.uiscreen.dashboard.PatientScreen
+import com.io.luma.uiscreen.event.EventListCompose
+import com.io.luma.uiscreen.event.EventListForm
 import com.io.luma.uiscreen.loginscreen.LoginOption
 import com.io.luma.uiscreen.loginscreen.LoginScreen
 import com.io.luma.uiscreen.loginscreen.MobileNumberScreen
@@ -72,37 +55,16 @@ import com.io.luma.uiscreen.weeaklySchdual.WeekalyRoutingForm
 import com.io.luma.viewmodel.CarerRegisterViewModel
 import com.io.luma.viewmodel.RegisterViewModel
 
-class MainActivity : ComponentActivity() {
-    companion object {
-        val appContainerState = AppContainer()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        enableEdgeToEdge(
-            // To make the status bar icons color light
-            //     statusBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb())
-            // If you want to make the status bar icons color dark than you can use it
-            statusBarStyle = SystemBarStyle.light(Color.Red.toArgb(), Color.White.toArgb())
-        )
-        setContent {
-            LumaTheme {
-                AppContainer(appContainerState)
-            }
-        }
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavHost() {
-    //signleton
-    var navController = rememberNavController()
+fun AppContainer(
+    container: AppContainer,
+    navController: NavHostController = rememberNavController()
+) {
     val registermyself: RegisterViewModel = viewModel()
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
+
 
     NavHost(navController, startDestination = NavRoute.OnBordingScreen) {
 
@@ -237,7 +199,9 @@ fun NavHost() {
 
         }
         composable<NavRoute.OnBordingScreen> {
-            OnBordingScreen(navController) {}
+            OnBordingScreen(navController) {
+//                showAlarmDialog = true
+            }
 
         }
         composable<NavRoute.OnBordingScreen2> {
@@ -271,45 +235,39 @@ fun NavHost() {
 
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
-                    listOf(
-                        goldenYellow,
-                        Color.White,
-                        Color.White,
-                        Color.White,
-                        skyblue
-                    )
-                )
-            )
-    ) {
-
-
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CustomOutlineButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Hello How Are You ?"
-            ) { }
-        }
-
+    if (container.showAlarmDialog) {
+        NotificationDialog(
+            headerTitle = "Emergency Call",
+            alertTitle = "Serverly disoriented",
+            alertDescription = "Emergency situation with Amy Bishop!",
+            btnPositiveText = "Talk to Amy",
+            btnNegativeText = "No",
+            onDismissRequest = {
+                container.dismissAlarmDialog()
+            },
+            onPositiveClick = {
+                container.dismissAlarmDialog()
+            }
+        )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LumaTheme {
-        Greeting("Android")
+class AppContainer {
+
+    var showAlarmDialog by mutableStateOf(false)
+        private set
+
+    var alarmTitle: String = ""
+    var alarmDescription: String = ""
+
+    fun triggerAlarmDialog(title: String, description: String) {
+        alarmTitle = title
+        alarmDescription = description
+        showAlarmDialog = true
+    }
+
+    fun dismissAlarmDialog() {
+        showAlarmDialog = false
     }
 }
