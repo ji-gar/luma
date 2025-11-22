@@ -80,10 +80,8 @@ fun SchdualScreen(navController: NavController) {
 
         ){
 
-            Column( modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp).windowInsetsPadding(WindowInsets.statusBars)) {
-
-
-
+            Column( modifier = Modifier.fillMaxSize().padding(horizontal = 13.sdp).windowInsetsPadding(WindowInsets.statusBars))
+            {
                 height(30)
                 Box(modifier = Modifier.fillMaxWidth(),
                   contentAlignment = Alignment.Center

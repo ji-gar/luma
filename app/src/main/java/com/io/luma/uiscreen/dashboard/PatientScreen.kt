@@ -28,10 +28,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +67,7 @@ import androidx.navigation.NavController
 import com.io.luma.R
 import com.io.luma.customcompose.CustomButton
 import com.io.luma.customcompose.width
+import com.io.luma.navroute.NavRoute
 import com.io.luma.ui.theme.goldenYellow
 import com.io.luma.ui.theme.manropebold
 import com.io.luma.ui.theme.monospaceMedium
@@ -83,46 +89,74 @@ fun PatientScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()){
 
 
-        Scaffold(modifier = Modifier.fillMaxSize(),
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+
             bottomBar = {
-                NavigationBar(
-                    containerColor = Color.White,
-                    tonalElevation = 1.dp,
-                ) {
+                Box {
+                    NavigationBar(
+                        containerColor = Color.White,
+                        tonalElevation = 1.dp,
+                    )
+                    {
 
 
-                    navItem.forEachIndexed { index, item ->
+                        navItem.forEachIndexed { index, item ->
 
-                        NavigationBarItem(
-                            selected = bottomSelectedIndex == index,
-                            onClick = { bottomSelectedIndex = index },
-                            label = { Text(item.text,
-                                style = TextStyle(
-                                    color = if (bottomSelectedIndex == index) Color(0xff4AAFB6) else Color(0xffA8AAB8),
-                                    fontSize = 12.ssp,
-                                    fontFamily = monospaceRegular,
-                                    fontWeight = FontWeight.W400
-                                )) },
-                            icon = { androidx.compose.material3.Icon(painter = painterResource(id = item.icon), contentDescription = "",
-                                tint = if (bottomSelectedIndex == index) Color(0xff4AAFB6) else Color(0xffA8AAB8)) },
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = Color.Transparent
+                            NavigationBarItem(
+                                selected = bottomSelectedIndex == index,
+                                onClick = { bottomSelectedIndex = index },
+                                label = {
+                                    Text(
+                                        item.text,
+                                        style = TextStyle(
+                                            color =
+                                                if (index == 1) {               // center icon → always fixed color
+                                                    Color(0xff4AAFB6)
+                                                } else if (bottomSelectedIndex == index) {
+                                                    Color(0xff4AAFB6)           // selected
+                                                } else {
+                                                    Color(0xffA8AAB8)           // unselected
+                                                },
+                                            fontSize = 12.ssp,
+                                            fontFamily = monospaceRegular,
+                                            fontWeight = FontWeight.W400
+                                        )
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(id = item.icon),
+                                        contentDescription = "",
+                                        tint = if (index == 1) {               // center icon → always fixed color
+                                            Color.Unspecified
+                                        } else if (bottomSelectedIndex == index) {
+                                            Color(0xff4AAFB6)           // selected
+                                        } else {
+                                            Color(0xffA8AAB8)           // unselected
+                                        }
+                                    )
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = Color.Transparent
+                                )
                             )
-                        )
 
 
+                        }
                     }
-                }
-            }
 
-        ) {
+
+                }
+            },
+
+
+            ) {
             when(bottomSelectedIndex){
                 0->{
-                    PatientHomeScreen(navController,it)
+                    PatientHomeScreen(navController,it,bottomSelectedIndex)
                 }
-                1->{
 
-                }
             }
 
         }
@@ -131,7 +165,7 @@ fun PatientScreen(navController: NavController) {
 
 }
 @Composable
-fun  PatientHomeScreen(navController: NavController, values: PaddingValues) {
+fun  PatientHomeScreen(navController: NavController, values: PaddingValues,index:Int=0) {
 
     var selected by remember { mutableStateOf(0) }
     val date = listOf("11\nMon", "12\nTue", "13\nWed", "14\nThu", "16\nFri", "17\nSat", "18\nSun")
@@ -171,19 +205,17 @@ fun  PatientHomeScreen(navController: NavController, values: PaddingValues) {
             )
 
             // Main scrollable content
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
                 com.io.luma.customcompose.height(30)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 13.sdp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.iv_setting),
+                        painter = painterResource(R.drawable.iv_carerricon),
                         contentDescription = "",
-                        modifier = Modifier
-                            .height(33.sdp)
 
                     )
                     Text(
@@ -237,7 +269,8 @@ fun  PatientHomeScreen(navController: NavController, values: PaddingValues) {
                             Icon(
                                 painter = painterResource(R.drawable.iv_calender),
                                 contentDescription = "",
-                                tint = Color.Unspecified
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable { navController.navigate(NavRoute.SchdualScreen) }
                             )
                             width(20)
                             Icon(
@@ -249,7 +282,8 @@ fun  PatientHomeScreen(navController: NavController, values: PaddingValues) {
                             Icon(
                                 painter = painterResource(R.drawable.iv_heart),
                                 contentDescription = "",
-                                tint = Color.Unspecified
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable { navController.navigate(NavRoute.CareerCampingScreen) }
                             )
                         }
                     }
@@ -413,6 +447,19 @@ fun  PatientHomeScreen(navController: NavController, values: PaddingValues) {
 
 
 
+        }
+    }
+
+    if (index==1)
+    {
+        Box(modifier = Modifier.fillMaxSize().background(color = Color(0xff00000080))) {
+
+
+
+            Box(modifier = Modifier.fillMaxWidth().background(color = Color.White).height(230.dp)) {
+
+
+            }
         }
     }
 
