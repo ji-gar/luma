@@ -292,7 +292,7 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
 
 
                 com.io.luma.customcompose.height(20)
-                rowHeader("Please Enter Name")
+                rowHeader("First Name")
                 com.io.luma.customcompose.height(6)
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -301,7 +301,32 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
                         firstName.value=it
                     },
                     placeholder = {
-                        Text("Enter your First Name",
+                        Text(" First Name",
+                            style = TextStyle(
+                                color = Color(0xff56575D),
+                                fontSize = 15.ssp,
+                                fontFamily = monospaceRegular
+                            ))
+                    },
+                    shape = RoundedCornerShape(6.sdp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = Color(0xff93969B),
+                        unfocusedBorderColor = Color(0xff93969B)
+                    )
+                )
+                com.io.luma.customcompose.height(20)
+                rowHeader("Last  Name")
+                com.io.luma.customcompose.height(6)
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value =lasttName.value,
+                    onValueChange = {
+                        lasttName.value=it
+                    },
+                    placeholder = {
+                        Text(" Last Name",
                             style = TextStyle(
                                 color = Color(0xff56575D),
                                 fontSize = 15.ssp,
@@ -441,8 +466,13 @@ fun SignupStep4(navController: NavController, carerViewModel: CarerRegisterViewM
                     {
                         Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
                     }
+                    else if (lasttName.value.isEmpty())
+                    {
+                        Toast.makeText(context, "Please enter last name", Toast.LENGTH_SHORT).show()
+                    }
                     else {
-                        carerViewModel.updatePatientName(firstName.value+""+lasttName.value)
+                        carerViewModel.updatePatientFirstName(patientName = firstName.value)
+                        carerViewModel.updatePatientLastName(lasttName.value)
                         carerViewModel.updatePatientLanguage("en")
                         carerViewModel.updatePatientPhone(patientPhone = phone.value)
                         carerViewModel.countrycode("${countrycodes}")

@@ -25,8 +25,12 @@ class CarerRegisterViewModel : ViewModel()
         private set
 
 
-    fun updateFullName(name: String) {
-        user = user.copy(fullName = name)
+    fun updateFirstName(name: String) {
+        user = user.copy(firstName = name)
+    }
+    fun updateLastName(name: String)
+    {
+        user=user.copy(lastName = name)
     }
 
     fun updateEmail(email: String) {
@@ -37,8 +41,11 @@ class CarerRegisterViewModel : ViewModel()
         user = user.copy(password = password, confirmPassword = confirmPassword)
     }
 
-    fun updatePatientName(patientName: String) {
-        user = user.copy(patientFullName = patientName)
+    fun updatePatientFirstName(patientName: String) {
+        user = user.copy(patientFirstName = patientName)
+    }
+    fun updatePatientLastName(patientLastName: String) {
+        user = user.copy(patientLastName = patientLastName)
     }
     fun updatePatientEmail(patientEmail: String) {
         user = user.copy(patientEmail = patientEmail)
@@ -52,7 +59,7 @@ class CarerRegisterViewModel : ViewModel()
         user = user.copy(patientLanguage = language)
     }
     fun countrycode(code: String) {
-        user = user.copy(patient_country_code = code)
+        user = user.copy(patientCountryCode = code)
     }
 
 

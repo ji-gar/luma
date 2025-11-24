@@ -231,8 +231,9 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
                     text = "Send a Link"
                 ) {
                     Log.d("Invite",InviatePaintentRequest(
-                        countryCode =  carerViewModel.user.patient_country_code,
-                        fullName = carerViewModel.user.patientFullName,
+                        countryCode =  carerViewModel.user.patientCountryCode,
+                        firstName = carerViewModel.user.patientFirstName,
+                        lastName = carerViewModel.user.patientLastName,
                         sendViaEmail = checkBoxList[1].isChecked,
                         phoneNumber = carerViewModel.user.patientPhoneNumber,
                         language = carerViewModel.user.patientLanguage,
@@ -242,8 +243,9 @@ fun SignupStep6(navController: NavController, carerViewModel: CarerRegisterViewM
 
                     invitePatientViewModel.invitePatient(
                         InviatePaintentRequest(
-                            countryCode = carerViewModel.user.patient_country_code,
-                            fullName = carerViewModel.user.patientFullName,
+                            countryCode = carerViewModel.user.patientCountryCode,
+                            firstName = carerViewModel.user.patientFirstName,
+                            lastName = carerViewModel.user.patientLastName,
                             sendViaEmail = checkBoxList[1].isChecked,
                             phoneNumber = carerViewModel.user.patientPhoneNumber,
                             language = carerViewModel.user.patientLanguage,

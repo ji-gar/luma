@@ -181,48 +181,48 @@ fun OnBordingScreen(navController: NavController) {
                     ) {
 
 
-                        GlobalScope.launch(Dispatchers.IO) {
-                            val activity = ActivityOffline(
-                                activityId = UUID.randomUUID().toString(),
-                                patientId = "123",
-                                title = "Morning Rounties",
-                                activityDescription = "Breakfast Time",
-                                activityType = "Daily",
-                                startTime = "23:55:00",
-                                date = "2025-11-21",
-                                isActive = true,
-                                addedBy = "Jigar",
-                                createdAt = "2025-11-07 20:16:00",
-                                updatedAt = "2025-11-07 20:00:00"
-                            )
-                            db.value.activityDao().insertActivity(activity)
-
-                           withContext(Dispatchers.Main) {
-                               db.value.activityDao().getAllInfo().observeForever { activityList ->
-                                   activityList?.let { list ->
-                                       list.forEach { activity ->
-                                           val date = activity.date
-                                           val startTime = activity.startTime
-
-                                           if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
-                                               val calendar = getCalendarFromDateAndTime(date, startTime)
-                                               calendar?.let {
-                                                   if (it.timeInMillis > System.currentTimeMillis()) {
-                                                       scheduleNotification(context, activity, it)
-                                                       Log.d("Notification", "Scheduled for ${it.time}")
-                                                   } else {
-                                                       Log.d("Notification", "Skipped past time ${date} ${startTime}")
-                                                   }
-                                               }
-                                           }
-                                       }
-                                   }
-                               }
-                           }
-                        }
+//                        GlobalScope.launch(Dispatchers.IO) {
+//                            val activity = ActivityOffline(
+//                                activityId = UUID.randomUUID().toString(),
+//                                patientId = "123",
+//                                title = "Morning Rounties",
+//                                activityDescription = "Breakfast Time",
+//                                activityType = "Daily",
+//                                startTime = "23:55:00",
+//                                date = "2025-11-21",
+//                                isActive = true,
+//                                addedBy = "Jigar",
+//                                createdAt = "2025-11-07 20:16:00",
+//                                updatedAt = "2025-11-07 20:00:00"
+//                            )
+//                            db.value.activityDao().insertActivity(activity)
+//
+//                           withContext(Dispatchers.Main) {
+//                               db.value.activityDao().getAllInfo().observeForever { activityList ->
+//                                   activityList?.let { list ->
+//                                       list.forEach { activity ->
+//                                           val date = activity.date
+//                                           val startTime = activity.startTime
+//
+//                                           if (!date.isNullOrEmpty() && !startTime.isNullOrEmpty()) {
+//                                               val calendar = getCalendarFromDateAndTime(date, startTime)
+//                                               calendar?.let {
+//                                                   if (it.timeInMillis > System.currentTimeMillis()) {
+//                                                       scheduleNotification(context, activity, it)
+//                                                       Log.d("Notification", "Scheduled for ${it.time}")
+//                                                   } else {
+//                                                       Log.d("Notification", "Skipped past time ${date} ${startTime}")
+//                                                   }
+//                                               }
+//                                           }
+//                                       }
+//                                   }
+//                               }
+//                           }
+//                        }
 
                         // You can navigate if needed after insertion
-                       //  navController.navigate(NavRoute.OnBordingScreen2)
+                        navController.navigate(NavRoute.OnBordingScreen2)
                     }
 
                     Spacer(modifier = Modifier.height(20.sdp))

@@ -219,7 +219,8 @@ fun MySelfStep1(navController: NavController, registermyself: RegisterViewModel)
             CustomButton(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.sdp),
                 "Next") {
 
-                registermyself.updateName(name = firstName+""+lastName)
+                registermyself.updateName(name = firstName)
+                registermyself.updateLastName(name = lastName)
                 registermyself.updateEmail(email=email)
                 registermyself.updatePhone(phone = phone)
                 when {

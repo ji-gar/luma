@@ -100,7 +100,7 @@ fun SignupStep3(navController: NavController, carerViewModel: CarerRegisterViewM
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Text("Hello, ${carerViewModel.user.fullName}. Your account\nhas been created",
+                Text("Hello, ${carerViewModel.user.firstName +""+carerViewModel.user.lastName}. Your account\nhas been created",
                     style = TextStyle(
                         color = textColor,
                         fontSize = 20.ssp

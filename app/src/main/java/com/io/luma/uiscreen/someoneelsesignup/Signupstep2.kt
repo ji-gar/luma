@@ -360,7 +360,8 @@ fun SignupStep2(navController: NavController,carerSignupViewModel: CarerRegister
                             Toast.makeText(context, "Password and Confirm Password do not match", Toast.LENGTH_SHORT).show()
                         }
                         else {
-                            carerSignupViewModel.updateFullName(firstName.value+" "+lasttName.value)
+                            carerSignupViewModel.updateFirstName(firstName.value)
+                            carerSignupViewModel.updateLastName(lasttName.value)
                             carerSignupViewModel.updateEmail(email.value)
                             carerSignupViewModel.updatePassword(password.value,confirmPassword.value)
                             navController.navigate(NavRoute.SignupOptionStep3)

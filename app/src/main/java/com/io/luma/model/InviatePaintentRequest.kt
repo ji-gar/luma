@@ -7,9 +7,11 @@ data class InviatePaintentRequest(
 	@field:SerializedName("country_code")
 	val countryCode: String? = null,
 
-	@field:SerializedName("full_name")
-	val fullName: String? = null,
+    @SerializedName("first_name")
+    val firstName: String? = null,
 
+    @SerializedName("last_name")
+    val lastName: String? = null,
 	@field:SerializedName("send_via_email")
 	val sendViaEmail: Boolean? = null,
 

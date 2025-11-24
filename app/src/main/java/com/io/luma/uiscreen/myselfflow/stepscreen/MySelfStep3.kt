@@ -206,7 +206,7 @@ fun MySelfStep3(navController: NavController, registermyself: RegisterViewModel)
                             .padding(horizontal = 20.sdp),
                         "Upload Photo"
                     ) {
-                        registermyself.updateRole(role = "patient")
+
                         registermyself.updateCountryCode("${TokenManager.getInstance(context).getCountryCode()}")
                         Log.d("GSON", registermyself.user.toString())
                         registermyself.addDetils(registermyself.user)

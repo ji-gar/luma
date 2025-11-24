@@ -146,7 +146,7 @@ fun SignupStep5(navController: NavController, carerViewModel: CarerRegisterViewM
                     Box(modifier = Modifier.fillMaxWidth().background(color = Color(0xffDAE1FD),
                         shape = RoundedCornerShape(13.sdp))){
 
-                        Text("Your ${carerViewModel.user.patientFullName} is Amy Bishop",
+                        Text("Your ${carerViewModel.user.patientFirstName+""+carerViewModel.user.patientLastName} is Amy Bishop",
                             style = TextStyle(
                                 color = textColor,
                                 fontSize = 20.ssp,

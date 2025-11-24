@@ -144,7 +144,9 @@ fun OnBoardingWebSocket(navController: NavController) {
     }
 
     // UI
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
         // 3D Model Background
         Box(
             modifier = Modifier
@@ -188,7 +190,8 @@ fun OnBoardingWebSocket(navController: NavController) {
                             com.io.luma.customcompose.height(13)
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth().padding(end = 13.sdp),
+                                    .fillMaxWidth()
+                                    .padding(end = 13.sdp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -276,7 +279,8 @@ fun OnBoardingWebSocket(navController: NavController) {
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .padding(horizontal = 13.dp),
                         ) {
                             com.io.luma.customcompose.height(13)
@@ -290,7 +294,8 @@ fun OnBoardingWebSocket(navController: NavController) {
                             com.io.luma.customcompose.height(13)
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth().padding(end = 13.sdp),
+                                    .fillMaxWidth()
+                                    .padding(end = 13.sdp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -322,15 +327,21 @@ fun OnBoardingWebSocket(navController: NavController) {
                             optionList.forEachIndexed { index,text ->
                                 Row(
                                     modifier = Modifier
-                                        .fillMaxWidth().padding(bottom = 10.dp)
+                                        .fillMaxWidth()
+                                        .padding(bottom = 10.dp)
                                         .background(
                                             color = Color.White,
                                             shape = RoundedCornerShape(12.dp)
-                                        ) .selectable(
+                                        )
+                                        .selectable(
                                             selected = (index == selectedIndex),
                                             onClick = { onSelectedIndexChange(index) }
                                         )
-                                        .border(width =if (index==selectedIndex)  2.dp else  1.dp, Color.Black, RoundedCornerShape(12.dp))
+                                        .border(
+                                            width = if (index == selectedIndex) 2.dp else 1.dp,
+                                            Color.Black,
+                                            RoundedCornerShape(12.dp)
+                                        )
                                     ,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -379,132 +390,153 @@ fun OnBoardingWebSocket(navController: NavController) {
             }
 
             else ->
-                Column(
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                )
-                {
-                    height(40)
-
-                    // Title
-                    Text(
-                        text = "Voice Interaction",
-                        style = TextStyle(
-                            fontFamily = verandaBold,
-                            fontSize = 24.ssp,
-                            color = textColor,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                    height(20)
-
-                    // Connection Status
-                    Text(
-                        text = viewModel.connectionStatusText,
-                        style = TextStyle(
-                            color = when {
-                                viewModel.isConnected -> Color(0xFF4CAF50)
-                                viewModel.connectionStatusText == "Connecting..." -> Color(0xFFFF9800)
-                                else -> Color.Gray
-                            },
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        textAlign = TextAlign.Center
-                    )
-
-                    height(20)
-
-                    // Conversation Display
-                    if (viewModel.receivedText.isNotEmpty()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
-                        ) {
-                            Text(
-                                text = viewModel.receivedText,
-                                style = TextStyle(
-                                    color = Color(0xFF333333),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal
-                                ),
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-
-                        height(20)
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    // Mute/Unmute Button (only show when connected)
-                    if (viewModel.isConnected) {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .shadow(8.dp, CircleShape)
-                                .background(backgroundColor, shape = CircleShape)
-                                .clickable {
-                                    viewModel.toggleMute()
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = if (viewModel.isMuted) "🔇" else "🎤",
-                                fontSize = 32.sp,
-                                color = Color.White
-                            )
-                        }
-
-                        height(10)
-
-                        Text(
-                            text = if (viewModel.isMuted) "Tap to unmute" else "Tap to mute",
-                            style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 12.sp
-                            ),
-                            textAlign = TextAlign.Center
-                        )
-                    } else {
-                        // Show connecting indicator
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(60.dp),
-                            color = Color(0xFF667eea)
-                        )
-
-                        height(10)
-
-                        Text(
-                            text = "Connecting to voice service...",
-                            style = TextStyle(
-                                color = Color.Gray,
-                                fontSize = 12.sp
-                            ),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    height(40)
-
-                    // Back Button
-                    CustomButton(
-                        text = "Back",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 13.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxSize(),
+                        elevation = CardDefaults.elevatedCardElevation(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, Color(0xFF4E73FF).copy(alpha = 0.2f))
                     ) {
-                        viewModel.disconnect()
-                        navController.navigate(NavRoute.OnBordingScreen4)
-                    }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        )
+                        {
+                            height(40)
 
-                    height(20)
+                            // Title
+                            Text(
+                                text = "Voice Interaction",
+                                style = TextStyle(
+                                    fontFamily = verandaBold,
+                                    fontSize = 24.ssp,
+                                    color = textColor,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+
+                            height(20)
+
+                            // Connection Status
+                            Text(
+                                text = viewModel.connectionStatusText,
+                                style = TextStyle(
+                                    color = when {
+                                        viewModel.isConnected -> Color(0xFF4CAF50)
+                                        viewModel.connectionStatusText == "Connecting..." -> Color(
+                                            0xFFFF9800
+                                        )
+
+                                        else -> Color.Gray
+                                    },
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+
+                            height(20)
+
+                            // Conversation Display
+                            if (viewModel.receivedText.isNotEmpty()) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color(
+                                            0xFFF5F5F5
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        text = viewModel.receivedText,
+                                        style = TextStyle(
+                                            color = Color(0xFF333333),
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Normal
+                                        ),
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
+
+                                height(20)
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            // Mute/Unmute Button (only show when connected)
+                            if (viewModel.isConnected) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .shadow(8.dp, CircleShape)
+                                        .background(backgroundColor, shape = CircleShape)
+                                        .clickable {
+                                            viewModel.toggleMute()
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = if (viewModel.isMuted) "🔇" else "🎤",
+                                        fontSize = 32.sp,
+                                        color = Color.White
+                                    )
+                                }
+
+                                height(10)
+
+                                Text(
+                                    text = if (viewModel.isMuted) "Tap to unmute" else "Tap to mute",
+                                    style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 12.sp
+                                    ),
+                                    textAlign = TextAlign.Center
+                                )
+                            } else {
+                                // Show connecting indicator
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(60.dp),
+                                    color = Color(0xFF667eea)
+                                )
+
+                                height(10)
+
+                                Text(
+                                    text = "Connecting to voice service...",
+                                    style = TextStyle(
+                                        color = Color.Gray,
+                                        fontSize = 12.sp
+                                    ),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            height(40)
+
+                            // Back Button
+                            CustomButton(
+                                text = "Back",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 13.dp)
+                            ) {
+                                viewModel.disconnect()
+                                navController.navigate(NavRoute.OnBordingScreen4)
+                            }
+
+                            height(20)
+                        }
+                    }
                 }
 
         }

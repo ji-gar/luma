@@ -16,7 +16,7 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    @POST("v1/auth/signup")
+    @POST("v1/patient/signup")
     suspend fun createUser(@Body user: SignupRequestModel): Response<SignupResponseModel>
 
     @POST("v1/carer/signup")

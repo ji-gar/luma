@@ -23,7 +23,10 @@ class RegisterViewModel : ViewModel() {
         private set
 
     fun updateName(name: String) {
-        user = user.copy(fullName = name)
+        user = user.copy(firstName = name)
+    }
+    fun updateLastName(name: String) {
+        user = user.copy(lastName = name)
     }
 
     fun updatePhone(phone: String) {
@@ -38,15 +41,15 @@ class RegisterViewModel : ViewModel() {
         user = user.copy(password = password, confirmPassword = confirm)
     }
 
-    fun updateRole(role: String) {
-        user = user.copy(role = role)
-    }
+//    fun updateRole(role: String) {
+//        user = user.copy(role = role)
+//    }
 
     fun updateLanguage(language: String) {
         user = user.copy(language = language)
     }
     fun updateCountryCode(code: String) {
-        user = user.copy(country_code = code)
+        user = user.copy(countryCode = code)
     }
 
     fun addDetils(userSignupRequestModel: SignupRequestModel)
