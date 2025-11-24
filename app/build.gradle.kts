@@ -64,6 +64,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.2.1")
     implementation("com.googlecode.libphonenumber:libphonenumber:8.13.40")
+
+    // WebRTC - Official WebRTC library for real-time audio/video communication
+    implementation("io.github.webrtc-sdk:android:137.7151.04")
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)

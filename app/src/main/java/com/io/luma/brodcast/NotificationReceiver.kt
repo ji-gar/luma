@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
@@ -23,6 +25,12 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "activity_channel"
+        val soundUri = Uri.parse("android.resource://${context.packageName}/${R.raw.demo}")
+
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)   // important
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -32,6 +40,12 @@ class NotificationReceiver : BroadcastReceiver() {
             ).apply {
                 description = "Activity alert notifications"
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(soundUri, attributes)
+                enableLights(true)
+                enableVibration(true)
+
+
+
             }
             manager.createNotificationChannel(channel)
         }
