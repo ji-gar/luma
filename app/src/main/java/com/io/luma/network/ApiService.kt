@@ -1,11 +1,14 @@
 package com.io.luma.network
 
 
+import com.io.luma.model.CarerDashBoardResponseModel
 import com.io.luma.model.CarerSignupReuestModel
 import com.io.luma.model.InviatePaintentRequest
 import com.io.luma.model.InviatePaintentResponse
 import com.io.luma.model.LoginRequestModel
 import com.io.luma.model.LoginResponse
+import com.io.luma.model.NotificationResponseModel
+import com.io.luma.model.PatientContactsResponseModel
 import com.io.luma.model.SetPasswordRequest
 import com.io.luma.model.SignupRequestModel
 import com.io.luma.model.SignupResponseModel
@@ -32,4 +35,17 @@ interface ApiService {
 
     @POST("v1/auth/set-password")
     suspend fun setPassword(@Body user: SetPasswordRequest): Response<LoginResponse>
+
+    @GET("v1/users/me")
+    suspend fun getCarerDashBoard(): Response<CarerDashBoardResponseModel>
+
+    @GET("v1/carer/notifications")
+    suspend fun getNotifications(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("unread_only") unreadOnly: Boolean
+    ): Response<NotificationResponseModel>
+
+    @GET("v1/carer/patients")
+    suspend fun getPatientContacts(): Response<PatientContactsResponseModel>
 }

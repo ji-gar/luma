@@ -45,6 +45,8 @@ import com.io.luma.uiscreen.myselfflow.MySelfFlow
 import com.io.luma.uiscreen.myselfflow.stepscreen.MySelfStep1
 import com.io.luma.uiscreen.myselfflow.stepscreen.MySelfStep2
 import com.io.luma.uiscreen.myselfflow.stepscreen.MySelfStep3
+import com.io.luma.uiscreen.notification.Notification
+import com.io.luma.uiscreen.notification.NotificationList
 import com.io.luma.uiscreen.onbordingscreen.OnBoardingWebSocket
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen
 import com.io.luma.uiscreen.onbordingscreen.OnBordingScreen2
@@ -97,7 +99,7 @@ fun NavHost() {
 
     val carerViewModel: CarerRegisterViewModel = viewModel()
 
-    NavHost(navController, startDestination = NavRoute.SplaceScreen) {
+    NavHost(navController, startDestination = NavRoute.LoginScreen) {
 
         composable<NavRoute.SignupСarer> {
 
@@ -118,6 +120,9 @@ fun NavHost() {
         }
         composable<NavRoute.talkToLuma> {
             talkToLuma(navController)
+        }
+        composable<NavRoute.NotificationList> {
+            NotificationList(navController)
         }
 
         composable<NavRoute.RecurringTasksList> {
@@ -165,7 +170,7 @@ fun NavHost() {
         }
 
         composable<NavRoute.CarrersContactList> {
-            CarersContactList()
+            CarersContactList(navController)
 
         }
         composable<NavRoute.SignupOptionStep1> {

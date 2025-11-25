@@ -120,5 +120,9 @@ sealed class NavRoute {
     data object  CarrersContactList : NavRoute()
 
 
+    @Serializable
+    data object  NotificationList : NavRoute()
+
+
     //SignupStep4
 }
